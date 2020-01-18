@@ -31,19 +31,19 @@ from sklearn.model_selection import train_test_split
 
 # read trump .csv files & union them into a single DataFrame: trump_df
 trump_df = union_csv(
-    csv_path=r'.\data\trump_politics_all',
+    csv_path=r'.\training_data\trump_politics_all',
     glob_pattern='Donald Trump_*.csv'
 )
 
 # read politics .csv files & union them into a single DataFrame: poly_df
 poly_df = union_csv(
-    csv_path=r'.\data\trump_politics_all',
+    csv_path=r'.\training_data\trump_politics_all',
     glob_pattern='politics_*.csv'
 )
 
 # read all new york times articles .csv files & union them into a single DataFrame: all_df
 all_df = union_csv(
-    csv_path=r'.\data\trump_politics_all',
+    csv_path=r'.\training_data\trump_politics_all',
     glob_pattern='all_*.csv'
 )
 
