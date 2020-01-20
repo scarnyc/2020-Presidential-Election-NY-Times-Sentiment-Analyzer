@@ -30,38 +30,14 @@ from model_utils.model_eval import text_model_metrics, num_model_metrics, stacke
 from sklearn.model_selection import train_test_split
 
 # read trump .csv files & union them into a single DataFrame: trump_df
-trump_df = union_csv(
-    csv_path=r'.\training_data\trump_politics_all',
-    glob_pattern='Donald Trump_*.csv'
-)
-
-# read politics .csv files & union them into a single DataFrame: poly_df
-poly_df = union_csv(
-    csv_path=r'.\training_data\trump_politics_all',
-    glob_pattern='politics_*.csv'
-)
-
-# read all new york times articles .csv files & union them into a single DataFrame: all_df
-all_df = union_csv(
-    csv_path=r'.\training_data\trump_politics_all',
-    glob_pattern='all_*.csv'
-)
-
-# union trump_df, poly_df, all_df into a single DataFrame
-article_df = pd.concat(
-    [trump_df, poly_df, all_df],
-    ignore_index=True,
-    sort=False
+article_df = union_csv(
+    csv_path=r'.\training_data',
+    glob_pattern='*.csv'
 )
 print('DataFrame Sample')
 print(article_df.head())
 print()
 print('DataFrame Shape: {}'.format(article_df.shape))
-print()
-
-# delete trump_df, poly_df, all_df from memory
-del trump_df, poly_df, all_df
-print('Deleted DataFrames from memory')
 print()
 
 # create 'text' feature
