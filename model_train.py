@@ -29,39 +29,20 @@ from sklearn.ensemble import RandomForestClassifier
 from model_utils.model_eval import text_model_metrics, num_model_metrics, stacked_model_metrics
 from sklearn.model_selection import train_test_split
 
+# test script
+# currently testing
+from model_utils.sentiment_label import new_sentiment_label, positive_words, negative_words
+
+
 # read trump .csv files & union them into a single DataFrame: trump_df
-trump_df = union_csv(
-    csv_path=r'C:\Users\billy\presidential election\nytimes api\article search\trump_politics_all',
-    glob_pattern='Donald Trump_*.csv'
-)
-
-# read politics .csv files & union them into a single DataFrame: poly_df
-poly_df = union_csv(
-    csv_path=r'C:\Users\billy\presidential election\nytimes api\article search\trump_politics_all',
-    glob_pattern='politics_*.csv'
-)
-
-# read all new york times articles .csv files & union them into a single DataFrame: all_df
-all_df = union_csv(
-    csv_path=r'C:\Users\billy\presidential election\nytimes api\article search\trump_politics_all',
-    glob_pattern='all_*.csv'
-)
-
-# union trump_df, poly_df, all_df into a single DataFrame
-article_df = pd.concat(
-    [trump_df, poly_df, all_df],
-    ignore_index=True,
-    sort=False
+article_df = union_csv(
+    csv_path=r'.\training_data',
+    glob_pattern='*.csv'
 )
 print('DataFrame Sample')
 print(article_df.head())
 print()
 print('DataFrame Shape: {}'.format(article_df.shape))
-print()
-
-# delete trump_df, poly_df, all_df from memory
-del trump_df, poly_df, all_df
-print('Deleted DataFrames from memory')
 print()
 
 # create 'text' feature
@@ -82,6 +63,12 @@ print()
 
 # generate date_features for article_df
 article_df = date_feats(article_df, 'pub_date')
+
+
+# test script
+# currently testing
+article_df = new_sentiment_label(df=article_df, col_for_label='text', label_col='sentiment_label', positive_words=positive_words, negative_words=negative_words)
+
 
 # generate TextBlob sentiment and subjectivity scores for each row of 'text' in article_df: tb_sent_scores
 # create a new DataFrame filled with scores: tb_sentiment_df
@@ -185,12 +172,12 @@ print()
 # instantiate list of models: models
 models = [
     MultinomialNB(),
-    OneVsRestClassifier(LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced')),
-    OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=-1,
+    OneVsRestClassifier(LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced', n_jobs=4)),
+    OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
                                                class_weight='balanced')),
-    OneVsRestClassifier(xgb.XGBClassifier(n_jobs=-1, random_state=42)),
+    OneVsRestClassifier(xgb.XGBClassifier(n_jobs=-4, random_state=42)),
     OneVsRestClassifier(
-        LogisticRegression(C=100, max_iter=5000, solver='lbfgs', n_jobs=-1, random_state=42, class_weight='balanced'))
+        LogisticRegression(C=100, max_iter=5000, solver='lbfgs', n_jobs=4, random_state=42, class_weight='balanced'))
 ]
 print('Instantiated models!')
 print()
@@ -229,21 +216,21 @@ stacked_model_metrics(
     test_df=X_test,
     y_test=y_test,
     label_col='sentiment_label',
-    text_model=OneVsRestClassifier(LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced')),
+    text_model=OneVsRestClassifier(LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced', n_jobs=4)),
     text_feature='text_feat',
     text_prediction_col='text_pred',
     n_gram_range=(2, 3),
     k=1200,
     stopwords=my_stopwords,
     text_model_pkl="./models/text_pipe_svm.pkl",
-    num_model=OneVsRestClassifier(xgb.XGBClassifier(n_jobs=-1, random_state=42)),
+    num_model=OneVsRestClassifier(xgb.XGBClassifier(n_jobs=4, random_state=42)),
     num_train1_features=train1[['month', 'day', 'dayofweek', 'hour', 'char_count', 'word_count', 'subjectivity',
                                 'neg', 'neu', 'pos']],
     num_features=['month', 'day', 'dayofweek', 'hour', 'char_count', 'word_count', 'subjectivity',
                   'neg', 'neu', 'pos'],
     num_prediction_col='num_pred',
     num_model_pkl="./models/num_pipe_xgb.pkl",
-    stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='lbfgs', n_jobs=-1,
+    stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='lbfgs', n_jobs=4,
                                                          random_state=42, class_weight='balanced')),
     stacked_features=['text_pred', 'num_pred'],
     stacked_model_pkl="./models/lr_stack.pkl"
