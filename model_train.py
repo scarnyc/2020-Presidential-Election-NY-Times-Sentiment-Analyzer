@@ -67,7 +67,8 @@ article_df = date_feats(article_df, 'pub_date')
 
 # test script
 # currently testing
-article_df = new_sentiment_label(df=article_df, col_for_label='text', label_col='sentiment_label', positive_words=positive_words, negative_words=negative_words)
+article_df = new_sentiment_label(df=article_df, col_for_label='text', label_col='sentiment_label',
+                                 positive_words=positive_words, negative_words=negative_words)
 
 
 # generate TextBlob sentiment and subjectivity scores for each row of 'text' in article_df: tb_sent_scores
