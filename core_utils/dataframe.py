@@ -1,16 +1,18 @@
 """
-******************************************************************************************
+********************************************************************************************
 core_utils.dataframe
 
 This package contains common utilities for importing & handling data in pandas DataFrames:
     - union_csv (unions similar csv files into a single DataFrame)
-******************************************************************************************
+    - filter_dataframe (Filters pandas DataFrame according to contains expressions in a list)
+********************************************************************************************
 """
 import pandas as pd
 from glob import glob
 from os import path
 
-def union_csv (csv_path: object, glob_pattern: object) -> object:
+
+def union_csv(csv_path: object, glob_pattern: object) -> object:
     """
     This function accepts a directory where csv files are located
     and a glob pattern for specific .csv naming conventions.
@@ -39,7 +41,23 @@ def union_csv (csv_path: object, glob_pattern: object) -> object:
     # read in each .csv file with pd.read_csv inside the generator expression
     # ignore index of all DataFrames in memory and set sort parameter to False
     return pd.concat(
-        objs=( pd.read_csv(f) for f in all_files ),
+        objs=(pd.read_csv(f) for f in all_files),
         ignore_index=True,
         sort=False
     )
+
+
+def filter_dataframe(df, col, contains_list):
+    """
+    Filters pandas DataFrame according to contains expressions in a list.
+
+    @param df:
+    @param col:
+    @param contains_list:
+    @return:
+    """
+    df = df.copy()
+    return df[df[col].str.contains(
+        '|'.join([word for word in contains_list]),
+        case=False
+    )]

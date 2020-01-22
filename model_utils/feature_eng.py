@@ -22,6 +22,7 @@ import spacy
 import re
 from textblob import TextBlob
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from sklearn.model_selection import train_test_split
 
 # load spacy NLP model: nlp
 nlp = spacy.load('en_core_web_md')
@@ -344,7 +345,7 @@ def lemma_nopunc(text):
 
     # lemmatize tokens: lemmas
     lemmas = [token.lemma_ for token in nlp(text)
-              if token.is_alpha]
+              if token.is_alpha and token.lemma_ != '-PRON-']
 
     # Remove punctuation: no_punc
     no_punc = ' '.join(re.sub(r'[^\w\s]', '', t) for t in lemmas)
@@ -352,21 +353,17 @@ def lemma_nopunc(text):
     return no_punc
 
 
-def split_x_y(df, features, label, contains_col, contains_term, mapper):
+def split_x_y(df, label, mapper):
     """
     Splits dataframe into training and testing sets for features & labels.
 
     @param mapper:
     @param label:
-    @param features:
     @param df:
-    @param contains_col:
-    @param contains_term:
     @return:
     """
-    X_train = df[~df[contains_col].str.contains(contains_term, case=False)][features]
-    X_test = df[df[contains_col].str.contains(contains_term, case=False)][features]
-    y_train = df[~df[contains_col].str.contains(contains_term, case=False)][label].map(mapper)
-    y_test = df[df[contains_col].str.contains(contains_term, case=False)][label].map(mapper)
+    X = df.drop(label, axis=1)
+    y = df[label].map(mapper)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=42)
 
     return X_train, X_test, y_train, y_test

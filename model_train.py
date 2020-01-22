@@ -13,7 +13,7 @@ last updated: 1/4/20
 ********************************************************************************************************************
 """
 import pandas as pd
-from core_utils.dataframe import union_csv
+from core_utils.dataframe import union_csv, filter_dataframe
 from custom_utils.clean_dataframe import preprocess_df
 from model_utils.feature_eng import (date_feats, my_stopwords,
                                      tb_sentiment, nltk_sentiment,
@@ -29,14 +29,10 @@ from sklearn.ensemble import RandomForestClassifier
 from model_utils.model_eval import text_model_metrics, num_model_metrics, stacked_model_metrics
 from sklearn.model_selection import train_test_split
 
-# test script
-# currently testing
-from model_utils.sentiment_label import new_sentiment_label, positive_words, negative_words
 
-
-# read trump .csv files & union them into a single DataFrame: trump_df
+# read .csv files & union them into a single DataFrame: trump_df
 article_df = union_csv(
-    csv_path=r'.\training_data',
+    csv_path=r'.\data',
     glob_pattern='*.csv'
 )
 print('DataFrame Sample')
@@ -61,15 +57,22 @@ print()
 print('New DataFrame Shape: {}'.format(article_df.shape))
 print()
 
+# filter out articles that don't contain last name of candidates
+article_df = filter_dataframe(df=article_df,
+                              col='text',
+                              contains_list=['Klobuchar', 'Sanders', 'Booker', 'Trump', 'Warren', 'Biden', 'Delaney', 'Harris', 'Bennet', 'Bloomberg', 'Gabbard']
+                              )
+print('Filtered out excess articles!')
+print()
+print('DataFrame Shape: {}'.format(article_df.shape))
+print()
+
 # generate date_features for article_df
 article_df = date_feats(article_df, 'pub_date')
-
-
-# test script
-# currently testing
-article_df = new_sentiment_label(df=article_df, col_for_label='text', label_col='sentiment_label',
-                                 positive_words=positive_words, negative_words=negative_words)
-
+print('Generated Date Features!')
+print()
+print(article_df.columns)
+print()
 
 # generate TextBlob sentiment and subjectivity scores for each row of 'text' in article_df: tb_sent_scores
 # create a new DataFrame filled with scores: tb_sentiment_df
@@ -157,12 +160,8 @@ corr_heatmap(df=article_df,
 
 # split DataFrame into training & testing sets: X_train, X_test, y_train, y_test
 X_train, X_test, y_train, y_test = split_x_y(
-    df=article_df,
-    features=['text_feat', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity', 'neg',
-              'neu', 'pos'],
+    df=model_df,
     label='sentiment_label',
-    contains_col='text_feat',
-    contains_term='trump',
     mapper={'positive': 1, 'neutral': 0, 'negative': -1}
 )
 print('Training features shape: {}'.format(X_train.shape))
@@ -173,12 +172,12 @@ print()
 # instantiate list of models: models
 models = [
     MultinomialNB(),
-    OneVsRestClassifier(LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced', n_jobs=4)),
+    OneVsRestClassifier(LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced')),
     OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
                                                class_weight='balanced')),
     OneVsRestClassifier(xgb.XGBClassifier(n_jobs=-4, random_state=42)),
     OneVsRestClassifier(
-        LogisticRegression(C=100, max_iter=5000, solver='lbfgs', n_jobs=4, random_state=42, class_weight='balanced'))
+        LogisticRegression(C=100, max_iter=5000, solver='liblinear', n_jobs=4, random_state=42, class_weight='balanced'))
 ]
 print('Instantiated models!')
 print()
@@ -217,7 +216,7 @@ stacked_model_metrics(
     test_df=X_test,
     y_test=y_test,
     label_col='sentiment_label',
-    text_model=OneVsRestClassifier(LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced', n_jobs=4)),
+    text_model=OneVsRestClassifier(LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced')),
     text_feature='text_feat',
     text_prediction_col='text_pred',
     n_gram_range=(2, 3),
@@ -231,7 +230,7 @@ stacked_model_metrics(
                   'neg', 'neu', 'pos'],
     num_prediction_col='num_pred',
     num_model_pkl="./models/num_pipe_xgb.pkl",
-    stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='lbfgs', n_jobs=4,
+    stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear', n_jobs=4,
                                                          random_state=42, class_weight='balanced')),
     stacked_features=['text_pred', 'num_pred'],
     stacked_model_pkl="./models/lr_stack.pkl"
