@@ -182,6 +182,12 @@ models = [
 print('Instantiated models!')
 print()
 
+# instantiate list of vectorizers: vectorizers
+vectorizers = [
+    CountVectorizer(max_features=1200, ngram_range=(3, 3), stop_words=my_stopwords),
+    TfidfVectorizer(max_features=1200, ngram_range=(3, 3), stop_words=my_stopwords)
+]
+
 # print out text model metrics
 text_model_metrics(
     models=models,
@@ -189,9 +195,6 @@ text_model_metrics(
     X_test=X_test,
     y_train=y_train,
     y_test=y_test,
-    text_feature='text_feat',
-    n_gram_range=(2, 3),
-    k=1200,
     stopwords=my_stopwords
 )
 

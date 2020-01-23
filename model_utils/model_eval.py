@@ -18,49 +18,43 @@ from sklearn.metrics import confusion_matrix, classification_report
 import pickle
 
 
-def text_model_metrics(models, X_train, X_test, y_train, y_test, text_feature, n_gram_range, k, stopwords):
+def text_model_metrics(models, vectorizers, X_train, X_test, y_train, y_test, text_feature):
     """
     Iterate over a list of models, fitting them and getting evaluation metrics on text data.
-
-    @param models:
-    @param X_train:
-    @param X_test:
-    @param y_train:
-    @param y_test:
-    @param text_feature:
-    @param n_gram_range:
-    @param k:
-    @param stopwords:
-    @return:
     """
     print('Text Model Results!')
+
     for model in models:
         print(model)
         print()
-        pipe = Pipeline([('vectorizer', TfidfVectorizer(ngram_range=n_gram_range, stop_words=stopwords)),
-                         ('feature_select', SelectKBest(chi2, k=k)),
-                         ('scaler', StandardScaler(with_mean=False)),
-                         ('clf', model)
-                         ])
 
-        print(pipe)
-        print()
+        for vectorizer in vectorizers:
+            print(vectorizer)
+            print()
 
-        # Fit the classifier
-        pipe.fit(X_train[text_feature], y_train)
+            pipe = Pipeline([('vectorizer', vectorizer),
+                             ('scaler', StandardScaler(with_mean=False)),
+                             ('clf', model)
+                             ])
 
-        # Predict test set labels & probabilities
-        y_pred = pipe.predict(X_test[text_feature])
+            print(pipe)
+            print()
 
-        # Compute and print the confusion matrix and classification report
-        print('Confusion matrix')
-        print(confusion_matrix(y_test, y_pred))
-        print()
-        print('Classification report')
-        print(classification_report(y_test, y_pred))
-        print()
-        print()
-        print()
+            # Fit the classifier
+            pipe.fit(X_train[text_feature], y_train)
+
+            # Predict test set labels & probabilities
+            y_pred = pipe.predict(X_test[text_feature])
+
+            # Compute and print the confusion matrix and classification report
+            print('Confusion matrix')
+            print(confusion_matrix(y_test, y_pred))
+            print()
+            print('Classification report')
+            print(classification_report(y_test, y_pred))
+            print()
+            print()
+            print()
 
 
 def num_model_metrics(models, X_train, X_test, y_train, y_test, num_features):
