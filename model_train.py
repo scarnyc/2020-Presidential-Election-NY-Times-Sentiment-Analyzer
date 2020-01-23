@@ -163,6 +163,10 @@ corr_heatmap(df=article_df,
 X_train, X_test, y_train, y_test = split_x_y(
     df=model_df,
     label='sentiment_label',
+
+    # binarize label for cross validation
+    # https://stackoverflow.com/questions/26210471/scikit-learn-gridsearch-giving-valueerror-multiclass-format-is-not-supported/26210645
+    # https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.label_binarize.html
     mapper={'positive': 1, 'neutral': 0, 'negative': -1}
 )
 print('Training features shape: {}'.format(X_train.shape))
@@ -185,8 +189,8 @@ print()
 
 # instantiate list of vectorizers: vectorizers
 vectorizers = [
-    CountVectorizer(max_features=1200, ngram_range=(3, 3), stop_words=my_stopwords),
-    TfidfVectorizer(max_features=1200, ngram_range=(3, 3), stop_words=my_stopwords)
+    CountVectorizer(max_features=500, ngram_range=(3, 3), stop_words=my_stopwords),
+    TfidfVectorizer(max_features=500, ngram_range=(3, 3), stop_words=my_stopwords)
 ]
 
 # print out text model metrics

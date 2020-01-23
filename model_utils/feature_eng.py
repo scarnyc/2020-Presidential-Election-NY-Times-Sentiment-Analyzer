@@ -363,6 +363,10 @@ def split_x_y(df, label, mapper):
     @return:
     """
     X = df.drop(label, axis=1)
+
+    # binarize label for cross validation
+    # https://stackoverflow.com/questions/26210471/scikit-learn-gridsearch-giving-valueerror-multiclass-format-is-not-supported/26210645
+    # https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.label_binarize.html
     y = df[label].map(mapper)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=42)
 
