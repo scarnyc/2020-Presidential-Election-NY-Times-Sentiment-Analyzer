@@ -23,7 +23,7 @@ def text_model_metrics(models, vectorizers, X_train, X_test, y_train, y_test, te
     Iterate over a list of models, fitting them and getting evaluation metrics on text data.
     """
     print('Text Model Results!')
-
+    # for vectorizer in vectorizer:
     for model in models:
         print(model)
         print()
@@ -42,6 +42,37 @@ def text_model_metrics(models, vectorizers, X_train, X_test, y_train, y_test, te
 
             # Fit the classifier
             pipe.fit(X_train[text_feature], y_train)
+
+            # # Compute cross-validated scores: AUC
+            # auc = cross_val_score(model, X, y, cv=cv, scoring='roc_auc')
+            #
+            # # Compute cross-validated scores: F1
+            # f1 = cross_val_score(model, X, y, cv=cv, scoring='f1')
+            #
+            # # Compute cross-validated scores: precision
+            # prec = cross_val_score(model, X, y, cv=cv, scoring='precision')
+            #
+            # # Compute cross-validated scores: recall
+            # rec = cross_val_score(model, X, y, cv=cv, scoring='recall')
+            #
+            # # Compute cross-validated scores: accuracy
+            # acc = cross_val_score(model, X, y, cv=cv, scoring='accuracy')
+            #
+            # # print metrics
+            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Precision", cv, model,
+            #                                                                             np.mean(prec)))
+            # print()
+            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Recall", cv, model,
+            #                                                                             np.mean(rec)))
+            # print()
+            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("F1", cv, model, np.mean(f1)))
+            # print()
+            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("AUC", cv, model, np.mean(auc)))
+            # print()
+            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Acccuracy", cv, model,
+            #                                                                             np.mean(acc)))
+
+            # plot ROC curve https://scikit-learn.org/stable/auto_examples/plot_roc_curve_visualization_api.html
 
             # Predict test set labels & probabilities
             y_pred = pipe.predict(X_test[text_feature])
