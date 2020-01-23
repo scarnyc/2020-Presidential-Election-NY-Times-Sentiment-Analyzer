@@ -20,6 +20,7 @@ from model_utils.feature_eng import (date_feats, my_stopwords,
                                      row_avg, sentiment_label, char_count,
                                      lemma_nopunc, split_x_y)
 from graph_utils.graph import corr_heatmap
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import xgboost as xgb
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.naive_bayes import MultinomialNB
@@ -194,8 +195,7 @@ text_model_metrics(
     X_train=X_train,
     X_test=X_test,
     y_train=y_train,
-    y_test=y_test,
-    stopwords=my_stopwords
+    y_test=y_test
 )
 
 # print out numeric model metrics
