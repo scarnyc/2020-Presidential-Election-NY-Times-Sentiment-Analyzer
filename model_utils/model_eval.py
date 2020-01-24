@@ -10,20 +10,31 @@ This package contains customized utilities for training Sentiment Analysis model
 created: 1/5/20
 *******************************************************************************************************************
 """
-from sklearn.feature_selection import SelectKBest, chi2
+import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import confusion_matrix, classification_report, plot_roc_curve
+import matplotlib.pyplot as plt
+from sklearn.feature_selection import SelectKBest, chi2
 import pickle
 
 
-def text_model_metrics(models, vectorizers, X_train, X_test, y_train, y_test, text_feature):
+def text_model_metrics(models, vectorizers, cv, X_train, X_test, y_train, y_test, text_feature):
     """
     Iterate over a list of models, fitting them and getting evaluation metrics on text data.
+
+    @param models:
+    @param vectorizers:
+    @param cv:
+    @param X_train:
+    @param X_test:
+    @param y_train:
+    @param y_test:
+    @param text_feature:
+    @return:
     """
     print('Text Model Results!')
-    # for vectorizer in vectorizer:
     for model in models:
         print(model)
         print()
@@ -40,39 +51,38 @@ def text_model_metrics(models, vectorizers, X_train, X_test, y_train, y_test, te
             print(pipe)
             print()
 
+            # Compute cross-validated scores: AUC
+            auc = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='roc_auc')
+
+            # Compute cross-validated scores: F1
+            f1 = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='f1')
+
+            # Compute cross-validated scores: precision
+            prec = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='precision')
+
+            # Compute cross-validated scores: recall
+            rec = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='recall')
+
+            # Compute cross-validated scores: accuracy
+            acc = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='accuracy')
+
+            # print metrics
+            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Precision", cv, pipe,
+                                                                                        np.mean(prec)))
+            print()
+            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Recall", cv, pipe,
+                                                                                        np.mean(rec)))
+            print()
+            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("F1", cv, pipe, np.mean(f1)))
+            print()
+            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("AUC", cv, pipe, np.mean(auc)))
+            print()
+            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Accuracy", cv, pipe,
+                                                                                        np.mean(acc)))
+            print()
+
             # Fit the classifier
             pipe.fit(X_train[text_feature], y_train)
-
-            # # Compute cross-validated scores: AUC
-            # auc = cross_val_score(model, X, y, cv=cv, scoring='roc_auc')
-            #
-            # # Compute cross-validated scores: F1
-            # f1 = cross_val_score(model, X, y, cv=cv, scoring='f1')
-            #
-            # # Compute cross-validated scores: precision
-            # prec = cross_val_score(model, X, y, cv=cv, scoring='precision')
-            #
-            # # Compute cross-validated scores: recall
-            # rec = cross_val_score(model, X, y, cv=cv, scoring='recall')
-            #
-            # # Compute cross-validated scores: accuracy
-            # acc = cross_val_score(model, X, y, cv=cv, scoring='accuracy')
-            #
-            # # print metrics
-            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Precision", cv, model,
-            #                                                                             np.mean(prec)))
-            # print()
-            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Recall", cv, model,
-            #                                                                             np.mean(rec)))
-            # print()
-            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("F1", cv, model, np.mean(f1)))
-            # print()
-            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("AUC", cv, model, np.mean(auc)))
-            # print()
-            # print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Acccuracy", cv, model,
-            #                                                                             np.mean(acc)))
-
-            # plot ROC curve https://scikit-learn.org/stable/auto_examples/plot_roc_curve_visualization_api.html
 
             # Predict test set labels & probabilities
             y_pred = pipe.predict(X_test[text_feature])
@@ -84,15 +94,19 @@ def text_model_metrics(models, vectorizers, X_train, X_test, y_train, y_test, te
             print('Classification report')
             print(classification_report(y_test, y_pred))
             print()
+            print('ROC-AUC Curve')
+            plot_roc_curve(pipe, X_test, y_test)
+            plt.show()
             print()
             print()
 
 
-def num_model_metrics(models, X_train, X_test, y_train, y_test, num_features):
+def num_model_metrics(models, cv, X_train, X_test, y_train, y_test, num_features):
     """
     Iterate over a list of models, fitting them and getting evaluation metrics on numeric data.
 
     @param models:
+    @param cv:
     @param X_train:
     @param X_test:
     @param y_train:
@@ -110,6 +124,36 @@ def num_model_metrics(models, X_train, X_test, y_train, y_test, num_features):
         print(pipe)
         print()
 
+        # Compute cross-validated scores: AUC
+        auc = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='roc_auc')
+
+        # Compute cross-validated scores: F1
+        f1 = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='f1')
+
+        # Compute cross-validated scores: precision
+        prec = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='precision')
+
+        # Compute cross-validated scores: recall
+        rec = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='recall')
+
+        # Compute cross-validated scores: accuracy
+        acc = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='accuracy')
+
+        # print metrics
+        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Precision", cv, pipe,
+                                                                                    np.mean(prec)))
+        print()
+        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Recall", cv, pipe,
+                                                                                    np.mean(rec)))
+        print()
+        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("F1", cv, pipe, np.mean(f1)))
+        print()
+        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("AUC", cv, pipe, np.mean(auc)))
+        print()
+        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Accuracy", cv, pipe,
+                                                                                    np.mean(acc)))
+        print()
+
         # Fit the classifier
         pipe.fit(X_train[num_features], y_train)
 
@@ -123,108 +167,111 @@ def num_model_metrics(models, X_train, X_test, y_train, y_test, num_features):
         print('Classification report')
         print(classification_report(y_test, y_pred))
         print()
+        print('ROC-AUC Curve')
+        plot_roc_curve(pipe, X_test, y_test)
+        plt.show()
         print()
         print()
 
 
-def stacked_model_metrics(
-        train1_df,
-        train2_df,
-        test_df,
-        y_test,
-        label_col,
-        text_model,
-        text_feature,
-        text_prediction_col,
-        n_gram_range,
-        k,
-        stopwords,
-        text_model_pkl,
-        num_model,
-        num_train1_features,
-        num_features,
-        num_prediction_col,
-        num_model_pkl,
-        stacked_model,
-        stacked_features,
-        stacked_model_pkl
-):
-    """
-    Fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics.
-
-    """
-    # Text Model Pipeline
-    print('Stacked Model Training!')
-    print('Text Model!')
-    text_pipe = Pipeline([('vectorizer', TfidfVectorizer(ngram_range=n_gram_range, stop_words=stopwords)),
-                          ('feature_select', SelectKBest(chi2, k=k)),
-                          ('scaler', StandardScaler(with_mean=False)),
-                          ('text_clf', text_model)
-                          ])
-
-    print(text_pipe)
-    print()
-
-    # Fit the classifier
-    text_pipe.fit(train1_df[text_feature], train1_df[label_col])
-
-    # Predict test set labels
-    train2_df[text_prediction_col] = text_pipe.predict(train2_df[text_feature])
-    test_df[text_prediction_col] = text_pipe.predict(test_df[text_feature])
-
-    # save text model for later
-    with open(text_model_pkl, 'wb') as model_file:
-        pickle.dump(text_pipe, model_file)
-
-    # Numeric Model: xgb_clf
-    num_pipe = Pipeline([
-        ('scaler', MinMaxScaler()),
-        ('num_clf', num_model)
-    ])
-
-    # Numeric Model Pipeline
-    print('Numeric Model!')
-    print(num_pipe)
-    print()
-
-    # Fit the classifier
-    num_pipe.fit(num_train1_features, train1_df[label_col])
-
-    # Predict test set labels
-    train2_df[num_prediction_col] = num_pipe.predict(train2_df[num_features])
-    test_df[num_prediction_col] = num_pipe.predict(test_df[num_features])
-
-    # save model for later
-    with open(num_model_pkl, 'wb') as model_file:
-        pickle.dump(num_pipe, model_file)
-
-    # Stacked Model
-    print('Stacked Model!')
-    print(stacked_model)
-
-    # Train 2nd level model on the Part 2 data
-    stacked_model.fit(train2_df[[text_prediction_col, num_prediction_col]], train2_df[label_col])
-
-    # Make stacking predictions on the test data
-    test_df['stacking'] = stacked_model.predict(test_df[[text_prediction_col, num_prediction_col]])
-
-    # Look at the model coefficients
-    print('LogisticRegression Coefs: {}'.format(stacked_model.coef_))
-    print()
-    print('Training set Accuracy: {}'.format(stacked_model.score(train2_df[stacked_features], train2_df[label_col])))
-    print()
-    print('Test set Accuracy: {}'.format(stacked_model.score(test_df[stacked_features], y_test)))
-    print()
-
-    # Compute and print the confusion matrix and classification report
-    print('Confusion matrix')
-    print(confusion_matrix(y_test, test_df['stacking']))
-    print()
-    print('Classification report')
-    print(classification_report(y_test, test_df['stacking']))
-    print()
-
-    # save model for later
-    with open(stacked_model_pkl, 'wb') as model_file:
-        pickle.dump(stacked_model, model_file)
-
+# def stacked_model_metrics(
+#         train1_df,
+#         train2_df,
+#         test_df,
+#         y_test,
+#         label_col,
+#         text_model,
+#         text_feature,
+#         text_prediction_col,
+#         n_gram_range,
+#         k,
+#         stopwords,
+#         text_model_pkl,
+#         num_model,
+#         num_train1_features,
+#         num_features,
+#         num_prediction_col,
+#         num_model_pkl,
+#         stacked_model,
+#         stacked_features,
+#         stacked_model_pkl
+# ):
+#     """
+#     Fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics.
+#
+#     """
+#     # Text Model Pipeline
+#     print('Stacked Model Training!')
+#     print('Text Model!')
+#     text_pipe = Pipeline([('vectorizer', TfidfVectorizer(ngram_range=n_gram_range, stop_words=stopwords)),
+#                           ('feature_select', SelectKBest(chi2, k=k)),
+#                           ('scaler', StandardScaler(with_mean=False)),
+#                           ('text_clf', text_model)
+#                           ])
+#
+#     print(text_pipe)
+#     print()
+#
+#     # Fit the classifier
+#     text_pipe.fit(train1_df[text_feature], train1_df[label_col])
+#
+#     # Predict test set labels
+#     train2_df[text_prediction_col] = text_pipe.predict(train2_df[text_feature])
+#     test_df[text_prediction_col] = text_pipe.predict(test_df[text_feature])
+#
+#     # save text model for later
+#     with open(text_model_pkl, 'wb') as model_file:
+#         pickle.dump(text_pipe, model_file)
+#
+#     # Numeric Model: xgb_clf
+#     num_pipe = Pipeline([
+#         ('scaler', MinMaxScaler()),
+#         ('num_clf', num_model)
+#     ])
+#
+#     # Numeric Model Pipeline
+#     print('Numeric Model!')
+#     print(num_pipe)
+#     print()
+#
+#     # Fit the classifier
+#     num_pipe.fit(num_train1_features, train1_df[label_col])
+#
+#     # Predict test set labels
+#     train2_df[num_prediction_col] = num_pipe.predict(train2_df[num_features])
+#     test_df[num_prediction_col] = num_pipe.predict(test_df[num_features])
+#
+#     # save model for later
+#     with open(num_model_pkl, 'wb') as model_file:
+#         pickle.dump(num_pipe, model_file)
+#
+#     # Stacked Model
+#     print('Stacked Model!')
+#     print(stacked_model)
+#
+#     # Train 2nd level model on the Part 2 data
+#     stacked_model.fit(train2_df[[text_prediction_col, num_prediction_col]], train2_df[label_col])
+#
+#     # Make stacking predictions on the test data
+#     test_df['stacking'] = stacked_model.predict(test_df[[text_prediction_col, num_prediction_col]])
+#
+#     # Look at the model coefficients
+#     print('LogisticRegression Coefs: {}'.format(stacked_model.coef_))
+#     print()
+#     print('Training set Accuracy: {}'.format(stacked_model.score(train2_df[stacked_features], train2_df[label_col])))
+#     print()
+#     print('Test set Accuracy: {}'.format(stacked_model.score(test_df[stacked_features], y_test)))
+#     print()
+#
+#     # Compute and print the confusion matrix and classification report
+#     print('Confusion matrix')
+#     print(confusion_matrix(y_test, test_df['stacking']))
+#     print()
+#     print('Classification report')
+#     print(classification_report(y_test, test_df['stacking']))
+#     print()
+#
+#     # save model for later
+#     with open(stacked_model_pkl, 'wb') as model_file:
+#         pickle.dump(stacked_model, model_file)
+#

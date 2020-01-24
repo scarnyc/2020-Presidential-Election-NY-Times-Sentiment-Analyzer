@@ -23,6 +23,8 @@ import re
 from textblob import TextBlob
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import label_binarize
+
 
 # load spacy NLP model: nlp
 nlp = spacy.load('en_core_web_md')
@@ -353,21 +355,21 @@ def lemma_nopunc(text):
     return no_punc
 
 
-def split_x_y(df, label, mapper):
+def split_x_y(df, label):
     """
     Splits dataframe into training and testing sets for features & labels.
 
-    @param mapper:
     @param label:
     @param df:
     @return:
     """
     X = df.drop(label, axis=1)
-
-    # binarize label for cross validation
-    # https://stackoverflow.com/questions/26210471/scikit-learn-gridsearch-giving-valueerror-multiclass-format-is-not-supported/26210645
-    # https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.label_binarize.html
-    y = df[label].map(mapper)
+    labels = df[label].tolist()
+    y = label_binarize(labels, classes=list(set(labels)))
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=42)
 
+    print('Training features shape: {}'.format(X_train.shape))
+    print()
+    print('Test features shape: {}'.format(X_test.shape))
+    print()
     return X_train, X_test, y_train, y_test
