@@ -127,12 +127,19 @@ print()
 print(article_df['sentiment_label'].unique())
 print()
 
+
+""" 
+article_df = article_df[article_df['sentiment_label'] != 'nan']
+Is filtering out most of training data. 
+Requires inspection after model training / validation.
+"""
 # filter out rows that have np.nan values
 article_df = article_df[article_df['sentiment_label'] != 'nan']
 print('Not Null DataFrame Metadata: {}'.format(article_df.info()))
 print()
 print(article_df['sentiment_label'].value_counts())
 print()
+
 
 # count number of characters:
 article_df = char_count(
