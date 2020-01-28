@@ -9,16 +9,14 @@ Please Note:
     The .csv files were created by calling the nyt_api.main module.
 
 created: 12/31/19
-last updated: 1/4/20
+last updated: 1/28/20
 ********************************************************************************************************************
 """
 import pandas as pd
 from core_utils.dataframe import union_csv, filter_dataframe
 from custom_utils.clean_dataframe import preprocess_df
-from model_utils.feature_eng import (date_feats, my_stopwords,
-                                     tb_sentiment, nltk_sentiment,
-                                     row_avg, sentiment_label, char_count,
-                                     lemma_nopunc, split_x_y)
+from model_utils.feature_eng import (date_feats, my_stopwords, tb_sentiment,
+                                     sentiment_label, lemma_nopunc, split_df)
 from graph_utils.graph import corr_heatmap
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import xgboost as xgb
@@ -71,7 +69,8 @@ print()
 
 # generate date_features for article_df
 article_df = date_feats(article_df, 'pub_date')
-print('Generated Date Features!')
+article_df = article_df.reset_index()
+print('Generated Date Features & reset index!')
 print()
 print(article_df.columns)
 print()
@@ -81,73 +80,25 @@ print()
 # join sentiment scores to original article_df DataFrame
 tb_sent_scores = [tb_sentiment(text=row) for row in article_df['text']]
 tb_sentiment_df = pd.DataFrame(tb_sent_scores)
-article_df = article_df.join(tb_sentiment_df)
+article_df = article_df.merge(tb_sentiment_df, left_index=True, right_index=True)
 # delete unused variables
-del tb_sent_scores, tb_sentiment_df
+# del tb_sent_scores, tb_sentiment_df
 print('Generated TextBlob Sentiment Scores!')
 print()
 print(article_df[article_df['polarity'] == article_df['polarity'].max()]['text'].values)
 print()
 
-# generate Vader sentiment scores for each row of 'text' in article_df: nltk_sent_scores
-# create a new DataFrame filled with scores: nltk_sentiment_df
-# join sentiment scores to original article_df DataFrame
-nltk_sent_scores = [nltk_sentiment(text=row) for row in article_df['text']]
-nltk_sentiment_df = pd.DataFrame(nltk_sent_scores)
-article_df = article_df.join(nltk_sentiment_df)
-# delete unused variables
-del nltk_sent_scores, nltk_sentiment_df
-print('Generated Vader Sentiment Scores!')
-print()
-print(article_df[article_df['compound'] == article_df['compound'].max()]['text'].values)
-print()
-
-# compute the average of the Vader and TextBlob sentiment scores: article_df['sentiment']
-article_df = row_avg(article_df, 'compound', 'polarity', 'sentiment')
-print('Computed Mean Sentiment Scores!')
-print()
-print('Positive Sentiment')
-print(article_df[article_df['sentiment'] == article_df['sentiment'].max()]['text'].values)
-print()
-print('Negative Sentiment')
-print(article_df[article_df['sentiment'] == article_df['sentiment'].min()]['text'].values)
-print()
-print('Neutral Sentiment')
-print(article_df[article_df['sentiment'] == 0]['text'].values)
-print()
-
 # compute the labels for modelling:
 article_df = sentiment_label(
     df=article_df,
-    col_for_label='sentiment',
+    col_for_label='polarity',
     label_col='sentiment_label'
 )
-print('Computed labels for Modelling')
+print('Computed labels for Modeling')
 print()
 print(article_df['sentiment_label'].unique())
 print()
-
-
-""" 
-article_df = article_df[article_df['sentiment_label'] != 'nan']
-Is filtering out most of training data. 
-Requires inspection after model training / validation.
-"""
-# filter out rows that have np.nan values
-article_df = article_df[article_df['sentiment_label'] != 'nan']
-print('Not Null DataFrame Metadata: {}'.format(article_df.info()))
-print()
 print(article_df['sentiment_label'].value_counts())
-print()
-
-
-# count number of characters:
-article_df = char_count(
-    df=article_df,
-    text='text',
-    new_pd_series='char_count'
-)
-print(article_df['char_count'].head())
 print()
 
 # lemmatize words & remove punctuation:
@@ -158,37 +109,37 @@ print(article_df.columns)
 
 # return column subsets of article_df
 model_df = article_df[
-    ['text_feat', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity', 'neg', 'neu', 'pos',
-     'sentiment_label']
+    ['text_feat', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity', 'sentiment_label']
 ]
 
 # plot heatmap of feature correlations
 corr_heatmap(df=article_df,
-             cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity', 'neg', 'neu', 'pos']
+             cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
              )
 
 # split DataFrame into training & testing sets: X_train, X_test, y_train, y_test
-X_train, X_test, y_train, y_test = split_x_y(
+kfold1, kfold2, kfold3, kfold4, kfold5 = split_df(
     df=model_df,
-    label='sentiment_label'
+    col='text_feat'
 )
 
 # instantiate list of models: models
 models = [
-    MultinomialNB(),
-    LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced'),
-    RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
-                                               class_weight='balanced'),
-    xgb.XGBClassifier(n_jobs=-4, random_state=42),
-    LogisticRegression(C=100, max_iter=5000, solver='liblinear', random_state=42, class_weight='balanced')
+    OneVsRestClassifier(MultinomialNB()),
+    OneVsRestClassifier(LinearSVC(C=1000, max_iter=1000000, random_state=42, class_weight='balanced')),
+    OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
+                                               class_weight='balanced')),
+    OneVsRestClassifier(xgb.XGBClassifier(n_jobs=-4, random_state=42)),
+    OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+                                           random_state=42, class_weight='balanced'))
 ]
 print('Instantiated models!')
 print()
 
 # instantiate list of vectorizers: vectorizers
 vectorizers = [
-    CountVectorizer(max_features=500, ngram_range=(3, 3), stop_words=my_stopwords),
-    TfidfVectorizer(max_features=500, ngram_range=(3, 3), stop_words=my_stopwords)
+    CountVectorizer(max_features=900, ngram_range=(2, 3), stop_words=my_stopwords),
+    TfidfVectorizer(max_features=900, ngram_range=(2, 3), stop_words=my_stopwords)
 ]
 print('Instantiated vectorizers!')
 print()
@@ -197,10 +148,9 @@ print()
 text_model_metrics(
     models=models,
     vectorizers=vectorizers,
-    cv=5,
     X_train=X_train,
-    X_test=X_test,
     y_train=y_train,
+    X_test=X_test,
     y_test=y_test,
     text_feature='text_feat'
 )
@@ -208,13 +158,11 @@ text_model_metrics(
 # print out numeric model metrics
 num_model_metrics(
     models=models,
-    cv=5,
     X_train=X_train,
     X_test=X_test,
     y_train=y_train,
     y_test=y_test,
-    num_features=['month', 'day', 'dayofweek', 'hour', 'char_count', 'word_count', 'subjectivity',
-                  'neg', 'neu', 'pos']
+    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
 )
 
 # Split train data into two parts

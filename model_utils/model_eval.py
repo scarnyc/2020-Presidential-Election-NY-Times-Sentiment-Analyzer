@@ -8,28 +8,25 @@ This package contains customized utilities for training Sentiment Analysis model
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
 created: 1/5/20
+last updated: 1/28/20
 *******************************************************************************************************************
 """
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import cross_val_score
-from sklearn.metrics import confusion_matrix, classification_report, plot_roc_curve
-import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.feature_selection import SelectKBest, chi2
 import pickle
 
 
-def text_model_metrics(models, vectorizers, cv, X_train, X_test, y_train, y_test, text_feature):
+def text_model_metrics(models, vectorizers, X_train, y_train, X_test, y_test, text_feature):
     """
     Iterate over a list of models, fitting them and getting evaluation metrics on text data.
-
     @param models:
     @param vectorizers:
-    @param cv:
     @param X_train:
-    @param X_test:
     @param y_train:
+    @param X_test:
     @param y_test:
     @param text_feature:
     @return:
@@ -51,41 +48,19 @@ def text_model_metrics(models, vectorizers, cv, X_train, X_test, y_train, y_test
             print(pipe)
             print()
 
-            # Compute cross-validated scores: AUC
-            auc = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='roc_auc')
-
-            # Compute cross-validated scores: F1
-            f1 = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='f1')
-
-            # Compute cross-validated scores: precision
-            prec = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='precision')
-
-            # Compute cross-validated scores: recall
-            rec = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='recall')
-
-            # Compute cross-validated scores: accuracy
-            acc = cross_val_score(pipe, X_train[text_feature], y_train, cv=cv, scoring='accuracy')
-
-            # print metrics
-            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Precision", cv, pipe,
-                                                                                        np.mean(prec)))
-            print()
-            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Recall", cv, pipe,
-                                                                                        np.mean(rec)))
-            print()
-            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("F1", cv, pipe, np.mean(f1)))
-            print()
-            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("AUC", cv, pipe, np.mean(auc)))
-            print()
-            print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Accuracy", cv, pipe,
-                                                                                        np.mean(acc)))
-            print()
-
             # Fit the classifier
             pipe.fit(X_train[text_feature], y_train)
 
             # Predict test set labels & probabilities
             y_pred = pipe.predict(X_test[text_feature])
+
+            # see if model is overfitting
+            print('Training Set Accuracy')
+            print(pipe.score(X_train[text_feature], y_train))
+            print()
+            print('Test Set Accuracy')
+            print(pipe.score(X_test[text_feature], y_test))
+            print()
 
             # Compute and print the confusion matrix and classification report
             print('Confusion matrix')
@@ -94,19 +69,14 @@ def text_model_metrics(models, vectorizers, cv, X_train, X_test, y_train, y_test
             print('Classification report')
             print(classification_report(y_test, y_pred))
             print()
-            print('ROC-AUC Curve')
-            plot_roc_curve(pipe, X_test, y_test)
-            plt.show()
-            print()
             print()
 
 
-def num_model_metrics(models, cv, X_train, X_test, y_train, y_test, num_features):
+def num_model_metrics(models, X_train, X_test, y_train, y_test, num_features):
     """
     Iterate over a list of models, fitting them and getting evaluation metrics on numeric data.
 
     @param models:
-    @param cv:
     @param X_train:
     @param X_test:
     @param y_train:
@@ -124,41 +94,19 @@ def num_model_metrics(models, cv, X_train, X_test, y_train, y_test, num_features
         print(pipe)
         print()
 
-        # Compute cross-validated scores: AUC
-        auc = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='roc_auc')
-
-        # Compute cross-validated scores: F1
-        f1 = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='f1')
-
-        # Compute cross-validated scores: precision
-        prec = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='precision')
-
-        # Compute cross-validated scores: recall
-        rec = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='recall')
-
-        # Compute cross-validated scores: accuracy
-        acc = cross_val_score(pipe, X_train[num_features], y_train, cv=cv, scoring='accuracy')
-
-        # print metrics
-        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Precision", cv, pipe,
-                                                                                    np.mean(prec)))
-        print()
-        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Recall", cv, pipe,
-                                                                                    np.mean(rec)))
-        print()
-        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("F1", cv, pipe, np.mean(f1)))
-        print()
-        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("AUC", cv, pipe, np.mean(auc)))
-        print()
-        print("{0} score using {1}-fold cross-validation for {2} model: {3}".format("Accuracy", cv, pipe,
-                                                                                    np.mean(acc)))
-        print()
-
         # Fit the classifier
         pipe.fit(X_train[num_features], y_train)
 
         # Predict test set labels & probabilities
         y_pred = pipe.predict(X_test[num_features])
+
+        # see if model is overfitting
+        print('Training Set Accuracy')
+        print(pipe.score(X_train[num_features], y_train))
+        print()
+        print('Test Set Accuracy')
+        print(pipe.score(X_test[num_features], y_test))
+        print()
 
         # Compute and print the confusion matrix and classification report
         print('Confusion matrix')
@@ -166,10 +114,6 @@ def num_model_metrics(models, cv, X_train, X_test, y_train, y_test, num_features
         print()
         print('Classification report')
         print(classification_report(y_test, y_pred))
-        print()
-        print('ROC-AUC Curve')
-        plot_roc_curve(pipe, X_test, y_test)
-        plt.show()
         print()
         print()
 
