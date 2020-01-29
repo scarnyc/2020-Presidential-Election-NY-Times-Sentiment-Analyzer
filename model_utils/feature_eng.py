@@ -1,5 +1,5 @@
 """
-***************************************************************************************************
+*****************************************************************************************************
 model_utils.feature_eng
 
 This package contains customized utilities for engineering features for Sentiment Analysis models:
@@ -7,20 +7,16 @@ This package contains customized utilities for engineering features for Sentimen
     - my_stopwords (dictionary of stopwords for model preprocessing)
     - tb_sentiment (generates sentiment and subjectivity scores for labeling)
     - sentiment_label (generates the labels for sentiment analysis: ['positive','neutral','negative']
-    - split_df (splits DataFrame into KFold dataframes)
 
 created: 12/31/19
 last updated: 1/28/20
-***************************************************************************************************
+*****************************************************************************************************
 """
 import pandas as pd
 import numpy as np
 from spacy.lang.en import English
 import re
 from textblob import TextBlob
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import label_binarize
 
 
 # load spacy NLP model: nlp
@@ -229,6 +225,12 @@ def date_feats(df, date_col):
     df['dayofweek'] = df[date_col].dt.dayofweek
     # scrape hour from df[date_col]: df['hour']
     df['hour'] = df[date_col].dt.hour
+    # reset index: df
+    df = df.reset_index()
+    print('Generated Date Features & reset index!')
+    print()
+    print(df.columns)
+    print()
     # return df
     return df
 
@@ -280,6 +282,13 @@ def sentiment_label(df, col_for_label, label_col):
             )
         )
     )
+
+    print('Computed labels for Modeling')
+    print()
+    print(df[label_col].unique())
+    print()
+    print(df[label_col].value_counts())
+    print()
     return df
 
 
@@ -299,30 +308,3 @@ def lemma_nopunc(text):
     no_punc = ' '.join(re.sub(r'[^\w\s]', '', t) for t in lemmas)
 
     return no_punc
-
-
-def split_df(df, col):
-    """
-    Splits a pandas DataFrame into multiple DataFrame based on candidate text.
-    @param df:
-    @param col:
-    @return:
-    """
-
-    df1 = df[df[col].str.contains('Klobuchar | Gabbard | Booker | Delaney | Bennet | Bloomberg', case=False)]
-    df2 = df[df[col].str.contains('Sanders', case=False)]
-    df3 = df[df[col].str.contains('Trump', case=False)]
-    df4 = df[df[col].str.contains('Warren', case=False)]
-    df5 = df[df[col].str.contains('Biden', case=False)]
-
-    for df in [
-        df1,
-        df2,
-        df3,
-        df4,
-        df5
-    ]:
-        print('DataFrame shape: {}'.format(df.shape))
-        print()
-
-    return df1, df2, df3, df4, df5

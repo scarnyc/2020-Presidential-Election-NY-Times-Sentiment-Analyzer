@@ -3,6 +3,7 @@
 model_utils.model_eval
 
 This package contains customized utilities for training Sentiment Analysis models:
+    - split_df (splits DataFrame into KFold DataFrames)
     - text_model_metrics (iterate over a list of models, fitting them and getting evaluation metrics on text data)
     - num_model_metrics(iterate over a list of models, fitting them and getting evaluation metrics on numeric data)
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
@@ -12,25 +13,55 @@ last updated: 1/28/20
 *******************************************************************************************************************
 """
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.pipeline import Pipeline
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, FunctionTransformer
+from sklearn.pipeline import Pipeline, FeatureUnion
+from sklearn.metrics import confusion_matrix, classification_report, f1_score
+from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import SelectKBest, chi2
 import pickle
 
 
-def text_model_metrics(models, vectorizers, X_train, y_train, X_test, y_test, text_feature):
+def split_df(df, label_col):
     """
-    Iterate over a list of models, fitting them and getting evaluation metrics on text data.
-    @param models:
-    @param vectorizers:
-    @param X_train:
-    @param y_train:
-    @param X_test:
-    @param y_test:
-    @param text_feature:
+    Splits a pandas DataFrame into multiple DataFrame based on candidate text.
+    @param df:
+    @param label_col:
     @return:
     """
+
+    df1 = df.sample(frac=0.2, random_state=1)
+    df2 = df.sample(frac=0.2, random_state=2)
+    df3 = df.sample(frac=0.2, random_state=3)
+    df4 = df.sample(frac=0.2, random_state=4)
+    df5 = df.sample(frac=0.2, random_state=5)
+
+    for df in [
+        df1,
+        df2,
+        df3,
+        df4,
+        df5
+    ]:
+        print('DataFrame shape: {}'.format(df.shape))
+        print()
+        print('DataFrame head: {}'.format(df.head()))
+        print()
+        print('DataFrame labels; {}'.format(df[label_col].value_counts()))
+
+    return df1, df2, df3, df4, df5
+
+
+def text_model_metrics(models, vectorizers, df, text_feature, label):
+    """
+    Iterate over a list of models, fitting them and getting evaluation metrics on text data.
+    """
+    print('Split DataFrames into 5-Fold datasets!')
+    # split DataFrame into 5-Folds
+    kfold1, kfold2, kfold3, kfold4, kfold5 = split_df(
+        df=df,
+        label_col=label
+    )
+
     print('Text Model Results!')
     for model in models:
         print(model)
@@ -44,32 +75,64 @@ def text_model_metrics(models, vectorizers, X_train, y_train, X_test, y_test, te
                              ('scaler', StandardScaler(with_mean=False)),
                              ('clf', model)
                              ])
-
             print(pipe)
             print()
 
-            # Fit the classifier
-            pipe.fit(X_train[text_feature], y_train)
+            # instantiate lists for loop
+            kfold_list = [kfold1, kfold2, kfold3, kfold4, kfold5]
+            acc = []
+            f1 = []
 
-            # Predict test set labels & probabilities
-            y_pred = pipe.predict(X_test[text_feature])
+            for fold in kfold_list:
+                # define feature set: X
+                X = fold[text_feature]
+                # define label: y
+                y = fold[label]
+                # split each fold into training & test set:
+                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, stratify=y, random_state=42)
+                print('Training set shape: {}'.format(X_train.shape))
+                print()
+                print('Test set shape: {}'.format(X_test.shape))
+                print()
 
-            # see if model is overfitting
-            print('Training Set Accuracy')
-            print(pipe.score(X_train[text_feature], y_train))
+                # Fit the classifier
+                pipe.fit(X_train, y_train)
+
+                # Predict test set labels & probabilities
+                y_pred = pipe.predict(X_test)
+
+                # see if model is overfitting
+                print('Training Set Accuracy')
+                print(pipe.score(X_train, y_train))
+                print()
+                print('Test Set Accuracy')
+                print(pipe.score(X_test, y_test))
+                print()
+
+                # append accuracy score to list: acc
+                acc.append(pipe.score(X_test, y_test))
+
+                # append accuracy score to list: f1
+                f1.append(f1_score(y_test, y_pred, average='micro'))
+
+                # Compute and print the confusion matrix and classification report
+                print('Confusion matrix')
+                print(confusion_matrix(y_test, y_pred))
+                print()
+                print('Classification report')
+                print(classification_report(y_test, y_pred))
+                print()
+                print()
+
+            print('5-fold cross-validated Accuracy: {}'.format(np.mean(acc)))
             print()
-            print('Test Set Accuracy')
-            print(pipe.score(X_test[text_feature], y_test))
+            print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
             print()
 
-            # Compute and print the confusion matrix and classification report
-            print('Confusion matrix')
-            print(confusion_matrix(y_test, y_pred))
-            print()
-            print('Classification report')
-            print(classification_report(y_test, y_pred))
-            print()
-            print()
+
+def feature_union():
+    get_text_data = FunctionTransformer(combine_text_columns, validate=False)
+    get_numeric_data = FunctionTransformer(lambda x: x[NUMERIC_COLUMNS], validate=False)
 
 
 def num_model_metrics(models, X_train, X_test, y_train, y_test, num_features):
@@ -116,7 +179,6 @@ def num_model_metrics(models, X_train, X_test, y_train, y_test, num_features):
         print(classification_report(y_test, y_pred))
         print()
         print()
-
 
 # def stacked_model_metrics(
 #         train1_df,

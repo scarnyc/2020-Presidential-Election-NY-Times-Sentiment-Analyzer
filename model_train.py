@@ -16,7 +16,7 @@ import pandas as pd
 from core_utils.dataframe import union_csv, filter_dataframe
 from custom_utils.clean_dataframe import preprocess_df
 from model_utils.feature_eng import (date_feats, my_stopwords, tb_sentiment,
-                                     sentiment_label, lemma_nopunc, split_df)
+                                     sentiment_label, lemma_nopunc)
 from graph_utils.graph import corr_heatmap
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import xgboost as xgb
@@ -51,10 +51,6 @@ article_df = preprocess_df(
     subset_list=['abstract'],
     filter_col_list=['headline_main', 'web_url', 'text', 'word_count', 'pub_date']
 )
-print('Preprocessed DataFrame!')
-print()
-print('New DataFrame Shape: {}'.format(article_df.shape))
-print()
 
 # filter out articles that don't contain last name of candidates
 article_df = filter_dataframe(df=article_df,
@@ -62,18 +58,9 @@ article_df = filter_dataframe(df=article_df,
                               contains_list=['Klobuchar', 'Sanders', 'Booker', 'Trump', 'Warren', 'Biden', 'Delaney',
                                              'Harris', 'Bennet', 'Bloomberg', 'Gabbard']
                               )
-print('Filtered out excess articles!')
-print()
-print('DataFrame Shape: {}'.format(article_df.shape))
-print()
 
 # generate date_features for article_df
 article_df = date_feats(article_df, 'pub_date')
-article_df = article_df.reset_index()
-print('Generated Date Features & reset index!')
-print()
-print(article_df.columns)
-print()
 
 # generate TextBlob sentiment and subjectivity scores for each row of 'text' in article_df: tb_sent_scores
 # create a new DataFrame filled with scores: tb_sentiment_df
@@ -94,12 +81,6 @@ article_df = sentiment_label(
     col_for_label='polarity',
     label_col='sentiment_label'
 )
-print('Computed labels for Modeling')
-print()
-print(article_df['sentiment_label'].unique())
-print()
-print(article_df['sentiment_label'].value_counts())
-print()
 
 # lemmatize words & remove punctuation:
 article_df['text_feat'] = article_df['text'].apply(lemma_nopunc)
@@ -116,12 +97,6 @@ model_df = article_df[
 corr_heatmap(df=article_df,
              cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
              )
-
-# split DataFrame into training & testing sets: X_train, X_test, y_train, y_test
-kfold1, kfold2, kfold3, kfold4, kfold5 = split_df(
-    df=model_df,
-    col='text_feat'
-)
 
 # instantiate list of models: models
 models = [
@@ -148,22 +123,20 @@ print()
 text_model_metrics(
     models=models,
     vectorizers=vectorizers,
-    X_train=X_train,
-    y_train=y_train,
-    X_test=X_test,
-    y_test=y_test,
+    df=model_df,
+    label='sentiment_label',
     text_feature='text_feat'
 )
 
 # print out numeric model metrics
-num_model_metrics(
-    models=models,
-    X_train=X_train,
-    X_test=X_test,
-    y_train=y_train,
-    y_test=y_test,
-    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
-)
+# num_model_metrics(
+#     models=models,
+#     X_train=X_train,
+#     X_test=X_test,
+#     y_train=y_train,
+#     y_test=y_test,
+#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
+# )
 
 # Split train data into two parts
 # train1, train2 = train_test_split(X_train.join(pd.DataFrame(y_train)), test_size=.5, random_state=42)

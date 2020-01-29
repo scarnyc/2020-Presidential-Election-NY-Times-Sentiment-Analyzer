@@ -36,4 +36,11 @@ def preprocess_df(df, new_col, con_col1, con_col2, subset_list, filter_col_list)
     df = df.drop_duplicates()
 
     # return a subset of the DataFrame with only the columns specified by the user.
-    return df[filter_col_list]
+    df = df[filter_col_list]
+
+    print('Preprocessed DataFrame!')
+    print()
+    print('New DataFrame Shape: {}'.format(df.shape))
+    print()
+
+    return df

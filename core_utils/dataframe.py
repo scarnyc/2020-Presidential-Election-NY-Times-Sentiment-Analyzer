@@ -56,8 +56,18 @@ def filter_dataframe(df, col, contains_list):
     @param contains_list:
     @return:
     """
+    # deep copy of DataFrame: df
     df = df.copy()
-    return df[df[col].str.contains(
+
+    # search contain list by word tokens: df
+    df = df[df[col].str.contains(
         '|'.join([word for word in contains_list]),
         case=False
     )]
+
+    print('Filtered out excess articles!')
+    print()
+    print('DataFrame Shape: {}'.format(df.shape))
+    print()
+
+    return df
