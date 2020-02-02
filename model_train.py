@@ -25,6 +25,9 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.feature_selection import SelectKBest, chi2
 from model_utils.model_eval import (text_model_metrics, num_model_metrics,
                                     text_random_hyper, num_random_hyper, stacked_model_metrics)
 
@@ -137,35 +140,57 @@ corr_heatmap(df=article_df,
 # )
 
 # tune hyper parameters for text model
-text_pipe = text_random_hyper(
-    df=model_df,
-    text_feature='text_feat',
-    label='sentiment_label',
-    model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
-    vectorizer=TfidfVectorizer(stop_words=my_stopwords),
-    n_iters=20,
-    n_folds=5
-)
+# text_pipe = text_random_hyper(
+#     df=model_df,
+#     text_feature='text_feat',
+#     label='sentiment_label',
+#     model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
+#     vectorizer=TfidfVectorizer(stop_words=my_stopwords),
+#     n_iters=20,
+#     n_folds=5
+# )
 
 # tune hyper parameters for model with numeric feature inputs
-num_pipe = num_random_hyper(
-    df=model_df,
-    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
-    label='sentiment_label',
-    model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
-    n_iters=20,
-    n_folds=5
-)
+# num_pipe = num_random_hyper(
+#     df=model_df,
+#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
+#     label='sentiment_label',
+#     model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
+#     n_iters=20,
+#     n_folds=5
+# )
 
 # print out stacked model metrics
 stacked_model_metrics(
     df=model_df,
     label='sentiment_label',
-    text_model=text_pipe,
+    text_model=Pipeline(
+        [('vectorizer', TfidfVectorizer(ngram_range=(1, 3), stop_words=my_stopwords)),
+         ('scaler', StandardScaler(with_mean=False)),
+         ('dim_red', SelectKBest(chi2, k=200)),
+         ('clf', OneVsRestClassifier(xgb.XGBClassifier(
+            n_estimators=500,
+            min_samples_leaf=59,
+            max_depth=20,
+            learning_rate=1.2221476510067115,
+            colsample_bytree=0.3,
+            booster='gbtree',
+            random_state=42)))
+         ]),
     text_feature='text_feat',
     text_prediction='text_pred',
     text_model_pkl="./models/text_pipe_xgb.pkl",
-    num_model=num_pipe,
+    num_model=Pipeline([
+        ('scaler', MinMaxScaler()),
+        ('clf', OneVsRestClassifier(xgb.XGBClassifier(
+            n_estimators=500,
+            min_samples_leaf=37,
+            max_depth=6,
+            learning_rate=0.17651006711409395,
+            colsample_bytree=0.7,
+            booster='dart',
+            random_state=42)))
+        ]),
     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
     num_prediction='num_pred',
     num_model_pkl="./models/num_pipe_xgb.pkl",

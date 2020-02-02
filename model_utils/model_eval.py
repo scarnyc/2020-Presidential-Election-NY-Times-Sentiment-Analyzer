@@ -6,7 +6,8 @@ This package contains customized utilities for training Sentiment Analysis model
     - split_df (splits DataFrame into KFold DataFrames)
     - text_model_metrics (iterate over a list of models, fitting them and getting evaluation metrics on text data)
     - num_model_metrics(iterate over a list of models, fitting them and getting evaluation metrics on numeric data)
-    - text_grid_hyper(performs hyper-parameter tuning for a text model)
+    - text_random_hyper(performs hyper-parameter tuning for a text model)
+    - num_random_hyper(performs hyper-parameter tuning for a model with numeric feature-inputs)
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
 created: 1/5/20
@@ -14,11 +15,13 @@ last updated: 1/28/20
 *******************************************************************************************************************
 """
 import numpy as np
+import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import confusion_matrix, classification_report, f1_score
-from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.metrics import confusion_matrix, classification_report, f1_score
+from sklearn.model_selection import train_test_split, RandomizedSearchCV \
+    # , GridSearchCV
 import pickle
 
 
@@ -247,7 +250,7 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
     # instantiate model training pipeline
     pipe = Pipeline([('vectorizer', vectorizer),
                      ('scaler', StandardScaler(with_mean=False)),
-                     ('feature_select', SelectKBest(chi2)),
+                     ('dim_red', SelectKBest(chi2)),
                      ('clf', model)
                      ])
     print(pipe)
@@ -256,7 +259,7 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
     # Create the parameter grid
     param_grid = {
         'vectorizer__ngram_range': [(1, 3), (2, 3)],
-        'feature_select__k': [50, 100, 200],
+        'dim_red__k': [50, 100, 200],
         'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
         'clf__estimator__colsample_bytree': [0.3, 0.7],
         'clf__estimator__n_estimators': [100, 500, 1000],
@@ -288,6 +291,25 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
     print()
 
     return random_model.best_estimator_
+
+
+def feature_importance(df, model, features, model_type='text'):
+    # Calculate feature importances
+    feature_importances = model.feature_importances_
+
+    if model_type != 'text':
+        # Create a list of features
+        feature_list = list(df[features])
+
+    else:
+        # temporary placeholder for text model feature importance
+        pass
+
+    # Save the results inside a DataFrame using feature_list as an index
+    relative_importance = pd.DataFrame(index=feature_list, data=feature_importances, columns=["importance"])
+
+    # select only features with relative importance higher than 1%
+    print(relative_importance[relative_importance['importance'] > 0.01].sort_values('importance', ascending=False))
 
 
 def num_random_hyper(df, num_features, label, model, n_iters, n_folds):
@@ -375,11 +397,17 @@ def stacked_model_metrics(
     )
     print('Split DataFrames into 5-Fold datasets!')
     print()
+    print('Stacked Model Training!')
+    print()
 
     # Text Model Pipeline
-    print('Stacked Model Training!')
     print('Text Model!')
     print(text_model)
+    print()
+
+    # Numeric Model Pipeline
+    print('Numeric Model!')
+    print(num_model)
     print()
 
     # instantiate lists for loop
@@ -391,66 +419,59 @@ def stacked_model_metrics(
         # define feature set: X
         X = fold.drop(label, axis=1)
         # define label: y
-        y = fold[label]
+        y = fold[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
 
         # split each fold into training & test set:
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, stratify=y, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=42)
         print('Test set shape: {}'.format(X_test.shape))
         print()
 
         # Split train data into two parts
-        X_train1, X_train2, y_train1, y_train2 = train_test_split(X_train, y_train, stratify=y,
-                                                                  test_size=.5, random_state=42)
+        train1, train2 = train_test_split(X_train.join(pd.DataFrame(y_train)),
+                                          test_size=.5, random_state=42)
         del X_train, y_train
-        print('Training set 1 shape: {}'.format(X_train1.shape))
+        print('Training set 1 shape: {}'.format(train1.shape))
         print()
-        print('Training set 2 shape: {}'.format(X_train2.shape))
+        print('Training set 2 shape: {}'.format(train2.shape))
         print()
 
         # Fit the classifier
-        text_model.fit(X_train1[text_feature], y_train1)
+        text_model.fit(train1[text_feature], train1[label])
 
         # Predict test set labels
-        X_train2[text_prediction] = text_model.predict(X_train2[text_feature])
+        train2[text_prediction] = text_model.predict(train2[text_feature])
         X_test[text_prediction] = text_model.predict(X_test[text_feature])
 
-
-        # Numeric Model Pipeline
-        print('Numeric Model!')
-        print(num_model)
-        print()
-
-        # Fit the classifier
-        num_model.fit(X_train1[num_features], y_train1)
+        # Fit Numeric Model Pipeline
+        num_model.fit(train1[num_features], train1[label])
 
         # Predict test set labels
-        X_train2[num_prediction] = num_model.predict(X_train2[num_features])
+        train2[num_prediction] = num_model.predict(train2[num_features])
         X_test[num_prediction] = num_model.predict(X_test[num_features])
-
 
         # Stacked Model
         print('Stacked Model!')
         print(stacked_model)
 
         # Train 2nd level model on the Part 2 data
-        stacked_model.fit(X_train2[[text_prediction, num_prediction]], y_train2)
+        stacked_model.fit(train2.loc[[text_prediction, num_prediction]], train2[label])
 
         # Make stacking predictions on the test data
-        X_test['stacking'] = stacked_model.predict(X_test[[text_prediction, num_prediction]])
+        X_test['stacking'] = stacked_model.predict(X_test.loc[[text_prediction, num_prediction]])
 
         # Look at the model coefficients
         print('LogisticRegression Coefs: {}'.format(stacked_model.coef_))
         print()
         # see if model is overfitting
         print('Training Set Accuracy')
-        print(stacked_model.score(X_train2[[text_prediction, num_prediction]], y_train2))
+        print(stacked_model.score(train2.loc[[text_prediction, num_prediction]], train2[label]))
         print()
         print('Test Set Accuracy')
-        print(stacked_model.score(X_test[[text_prediction, num_prediction]], y_test))
+        print(stacked_model.score(X_test.loc[[text_prediction, num_prediction]], y_test))
         print()
 
         # append accuracy score to list: acc
-        acc.append(stacked_model.score(X_test[[text_prediction, num_prediction]], y_test))
+        acc.append(stacked_model.score(X_test.loc[[text_prediction, num_prediction]], y_test))
 
         # append accuracy score to list: f1
         f1.append(f1_score(y_test, X_test['stacking'], average='micro'))
