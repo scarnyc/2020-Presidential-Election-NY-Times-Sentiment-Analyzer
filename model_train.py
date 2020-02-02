@@ -25,9 +25,9 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from model_utils.model_eval import (text_model_metrics, num_model_metrics, text_random_hyper)
-# , stacked_model_metrics
-from sklearn.model_selection import train_test_split
+from model_utils.model_eval import (text_model_metrics, num_model_metrics,
+                                    text_random_hyper, num_random_hyper, stacked_model_metrics)
+
 
 # read .csv files & union them into a single DataFrame: trump_df
 article_df = union_csv(
@@ -142,37 +142,34 @@ text_pipe = text_random_hyper(
     text_feature='text_feat',
     label='sentiment_label',
     model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
-    vectorizer=TfidfVectorizer(ngram_range=(2, 3), stop_words=my_stopwords),
-    n_iters=2,
-    cfv=2
+    vectorizer=TfidfVectorizer(stop_words=my_stopwords),
+    n_iters=20,
+    n_folds=5
 )
 
-# Split train data into two parts
-# train1, train2 = train_test_split(X_train.join(pd.DataFrame(y_train)), test_size=.5, random_state=42)
+# tune hyper parameters for model with numeric feature inputs
+num_pipe = num_random_hyper(
+    df=model_df,
+    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
+    label='sentiment_label',
+    model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
+    n_iters=20,
+    n_folds=5
+)
 
 # print out stacked model metrics
-# stacked_model_metrics(
-#     train1_df=train1,
-#     train2_df=train2,
-#     test_df=X_test,
-#     y_test=y_test,
-#     label_col='sentiment_label',
-#     text_model=OneVsRestClassifier(LinearSVC(C=100, max_iter=1000000, random_state=42, class_weight='balanced')),
-#     text_feature='text_feat',
-#     text_prediction_col='text_pred',
-#     n_gram_range=(2, 3),
-#     k=1200,
-#     stopwords=my_stopwords,
-#     text_model_pkl="./models/text_pipe_svm.pkl",
-#     num_model=OneVsRestClassifier(xgb.XGBClassifier(n_jobs=4, random_state=42)),
-#     num_train1_features=train1[['month', 'day', 'dayofweek', 'hour', 'char_count', 'word_count', 'subjectivity',
-#                                 'neg', 'neu', 'pos']],
-#     num_features=['month', 'day', 'dayofweek', 'hour', 'char_count', 'word_count', 'subjectivity',
-#                   'neg', 'neu', 'pos'],
-#     num_prediction_col='num_pred',
-#     num_model_pkl="./models/num_pipe_xgb.pkl",
-#     stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
-#                                                          random_state=42, class_weight='balanced')),
-#     stacked_features=['text_pred', 'num_pred'],
-#     stacked_model_pkl="./models/lr_stack.pkl"
-# )
+stacked_model_metrics(
+    df=model_df,
+    label='sentiment_label',
+    text_model=text_pipe,
+    text_feature='text_feat',
+    text_prediction='text_pred',
+    text_model_pkl="./models/text_pipe_xgb.pkl",
+    num_model=num_pipe,
+    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
+    num_prediction='num_pred',
+    num_model_pkl="./models/num_pipe_xgb.pkl",
+    stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+                                                         random_state=42, class_weight='balanced')),
+    stacked_model_pkl="./models/lr_stack.pkl"
+)
