@@ -13,17 +13,18 @@ last updated: 1/28/20
 *******************************************************************************************************************
 """
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler, StandardScaler, FunctionTransformer
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.metrics import confusion_matrix, classification_report, f1_score
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.feature_selection import SelectKBest, chi2
 import pickle
 
 
 def split_df(df, label_col):
     """
-    Splits a pandas DataFrame into multiple DataFrame based on candidate text.
+    Splits a pandas DataFrame into a list of DataFrames based on candidate text.
     @param df:
     @param label_col:
     @return:
@@ -47,30 +48,38 @@ def split_df(df, label_col):
         print('DataFrame head: {}'.format(df.head()))
         print()
         print('DataFrame labels; {}'.format(df[label_col].value_counts()))
+        print()
 
-    return df1, df2, df3, df4, df5
+    return [df1, df2, df3, df4, df5]
 
 
 def text_model_metrics(models, vectorizers, df, text_feature, label):
     """
     Iterate over a list of models, fitting them and getting evaluation metrics on text data.
     """
-    print('Split DataFrames into 5-Fold datasets!')
     # split DataFrame into 5-Folds
-    kfold1, kfold2, kfold3, kfold4, kfold5 = split_df(
+    kfold_list = split_df(
         df=df,
         label_col=label
     )
+    print('Split DataFrames into 5-Fold datasets!')
+    print()
 
+    # Start Text model training
     print('Text Model Results!')
+    print()
+
+    # iterate over model list
     for model in models:
         print(model)
         print()
 
+        # iterate over vectorizer list
         for vectorizer in vectorizers:
             print(vectorizer)
             print()
 
+            # instantiate model training pipeline
             pipe = Pipeline([('vectorizer', vectorizer),
                              ('scaler', StandardScaler(with_mean=False)),
                              ('clf', model)
@@ -79,10 +88,10 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
             print()
 
             # instantiate lists for loop
-            kfold_list = [kfold1, kfold2, kfold3, kfold4, kfold5]
             acc = []
             f1 = []
 
+            # iterate over list of KFold DataFrames
             for fold in kfold_list:
                 # define feature set: X
                 X = fold[text_feature]
@@ -130,55 +139,145 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
             print()
 
 
-def feature_union():
-    get_text_data = FunctionTransformer(combine_text_columns, validate=False)
-    get_numeric_data = FunctionTransformer(lambda x: x[NUMERIC_COLUMNS], validate=False)
-
-
-def num_model_metrics(models, X_train, X_test, y_train, y_test, num_features):
+def num_model_metrics(models, df, label, num_features):
     """
     Iterate over a list of models, fitting them and getting evaluation metrics on numeric data.
-
     @param models:
-    @param X_train:
-    @param X_test:
-    @param y_train:
-    @param y_test:
+    @param df:
+    @param label:
     @param num_features:
     @return:
     """
-    print('Numeric Model Results!')
-    for model in models:
-        pipe = Pipeline([
-            ('scaler', MinMaxScaler()),
-            ('clf', model)
-        ])
+    # split DataFrame into 5-Folds
+    kfold_list = split_df(
+        df=df,
+        label_col=label
+    )
+    print('Split DataFrames into 5-Fold datasets!')
+    print()
 
+    # Start Numeric model training
+    print('Numeric Model Results!')
+    print()
+
+    # iterate over model list
+    for model in models:
+        print(model)
+        print()
+
+        # instantiate model training pipeline
+        pipe = Pipeline([
+                         ('scaler', MinMaxScaler()),
+                         ('clf', model)
+                         ])
         print(pipe)
         print()
 
-        # Fit the classifier
-        pipe.fit(X_train[num_features], y_train)
+        # instantiate lists for loop
+        acc = []
+        f1 = []
 
-        # Predict test set labels & probabilities
-        y_pred = pipe.predict(X_test[num_features])
+        # iterate over list of KFold DataFrames
+        for fold in kfold_list:
+            # define feature set: X
+            X = fold[num_features]
+            # define label: y
+            y = fold[label]
+            # split each fold into training & test set:
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, stratify=y, random_state=42)
+            print('Training set shape: {}'.format(X_train.shape))
+            print()
+            print('Test set shape: {}'.format(X_test.shape))
+            print()
 
-        # see if model is overfitting
-        print('Training Set Accuracy')
-        print(pipe.score(X_train[num_features], y_train))
+            # Fit the classifier
+            pipe.fit(X_train, y_train)
+
+            # Predict test set labels & probabilities
+            y_pred = pipe.predict(X_test)
+
+            # see if model is overfitting
+            print('Training Set Accuracy')
+            print(pipe.score(X_train, y_train))
+            print()
+            print('Test Set Accuracy')
+            print(pipe.score(X_test, y_test))
+            print()
+
+            # append accuracy score to list: acc
+            acc.append(pipe.score(X_test, y_test))
+
+            # append accuracy score to list: f1
+            f1.append(f1_score(y_test, y_pred, average='micro'))
+
+            # Compute and print the confusion matrix and classification report
+            print('Confusion matrix')
+            print(confusion_matrix(y_test, y_pred))
+            print()
+            print('Classification report')
+            print(classification_report(y_test, y_pred))
+            print()
+            print()
+
+        print('5-fold cross-validated Accuracy: {}'.format(np.mean(acc)))
         print()
-        print('Test Set Accuracy')
-        print(pipe.score(X_test[num_features], y_test))
+        print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
         print()
 
-        # Compute and print the confusion matrix and classification report
-        print('Confusion matrix')
-        print(confusion_matrix(y_test, y_pred))
-        print()
-        print('Classification report')
-        print(classification_report(y_test, y_pred))
-        print()
-        print()
+
+def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, cfv):
+
+    # define feature set: X
+    X = df[text_feature]
+    # define label: y
+    y = df[label]
+    # split each fold into training & test set:
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, stratify=y, random_state=42)
+    print('Training set shape: {}'.format(X_train.shape))
+    print()
+    print('Test set shape: {}'.format(X_test.shape))
+    print()
+
+    # instantiate model training pipeline
+    pipe = Pipeline([('vectorizer', vectorizer),
+                     ('scaler', StandardScaler(with_mean=False)),
+                     ('clf', model)
+                     ])
+    print(pipe)
+    print()
+
+    # Create the parameter grid
+    param_grid = {
+        'clf__colsample_bytree': [0.3, 0.7],
+        'clf__n_estimators': [100, 500, 1000],
+        'clf__max_depth': [3, 6, 10, 20],
+        'clf__learning_rate': np.linspace(.1, 2, 150),
+        'clf__min_samples_leaf': list(range(20, 65))
+    }
+
+    # Create a random search object
+    random_model = RandomizedSearchCV(
+        estimator=pipe,
+        param_distributions=param_grid,
+        n_iter=n_iters,
+        scoring='accuracy',
+        n_jobs=4,
+        cv=cfv,
+        refit=True,
+        return_train_score=True,
+        verbose=1
+    )
+
+    # Fit to the training data
+    random_model.fit(X_train, y_train)
+
+    # Print the values used for both Parameters & Score
+    print("Best random Parameters: ", random_model.best_params_)
+    print()
+    print("Best random Score: ", random_model.best_score_)
+    print()
+
+    return random_model.best_estimator_
 
 # def stacked_model_metrics(
 #         train1_df,

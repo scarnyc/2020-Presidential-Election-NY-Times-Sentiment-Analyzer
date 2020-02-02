@@ -25,7 +25,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from model_utils.model_eval import text_model_metrics, num_model_metrics
+from model_utils.model_eval import (text_model_metrics, num_model_metrics, text_random_hyper)
 # , stacked_model_metrics
 from sklearn.model_selection import train_test_split
 
@@ -99,44 +99,53 @@ corr_heatmap(df=article_df,
              )
 
 # instantiate list of models: models
-models = [
-    OneVsRestClassifier(MultinomialNB()),
-    OneVsRestClassifier(LinearSVC(C=1000, max_iter=1000000, random_state=42, class_weight='balanced')),
-    OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
-                                               class_weight='balanced')),
-    OneVsRestClassifier(xgb.XGBClassifier(n_jobs=-4, random_state=42)),
-    OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
-                                           random_state=42, class_weight='balanced'))
-]
-print('Instantiated models!')
-print()
+# models = [
+#     OneVsRestClassifier(MultinomialNB()),
+#     OneVsRestClassifier(LinearSVC(C=1000, max_iter=1000000, random_state=42, class_weight='balanced')),
+#     OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
+#                                                class_weight='balanced')),
+#     OneVsRestClassifier(xgb.XGBClassifier(n_jobs=4, random_state=42)),
+#     OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+#                                            random_state=42, class_weight='balanced'))
+# ]
+# print('Instantiated models!')
+# print()
 
 # instantiate list of vectorizers: vectorizers
-vectorizers = [
-    CountVectorizer(max_features=900, ngram_range=(2, 3), stop_words=my_stopwords),
-    TfidfVectorizer(max_features=900, ngram_range=(2, 3), stop_words=my_stopwords)
-]
-print('Instantiated vectorizers!')
-print()
+# vectorizers = [
+#     CountVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords),
+#     TfidfVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords)
+# ]
+# print('Instantiated vectorizers!')
+# print()
 
 # print out text model metrics
-text_model_metrics(
-    models=models,
-    vectorizers=vectorizers,
-    df=model_df,
-    label='sentiment_label',
-    text_feature='text_feat'
-)
+# text_model_metrics(
+#     models=models,
+#     vectorizers=vectorizers,
+#     df=model_df,
+#     label='sentiment_label',
+#     text_feature='text_feat'
+# )
 
 # print out numeric model metrics
 # num_model_metrics(
 #     models=models,
-#     X_train=X_train,
-#     X_test=X_test,
-#     y_train=y_train,
-#     y_test=y_test,
+#     df=model_df,
+#     label='sentiment_label',
 #     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
 # )
+
+# tune hyper parameters for text model
+text_pipe = text_random_hyper(
+    df=model_df,
+    text_feature='text_feat',
+    label='sentiment_label',
+    model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
+    vectorizer=TfidfVectorizer(ngram_range=(2, 3), stop_words=my_stopwords),
+    n_iters=2,
+    cfv=2
+)
 
 # Split train data into two parts
 # train1, train2 = train_test_split(X_train.join(pd.DataFrame(y_train)), test_size=.5, random_state=42)
