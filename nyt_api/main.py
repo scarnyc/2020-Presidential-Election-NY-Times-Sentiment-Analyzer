@@ -33,8 +33,6 @@ def get_data(key, output_path, members):
         - pandas
         - glob.glob
         - os.path
-    returns:
-        pandas.DataFrame
     """
     # check if members variable is list type
     assert type(members) == list, "You need to pass in a list to members!"
@@ -72,11 +70,16 @@ def get_data(key, output_path, members):
             # if the call fails, raise the exception
             except Exception as e:
                 raise e
-    # return the last dataframe at the end of the call
-    return df
 
 # if __name__ == '__main__':
 #     nyt_df = get_data(key=your_key,
 #                       output_path=your_directory,
 #                       members=['Bernie Sanders']
 #                       )
+
+if __name__ == '__main__':
+    get_data(key='ogATnoEYDEO64smhyKzgJ9H4Z4arnvxX',
+             output_path=r'C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\data',
+             members=['Donald Trump', 'Elizabeth Warren', 'Kamala Harris'
+                      'Joe Biden', 'Andrew Yang', 'Tom Steyer', 'Pete Buttigieg', 'Michael Bloomberg', 'Tulsi Gabbard']
+             )
