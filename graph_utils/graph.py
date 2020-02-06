@@ -17,6 +17,7 @@ last updated: 1/4/20
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from nltk.probability import FreqDist
 from sklearn.decomposition import TruncatedSVD
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -224,22 +225,21 @@ def get_word_freq(pd_series, n=None):
         pandas.DataFrame
     """
     # Build the vectorizer: vectorizer
-    vectorizer = CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)
+    vectorizer = CountVectorizer(ngram_range=(1, 3), stop_words=my_stopwords)
 
     # Fit and transform pd_series: bow
     bow = vectorizer.fit_transform(pd_series)
-
-    # Transform pd_series: bow
-    bow = vectorizer.transform(pd_series)
 
     # Create the bow DataFrame representation: bow_df
     bow_df = pd.DataFrame(bow.toarray(), columns=vectorizer.get_feature_names())
 
     # sum word frequency across all documents: bow_df
-    # get word, frequency tuples across all words: words_freq
-    # sort tuples by frequency in descending order: words_freq
     sum_words = bow.sum(axis=0)
+
+    # get word, frequency tuples across all words: words_freq
     words_freq = [(word, sum_words[0, idx]) for word, idx in vectorizer.vocabulary_.items()]
+
+    # sort tuples by frequency in descending order: words_freq
     words_freq = sorted(words_freq, key=lambda x: x[1], reverse=True)
 
     # print word freq
@@ -307,7 +307,8 @@ def plot_word_freq(pd_series, plot_title, n=None):
     )
     # write the figure
     fig.write_image("images/word_freq_bar_graph_eda.png")
-    return fig
+    print('saved Bar Graph .png!')
+    print()
 
 
 def two_dim_tf_viz(df, pd_series, pd_color_series, pd_hover_series, plot_title, max_features=None, random_state=42):
@@ -369,7 +370,8 @@ def two_dim_tf_viz(df, pd_series, pd_color_series, pd_hover_series, plot_title, 
     # write the figure
     fig.write_image("images/scatter plot.png")
 
-    return fig
+    print('saved Scatter Plot .png!')
+    print()
 
 
 def time_series_line_viz(df, date_index, pd_series, plot_title):
@@ -403,7 +405,8 @@ def time_series_line_viz(df, date_index, pd_series, plot_title):
     # write the figure
     fig.write_image("images/line plot.png")
 
-    return fig
+    print('saved Line Plot .png!')
+    print()
 
 
 def corr_heatmap(df, cols):

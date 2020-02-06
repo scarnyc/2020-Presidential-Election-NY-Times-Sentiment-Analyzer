@@ -2,7 +2,7 @@
 ********************************************************************************************************************
 model_train.py
 
-This script trains a model to analyze the sentiment of N.Y.T. articles via the following functions:
+This script performs EDA on data & trains a model to analyze the sentiment of N.Y.T. articles via the following functions:
     -
 
 Please Note:
@@ -28,8 +28,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectKBest, chi2
-from model_utils.model_eval import (text_model_metrics, num_model_metrics,
+from model_utils.model_eval import (text_model_metrics, num_model_metrics, num_feature_importance,
                                     text_random_hyper, num_random_hyper, stacked_model_metrics)
+from graph_utils.graph import (plot_word_freq, two_dim_tf_viz,
+                               time_series_line_viz)
 
 
 # read .csv files & union them into a single DataFrame: trump_df
@@ -101,6 +103,31 @@ corr_heatmap(df=article_df,
              cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
              )
 
+# plot word frequencies
+plot_word_freq(
+    pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
+    plot_title='Trump BOW FREQUENCY',
+    n=30
+)
+
+# plot tfidf Scatter plot
+two_dim_tf_viz(
+    df=article_df,
+    pd_series='text',
+    pd_color_series='sentiment_label',
+    pd_hover_series='headline_main',
+    max_features=800,
+    plot_title='N.Y. Times Trump Articles Sentiment Clusters'
+)
+
+# plot Time Series Line plot
+time_series_line_viz(
+    df=article_df,
+    date_index='pub_date',
+    pd_series='sentiment',
+    plot_title='N.Y. Times Trump Articles Avg. Daily Sentiment'
+)
+
 # instantiate list of models: models
 # models = [
 #     OneVsRestClassifier(MultinomialNB()),
@@ -151,14 +178,19 @@ corr_heatmap(df=article_df,
 # )
 
 # tune hyper parameters for model with numeric feature inputs
-# num_pipe = num_random_hyper(
-#     df=model_df,
-#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
-#     label='sentiment_label',
-#     model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
-#     n_iters=20,
-#     n_folds=5
-# )
+num_pipe = num_random_hyper(
+    df=model_df,
+    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
+    label='sentiment_label',
+    model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
+    n_iters=20,
+    n_folds=5
+)
+
+# look at most important features for text model
+num_feat_df = num_feature_importance(df=model_df,
+                                     model=num_pipe[1],
+                                     features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'])
 
 # print out stacked model metrics
 stacked_model_metrics(

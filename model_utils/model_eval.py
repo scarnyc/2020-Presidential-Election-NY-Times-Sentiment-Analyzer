@@ -6,12 +6,13 @@ This package contains customized utilities for training Sentiment Analysis model
     - split_df (splits DataFrame into KFold DataFrames)
     - text_model_metrics (iterate over a list of models, fitting them and getting evaluation metrics on text data)
     - num_model_metrics(iterate over a list of models, fitting them and getting evaluation metrics on numeric data)
-    - text_random_hyper(performs hyper-parameter tuning for a text model)
-    - num_random_hyper(performs hyper-parameter tuning for a model with numeric feature-inputs)
+    - text_random_hyper (performs hyper-parameter tuning for a text model)
+    - num_random_hyper (performs hyper-parameter tuning for a model with numeric feature-inputs)
+    - num_feature_importance (Return a DataFrame with most important features for tree-based models with numeric features)
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
 created: 1/5/20
-last updated: 1/28/20
+last updated: 2/6/20
 *******************************************************************************************************************
 """
 import numpy as np
@@ -293,23 +294,22 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
     return random_model.best_estimator_
 
 
-def feature_importance(df, model, features, model_type='text'):
-    # Calculate feature importances
-    feature_importances = model.feature_importances_
+def text_feature_importance(df, text_feature):
+    # Instantiate TfidfVectorizer
+    tv = TfidfVectorizer(max_features=100, stop_words='english')
 
-    if model_type != 'text':
-        # Create a list of features
-        feature_list = list(df[features])
+    # Fit the vectroizer and transform the data
+    tv_transformed = tv.fit_transform(train_speech_df['text_clean'])
 
-    else:
-        # temporary placeholder for text model feature importance
-        pass
+    # Transform test data
+    test_transformed = tv.transform(test_speech_df['text_clean'])
 
-    # Save the results inside a DataFrame using feature_list as an index
-    relative_importance = pd.DataFrame(index=feature_list, data=feature_importances, columns=["importance"])
+    # Create new features for the test set
+    test_df = pd.DataFrame(test_tv_transformed.toarray(),
+                              columns=tv.get_feature_names()).add_prefix('TFIDF_')
+    print(test_tv_df.head())
 
-    # select only features with relative importance higher than 1%
-    print(relative_importance[relative_importance['importance'] > 0.01].sort_values('importance', ascending=False))
+    return test_df
 
 
 def num_random_hyper(df, num_features, label, model, n_iters, n_folds):
@@ -370,6 +370,29 @@ def num_random_hyper(df, num_features, label, model, n_iters, n_folds):
     print()
 
     return random_model.best_estimator_
+
+
+def num_feature_importance(df, model, features):
+    """
+    Return a DataFrame with most important features for tree-based models with numeric features.
+    @param df:
+    @param model:
+    @param features:
+    @return:
+    """
+    # Calculate feature importance: feature_importance
+    feature_importance = model.feature_importances_
+
+    # Create a list of features: feature_list
+    feature_list = list(df[features])
+
+    # Save the results inside a DataFrame using feature_list as an index: relative_importance
+    relative_importance = pd.DataFrame(index=feature_list, data=feature_importance, columns=["importance"])
+
+    # print only features with relative importance higher than 1%
+    print(relative_importance[relative_importance['importance'] > 0.01].sort_values('importance', ascending=False))
+
+    return relative_importance
 
 
 def stacked_model_metrics(

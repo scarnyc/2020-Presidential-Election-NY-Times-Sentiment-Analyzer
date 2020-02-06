@@ -71,15 +71,8 @@ def get_data(key, output_path, members):
             except Exception as e:
                 raise e
 
-# if __name__ == '__main__':
-#     nyt_df = get_data(key=your_key,
-#                       output_path=your_directory,
-#                       members=['Bernie Sanders']
-#                       )
-
 if __name__ == '__main__':
-    get_data(key='ogATnoEYDEO64smhyKzgJ9H4Z4arnvxX',
-             output_path=r'C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\data',
-             members=['Donald Trump', 'Elizabeth Warren', 'Kamala Harris'
-                      'Joe Biden', 'Andrew Yang', 'Tom Steyer', 'Pete Buttigieg', 'Michael Bloomberg', 'Tulsi Gabbard']
-             )
+    nyt_df = get_data(key=your_key,
+                      output_path=your_directory,
+                      members=['Bernie Sanders']
+                      )
