@@ -4,7 +4,6 @@ core_utils.dataframe
 
 This package contains common utilities for importing & handling data in pandas DataFrames:
     - union_csv (unions similar csv files into a single DataFrame)
-    - filter_dataframe (Filters pandas DataFrame according to contains expressions in a list)
 ********************************************************************************************
 """
 import pandas as pd
@@ -37,37 +36,19 @@ def union_csv(csv_path: object, glob_pattern: object) -> object:
     # append all files with the glob pattern naming convention in the file path to a list: all_files
     all_files = glob(path.join(csv_path, glob_pattern))
 
-    # return pandas DataFrame utilizing a generator expression for the objs argument of pd.concat
     # read in each .csv file with pd.read_csv inside the generator expression
     # ignore index of all DataFrames in memory and set sort parameter to False
-    return pd.concat(
+    combined_df = pd.concat(
         objs=(pd.read_csv(f) for f in all_files),
         ignore_index=True,
         sort=False
     )
 
-
-def filter_dataframe(df, col, contains_list):
-    """
-    Filters pandas DataFrame according to contains expressions in a list.
-
-    @param df:
-    @param col:
-    @param contains_list:
-    @return:
-    """
-    # deep copy of DataFrame: df
-    df = df.copy()
-
-    # search contain list by word tokens: df
-    df = df[df[col].str.contains(
-        '|'.join([word for word in contains_list]),
-        case=False
-    )]
-
-    print('Filtered out excess articles!')
+    print('DataFrame Sample')
+    print(combined_df.head())
     print()
-    print('DataFrame Shape: {}'.format(df.shape))
+    print('DataFrame Shape: {}'.format(combined_df.shape))
     print()
 
-    return df
+    # return pandas DataFrame utilizing a generator expression for the objs argument of pd.concat
+    return combined_df

@@ -13,13 +13,13 @@ last updated: 1/28/20
 ********************************************************************************************************************
 """
 import pandas as pd
-from core_utils.dataframe import union_csv, filter_dataframe
-from custom_utils.clean_dataframe import preprocess_df
+from core_utils.dataframe import union_csv
+from custom_utils.clean_dataframe import preprocess_df, filter_dataframe
 from model_utils.feature_eng import (date_feats, my_stopwords, tb_sentiment,
                                      sentiment_label, lemma_nopunc)
 from graph_utils.graph import corr_heatmap
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-import xgboost as xgb
+from xgboost import XGBClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
@@ -39,11 +39,6 @@ article_df = union_csv(
     csv_path=r'.\data',
     glob_pattern='*.csv'
 )
-print('DataFrame Sample')
-print(article_df.head())
-print()
-print('DataFrame Shape: {}'.format(article_df.shape))
-print()
 
 # create 'text' feature
 # drop null rows from the 'abstract' column
@@ -57,12 +52,12 @@ article_df = preprocess_df(
     filter_col_list=['headline_main', 'web_url', 'text', 'word_count', 'pub_date']
 )
 
-# filter out articles that don't contain last name of candidates
-article_df = filter_dataframe(df=article_df,
-                              col='text',
-                              contains_list=['Klobuchar', 'Sanders', 'Booker', 'Trump', 'Warren', 'Biden', 'Delaney',
-                                             'Harris', 'Bennet', 'Bloomberg', 'Gabbard']
-                              )
+# # filter out articles that don't contain last name of candidates
+# article_df = filter_dataframe(df=article_df,
+#                               col='text',
+#                               contains_list=['Klobuchar', 'Sanders', 'Booker', 'Trump', 'Warren', 'Biden', 'Delaney',
+#                                              'Yang', 'Steyer', 'Buttigieg', 'Harris', 'Bennet', 'Bloomberg', 'Gabbard']
+#                               )
 
 # generate date_features for article_df
 article_df = date_feats(article_df, 'pub_date')
@@ -98,92 +93,93 @@ model_df = article_df[
     ['text_feat', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity', 'sentiment_label']
 ]
 
+# re-implement & drop char_count variable function
 # plot heatmap of feature correlations
 corr_heatmap(df=article_df,
              cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
              )
 
-# plot word frequencies
-plot_word_freq(
-    pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
-    plot_title='Trump BOW FREQUENCY',
-    n=30
-)
+# # plot word frequencies
+# plot_word_freq(
+#     pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
+#     plot_title='Trump BOW FREQUENCY',
+#     n=30
+# )
 
-# plot tfidf Scatter plot
-two_dim_tf_viz(
-    df=article_df,
-    pd_series='text',
-    pd_color_series='sentiment_label',
-    pd_hover_series='headline_main',
-    max_features=800,
-    plot_title='N.Y. Times Trump Articles Sentiment Clusters'
-)
+# # plot tfidf Scatter plot
+# two_dim_tf_viz(
+#     df=article_df,
+#     pd_series='text',
+#     pd_color_series='sentiment_label',
+#     pd_hover_series='headline_main',
+#     max_features=800,
+#     plot_title='N.Y. Times Trump Articles Sentiment Clusters'
+# )
 
-# plot Time Series Line plot
-time_series_line_viz(
-    df=article_df,
-    date_index='pub_date',
-    pd_series='sentiment',
-    plot_title='N.Y. Times Trump Articles Avg. Daily Sentiment'
-)
+# # plot Time Series Line plot
+# time_series_line_viz(
+#     df=article_df,
+#     date_index='pub_date',
+#     pd_series='sentiment',
+#     plot_title='N.Y. Times Trump Articles Avg. Daily Sentiment'
+# )
 
 # instantiate list of models: models
-# models = [
-#     OneVsRestClassifier(MultinomialNB()),
-#     OneVsRestClassifier(LinearSVC(C=1000, max_iter=1000000, random_state=42, class_weight='balanced')),
-#     OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
-#                                                class_weight='balanced')),
-#     OneVsRestClassifier(xgb.XGBClassifier(n_jobs=4, random_state=42)),
-#     OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
-#                                            random_state=42, class_weight='balanced'))
-# ]
-# print('Instantiated models!')
-# print()
+models = [
+    OneVsRestClassifier(MultinomialNB()),
+    OneVsRestClassifier(LinearSVC(C=1000, max_iter=5000, random_state=42, class_weight='balanced')),
+    OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
+                                               class_weight='balanced')),
+    OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)),
+    OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+                                           random_state=42, class_weight='balanced'))
+]
+print('Instantiated models!')
+print()
 
 # instantiate list of vectorizers: vectorizers
-# vectorizers = [
-#     CountVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords),
-#     TfidfVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords)
-# ]
-# print('Instantiated vectorizers!')
-# print()
+vectorizers = [
+    CountVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords),
+    TfidfVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords)
+]
+print('Instantiated vectorizers!')
+print()
 
 # print out text model metrics
-# text_model_metrics(
-#     models=models,
-#     vectorizers=vectorizers,
-#     df=model_df,
-#     label='sentiment_label',
-#     text_feature='text_feat'
-# )
+text_model_metrics(
+    models=models,
+    vectorizers=vectorizers,
+    df=model_df,
+    label='sentiment_label',
+    text_feature='text_feat'
+)
 
 # print out numeric model metrics
-# num_model_metrics(
-#     models=models,
-#     df=model_df,
-#     label='sentiment_label',
-#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
-# )
+num_model_metrics(
+    models=models,
+    df=model_df,
+    label='sentiment_label',
+    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
+)
 
 # tune hyper parameters for text model
-# text_pipe = text_random_hyper(
-#     df=model_df,
-#     text_feature='text_feat',
-#     label='sentiment_label',
-#     model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
-#     vectorizer=TfidfVectorizer(stop_words=my_stopwords),
-#     n_iters=20,
-#     n_folds=5
-# )
+text_pipe = text_random_hyper(
+    df=model_df,
+    text_feature='text_feat',
+    label='sentiment_label',
+    model=OneVsRestClassifier(XGBClassifier(random_state=42)),
+    vectorizer=TfidfVectorizer(stop_words=my_stopwords),
+    n_iters=10,
+    n_folds=5
+)
 
 # tune hyper parameters for model with numeric feature inputs
 num_pipe = num_random_hyper(
     df=model_df,
     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
     label='sentiment_label',
-    model=OneVsRestClassifier(xgb.XGBClassifier(random_state=42)),
-    n_iters=20,
+    model=OneVsRestClassifier(XGBClassifier(random_state=42)),
+    n_iters=10,
     n_folds=5
 )
 
@@ -200,28 +196,14 @@ stacked_model_metrics(
         [('vectorizer', TfidfVectorizer(ngram_range=(1, 3), stop_words=my_stopwords)),
          ('scaler', StandardScaler(with_mean=False)),
          ('dim_red', SelectKBest(chi2, k=200)),
-         ('clf', OneVsRestClassifier(xgb.XGBClassifier(
-            n_estimators=500,
-            min_samples_leaf=59,
-            max_depth=20,
-            learning_rate=1.2221476510067115,
-            colsample_bytree=0.3,
-            booster='gbtree',
-            random_state=42)))
+         ('clf', num_pipe)
          ]),
     text_feature='text_feat',
     text_prediction='text_pred',
     text_model_pkl="./models/text_pipe_xgb.pkl",
     num_model=Pipeline([
         ('scaler', MinMaxScaler()),
-        ('clf', OneVsRestClassifier(xgb.XGBClassifier(
-            n_estimators=500,
-            min_samples_leaf=37,
-            max_depth=6,
-            learning_rate=0.17651006711409395,
-            colsample_bytree=0.7,
-            booster='dart',
-            random_state=42)))
+        ('clf', text_pipe)
         ]),
     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
     num_prediction='num_pred',

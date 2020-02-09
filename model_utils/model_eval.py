@@ -294,22 +294,22 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
     return random_model.best_estimator_
 
 
-def text_feature_importance(df, text_feature):
-    # Instantiate TfidfVectorizer
-    tv = TfidfVectorizer(max_features=100, stop_words='english')
+def text_feature_importance(df, text_feature, vectorizer):
+    # split into train & test sets
+    train_df, test_df = train_test_split(df[[text_feature]], test_size=.2, random_state=42)
 
-    # Fit the vectroizer and transform the data
-    tv_transformed = tv.fit_transform(train_speech_df['text_clean'])
+    # Fit the vectorizer and transform the data
+    tfidf_train = vectorizer.fit_transform(train_df)
 
     # Transform test data
-    test_transformed = tv.transform(test_speech_df['text_clean'])
+    tfidf_test = vectorizer.transform(test_df)
 
     # Create new features for the test set
-    test_df = pd.DataFrame(test_tv_transformed.toarray(),
-                              columns=tv.get_feature_names()).add_prefix('TFIDF_')
-    print(test_tv_df.head())
-
-    return test_df
+    tfidf_df = pd.DataFrame(tfidf_test.toarray(),
+                            columns=vectorizer.get_feature_names()).add_prefix('TFIDF_')
+    print(tfidf_df.head())
+    print()
+    return tfidf_df
 
 
 def num_random_hyper(df, num_features, label, model, n_iters, n_folds):

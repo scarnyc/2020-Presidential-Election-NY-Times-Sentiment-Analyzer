@@ -25,14 +25,9 @@ def get_data(key, output_path, members):
     that an user wants to query the API for information; It outputs a csv file every call and the results are paginated
     in a loop that will call the API up to 4000 times.
 
-    args:
-        - key: user's API key
-        - output_path: file directory to write csv files with NYT API results
-        - members: list of terms or subjects that will be used to query the API (list)
-    reqs:
-        - pandas
-        - glob.glob
-        - os.path
+    @param key: user's API key
+    @param output_path: file directory to write csv files with NYT API results
+    @param members: list of terms or subjects that will be used to query the API (list)
     """
     # check if members variable is list type
     assert type(members) == list, "You need to pass in a list to members!"
@@ -64,15 +59,15 @@ def get_data(key, output_path, members):
                 # pause for 6 seconds between each call
                 time.sleep(6)
                 # output csv files and include the current date in the naming convention
-                df.to_csv(output_path + '/' + member + '_' + str(page) + str(0) + '_' + '{date:%Y.%m.%d}.csv' \
+                df.to_csv(output_path + '/' + member + '_' + str(page) + str(0) + '_' + '{date:%Y.%m.%d}.csv'\
                           .format(date=dt.datetime.now())
                           )
             # if the call fails, raise the exception
             except Exception as e:
                 raise e
 
-if __name__ == '__main__':
-    nyt_df = get_data(key=your_key,
-                      output_path=your_directory,
-                      members=['Bernie Sanders']
-                      )
+# if __name__ == '__main__':
+#     nyt_df = get_data(key=your_key,
+#                       output_path=your_directory,
+#                       members=['Bernie Sanders']
+#                       )

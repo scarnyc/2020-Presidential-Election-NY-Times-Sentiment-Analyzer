@@ -5,6 +5,7 @@ custom_utils.clean_dataframe
 This package contains customized utilities for cleaning data in pandas DataFrames:
     - preprocess_df (drops columns & null rows, creates new columns via concatenation,
     drops duplicates & returns column subset)
+    - filter_dataframe (Filters pandas DataFrame according to contains expressions in a list)
 
 created: 12/31/19
 last updated: 1/1/20
@@ -41,6 +42,32 @@ def preprocess_df(df, new_col, con_col1, con_col2, subset_list, filter_col_list)
     print('Preprocessed DataFrame!')
     print()
     print('New DataFrame Shape: {}'.format(df.shape))
+    print()
+
+    return df
+
+
+def filter_dataframe(df, col, contains_list):
+    """
+    Filters pandas DataFrame according to contains expressions in a list.
+
+    @param df:
+    @param col:
+    @param contains_list:
+    @return:
+    """
+    # deep copy of DataFrame: df
+    df = df.copy()
+
+    # search contain list by word tokens: df
+    df = df[df[col].str.contains(
+        '|'.join([word for word in contains_list]),
+        case=False
+    )]
+
+    print('Filtered out excess articles!')
+    print()
+    print('DataFrame Shape: {}'.format(df.shape))
     print()
 
     return df
