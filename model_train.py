@@ -2,7 +2,7 @@
 ********************************************************************************************************************
 model_train.py
 
-This script performs EDA on data & trains a model to analyze the sentiment of N.Y.T. articles via the following functions:
+This script performs EDA on data & trains a model to analyze the sentiment of N.Y. Times articles via the following functions:
     -
 
 Please Note:
@@ -29,7 +29,8 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectKBest, chi2
 from model_utils.model_eval import (text_model_metrics, num_model_metrics, num_feature_importance,
-                                    text_random_hyper, num_random_hyper, stacked_model_metrics)
+                                    text_random_hyper, num_random_hyper, stacked_model_metrics,
+                                    text_feature_importance)
 from graph_utils.graph import (plot_word_freq, two_dim_tf_viz,
                                time_series_line_viz)
 
@@ -51,13 +52,6 @@ article_df = preprocess_df(
     subset_list=['abstract'],
     filter_col_list=['headline_main', 'web_url', 'text', 'word_count', 'pub_date']
 )
-
-# # filter out articles that don't contain last name of candidates
-# article_df = filter_dataframe(df=article_df,
-#                               col='text',
-#                               contains_list=['Klobuchar', 'Sanders', 'Booker', 'Trump', 'Warren', 'Biden', 'Delaney',
-#                                              'Yang', 'Steyer', 'Buttigieg', 'Harris', 'Bennet', 'Bloomberg', 'Gabbard']
-#                               )
 
 # generate date_features for article_df
 article_df = date_feats(article_df, 'pub_date')
@@ -87,6 +81,7 @@ article_df['text_feat'] = article_df['text'].apply(lemma_nopunc)
 print(article_df['text_feat'].head())
 print()
 print(article_df.columns)
+print()
 
 # return column subsets of article_df
 model_df = article_df[
@@ -124,62 +119,65 @@ corr_heatmap(df=article_df,
 #     plot_title='N.Y. Times Trump Articles Avg. Daily Sentiment'
 # )
 
-# instantiate list of models: models
-models = [
-    OneVsRestClassifier(MultinomialNB()),
-    OneVsRestClassifier(LinearSVC(C=1000, max_iter=5000, random_state=42, class_weight='balanced')),
-    OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
-                                               class_weight='balanced')),
-    OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)),
-    OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
-                                           random_state=42, class_weight='balanced'))
-]
-print('Instantiated models!')
-print()
+# # instantiate list of models: models
+# models = [
+#     OneVsRestClassifier(MultinomialNB()),
+#     OneVsRestClassifier(LinearSVC(C=1000, max_iter=5000, random_state=42, class_weight='balanced')),
+#     OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
+#                                                class_weight='balanced')),
+#     OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)),
+#     OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+#                                            random_state=42, class_weight='balanced'))
+# ]
+# print('Instantiated models!')
+# print()
 
-# instantiate list of vectorizers: vectorizers
-vectorizers = [
-    CountVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords),
-    TfidfVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords)
-]
-print('Instantiated vectorizers!')
-print()
+# # instantiate list of vectorizers: vectorizers
+# vectorizers = [
+#     CountVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords),
+#     TfidfVectorizer(max_features=200, ngram_range=(2, 3), stop_words=my_stopwords)
+# ]
+# print('Instantiated vectorizers!')
+# print()
 
-# print out text model metrics
-text_model_metrics(
-    models=models,
-    vectorizers=vectorizers,
-    df=model_df,
-    label='sentiment_label',
-    text_feature='text_feat'
-)
+# # print out text model metrics
+# text_model_metrics(
+#     models=models,
+#     vectorizers=vectorizers,
+#     df=model_df,
+#     label='sentiment_label',
+#     text_feature='text_feat'
+# )
 
-# print out numeric model metrics
-num_model_metrics(
-    models=models,
-    df=model_df,
-    label='sentiment_label',
-    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
-)
+# # print out numeric model metrics
+# num_model_metrics(
+#     models=models,
+#     df=model_df,
+#     label='sentiment_label',
+#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
+# )
 
-# tune hyper parameters for text model
+# tune hyper parameters for text model: text_pipe
 text_pipe = text_random_hyper(
     df=model_df,
     text_feature='text_feat',
     label='sentiment_label',
     model=OneVsRestClassifier(XGBClassifier(random_state=42)),
     vectorizer=TfidfVectorizer(stop_words=my_stopwords),
-    n_iters=10,
+    n_iters=15,
     n_folds=5
 )
 
-# tune hyper parameters for model with numeric feature inputs
+# get feature importances from TFIDF scores: tfidf_df
+tfidf_df = text_feature_importance(df=model_df, text_feature='text_feat', vectorizer=text_pipe[0])
+
+# tune hyper parameters for model with numeric feature inputs: num_pipe
 num_pipe = num_random_hyper(
     df=model_df,
     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
     label='sentiment_label',
     model=OneVsRestClassifier(XGBClassifier(random_state=42)),
-    n_iters=10,
+    n_iters=15,
     n_folds=5
 )
 
@@ -192,19 +190,15 @@ num_feat_df = num_feature_importance(df=model_df,
 stacked_model_metrics(
     df=model_df,
     label='sentiment_label',
-    text_model=Pipeline(
-        [('vectorizer', TfidfVectorizer(ngram_range=(1, 3), stop_words=my_stopwords)),
-         ('scaler', StandardScaler(with_mean=False)),
-         ('dim_red', SelectKBest(chi2, k=200)),
-         ('clf', num_pipe)
-         ]),
+    text_model=Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 3), stop_words=my_stopwords)),
+                     ('scaler', StandardScaler(with_mean=False)),
+                     ('dim_red', SelectKBest(chi2, k=200)),
+                     ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=48, max_depth=3, learning_rate=1.2476510067114095, colsample_bytree=0.3, booster='gbtree', random_state=42)))
+                     ]),
     text_feature='text_feat',
     text_prediction='text_pred',
     text_model_pkl="./models/text_pipe_xgb.pkl",
-    num_model=Pipeline([
-        ('scaler', MinMaxScaler()),
-        ('clf', text_pipe)
-        ]),
+    num_model=num_pipe,
     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
     num_prediction='num_pred',
     num_model_pkl="./models/num_pipe_xgb.pkl",

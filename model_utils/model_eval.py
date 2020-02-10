@@ -299,7 +299,7 @@ def text_feature_importance(df, text_feature, vectorizer):
     train_df, test_df = train_test_split(df[[text_feature]], test_size=.2, random_state=42)
 
     # Fit the vectorizer and transform the data
-    tfidf_train = vectorizer.fit_transform(train_df)
+    vectorizer.fit(train_df)
 
     # Transform test data
     tfidf_test = vectorizer.transform(test_df)
@@ -381,7 +381,7 @@ def num_feature_importance(df, model, features):
     @return:
     """
     # Calculate feature importance: feature_importance
-    feature_importance = model.feature_importances_
+    feature_importance = model.estimators_[0].feature_importances_
 
     # Create a list of features: feature_list
     feature_list = list(df[features])

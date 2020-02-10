@@ -4,7 +4,7 @@ model_utils.feature_eng
 
 This package contains customized utilities for engineering features for Sentiment Analysis models:
     - date_feats (generates date features for model)
-    - my_stopwords (dictionary of stopwords for model preprocessing)
+    - my_stopwords (dictionary of stopwords for model pre-processing)
     - tb_sentiment (generates sentiment and subjectivity scores for labeling)
     - sentiment_label (generates the labels for sentiment analysis: ['positive','neutral','negative']
 
@@ -23,8 +23,27 @@ from textblob import TextBlob
 # nlp = spacy.load('en_core_web_md')
 nlp = English()
 
+
+def lemma_nopunc(text):
+    """
+    This function lemmatizes tokens and removes punctuation from a string based on the spaCy NLP medium model.
+
+    @param text: string to be lemmatized and stripped of punctuation
+    @return: returns cleaned string.
+    """
+
+    # lemmatize tokens: lemmas
+    lemmas = [token.lemma_ for token in nlp(str(text))
+              if token.is_alpha and token.lemma_ != '-PRON-']
+
+    # Remove punctuation: no_punc
+    no_punc = ' '.join(re.sub(r'[^\w\s]', '', t) for t in lemmas)
+
+    return no_punc
+
+
 # define stopwords variable: my_stopwords
-my_stopwords = {
+my_stopwords = lemma_nopunc([
     'a',
     'about',
     'above',
@@ -47,7 +66,6 @@ my_stopwords = {
     'below',
     'between',
     'both',
-    'br',
     'but',
     'by',
     'can',
@@ -103,7 +121,6 @@ my_stopwords = {
     'its',
     'itself',
     'just',
-    'k',
     "let's",
     'like',
     'me',
@@ -128,7 +145,6 @@ my_stopwords = {
     'out',
     'over',
     'own',
-    'r',
     'same',
     'shall',
     'she',
@@ -199,7 +215,7 @@ my_stopwords = {
     'yours',
     'yourself',
     'yourselves'
-}
+]).split()
 
 
 def date_feats(df, date_col):
@@ -290,21 +306,3 @@ def sentiment_label(df, col_for_label, label_col):
     print(df[label_col].value_counts())
     print()
     return df
-
-
-def lemma_nopunc(text):
-    """
-    This function lemmatizes tokens and removes punctuation from a string based on the spaCy NLP medium model.
-
-    @param text: string to be lemmatized and stripped of punctuation
-    @return: returns cleaned string.
-    """
-
-    # lemmatize tokens: lemmas
-    lemmas = [token.lemma_ for token in nlp(text)
-              if token.is_alpha and token.lemma_ != '-PRON-']
-
-    # Remove punctuation: no_punc
-    no_punc = ' '.join(re.sub(r'[^\w\s]', '', t) for t in lemmas)
-
-    return no_punc
