@@ -7,9 +7,9 @@ This package contains customized utilities for engineering features for Sentimen
     - my_stopwords (dictionary of stopwords for model pre-processing)
     - tb_sentiment (generates sentiment and subjectivity scores for labeling)
     - sentiment_label (generates the labels for sentiment analysis: ['positive','neutral','negative']
-
+    - char_count (counts the number of characters in a text string)
 created: 12/31/19
-last updated: 1/28/20
+last updated: 2/9/20
 *****************************************************************************************************
 """
 import pandas as pd
@@ -305,4 +305,24 @@ def sentiment_label(df, col_for_label, label_col):
     print()
     print(df[label_col].value_counts())
     print()
+    return df
+
+
+def char_count(df, text, new_pd_series):
+    """
+    This function counts the number of characters per row of text in a DataFrame series.
+    The function generates a new pandas Series containing the number of characters per row.
+    It returns a DataFrame containing the new column.
+    params:
+        - df: pandas DataFrame
+        - text: name of column used to count characters
+        - new_pd_series: name of column that will hold newly generated counts
+    returns:
+        pandas.DataFrame
+    """
+    df[new_pd_series] = df[text].apply(len)
+
+    print(df[new_pd_series].head())
+    print()
+
     return df

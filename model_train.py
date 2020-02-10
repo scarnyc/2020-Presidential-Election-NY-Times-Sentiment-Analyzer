@@ -69,26 +69,33 @@ print()
 print(article_df[article_df['polarity'] == article_df['polarity'].max()]['text'].values)
 print()
 
-# compute the labels for modelling:
+# compute the labels for modelling: article_df['sentiment_label']
 article_df = sentiment_label(
     df=article_df,
     col_for_label='polarity',
     label_col='sentiment_label'
 )
 
-# lemmatize words & remove punctuation:
+# count number of characters: article_df['char_count']
+article_df = char_count(
+    df=article_df,
+    text='text',
+    new_pd_series='char_count'
+)
+
+# lemmatize words & remove punctuation: article_df['text_feat']
 article_df['text_feat'] = article_df['text'].apply(lemma_nopunc)
 print(article_df['text_feat'].head())
 print()
 print(article_df.columns)
 print()
 
-# return column subsets of article_df
+# return column subsets of article_df for modeling: model_df
 model_df = article_df[
-    ['text_feat', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity', 'sentiment_label']
+    ['text_feat', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity', 'char_count', 'sentiment_label']
 ]
 
-# re-implement & drop char_count variable function
+# drop char_count variable function
 # plot heatmap of feature correlations
 corr_heatmap(df=article_df,
              cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
@@ -157,16 +164,16 @@ corr_heatmap(df=article_df,
 #     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
 # )
 
-# tune hyper parameters for text model: text_pipe
-text_pipe = text_random_hyper(
-    df=model_df,
-    text_feature='text_feat',
-    label='sentiment_label',
-    model=OneVsRestClassifier(XGBClassifier(random_state=42)),
-    vectorizer=TfidfVectorizer(stop_words=my_stopwords),
-    n_iters=15,
-    n_folds=5
-)
+# # tune hyper parameters for text model: text_pipe
+# text_pipe = text_random_hyper(
+#     df=model_df,
+#     text_feature='text_feat',
+#     label='sentiment_label',
+#     model=OneVsRestClassifier(XGBClassifier(random_state=42)),
+#     vectorizer=TfidfVectorizer(stop_words=my_stopwords),
+#     n_iters=15,
+#     n_folds=5
+# )
 
 # get feature importances from TFIDF scores: tfidf_df
 tfidf_df = text_feature_importance(df=model_df, text_feature='text_feat', vectorizer=text_pipe[0])
@@ -193,7 +200,9 @@ stacked_model_metrics(
     text_model=Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 3), stop_words=my_stopwords)),
                      ('scaler', StandardScaler(with_mean=False)),
                      ('dim_red', SelectKBest(chi2, k=200)),
-                     ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=48, max_depth=3, learning_rate=1.2476510067114095, colsample_bytree=0.3, booster='gbtree', random_state=42)))
+                     ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=48, max_depth=3,
+                                                               learning_rate=1.2476510067114095, colsample_bytree=0.3,
+                                                               booster='gbtree', random_state=42)))
                      ]),
     text_feature='text_feat',
     text_prediction='text_pred',
