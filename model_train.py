@@ -9,14 +9,14 @@ Please Note:
     The .csv files were created by calling the nyt_api.main module.
 
 created: 12/31/19
-last updated: 1/28/20
+last updated: 2/9/20
 ********************************************************************************************************************
 """
 import pandas as pd
 from core_utils.dataframe import union_csv
 from custom_utils.clean_dataframe import preprocess_df, filter_dataframe
 from model_utils.feature_eng import (date_feats, my_stopwords, tb_sentiment,
-                                     sentiment_label, lemma_nopunc)
+                                     char_count, sentiment_label, lemma_nopunc)
 from graph_utils.graph import corr_heatmap
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from xgboost import XGBClassifier
@@ -98,9 +98,10 @@ model_df = article_df[
 # drop char_count variable function
 # plot heatmap of feature correlations
 corr_heatmap(df=article_df,
-             cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
+             cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity']
              )
 
+# comment: correct data viz functions below with seaborn
 # # plot word frequencies
 # plot_word_freq(
 #     pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
@@ -175,8 +176,9 @@ corr_heatmap(df=article_df,
 #     n_folds=5
 # )
 
-# get feature importances from TFIDF scores: tfidf_df
-tfidf_df = text_feature_importance(df=model_df, text_feature='text_feat', vectorizer=text_pipe[0])
+# comment: correct problem with text_feature_importance func
+# # get feature importances from TFIDF scores: tfidf_df
+# tfidf_df = text_feature_importance(df=model_df, text_feature='text_feat', vectorizer=text_pipe[0])
 
 # tune hyper parameters for model with numeric feature inputs: num_pipe
 num_pipe = num_random_hyper(
