@@ -8,8 +8,10 @@ This package contains customized utilities for engineering features for Sentimen
     - tb_sentiment (generates sentiment and subjectivity scores for labeling)
     - sentiment_label (generates the labels for sentiment analysis: ['positive','neutral','negative']
     - char_count (counts the number of characters in a text string)
+    - apply_func (apply a function to a pandas series (row-wise) and return the resulting DataFrame)
+    - drop_high_corr (Drop highly correlated features from a DataFrame)
 created: 12/31/19
-last updated: 2/9/20
+last updated: 2/11/20
 *****************************************************************************************************
 """
 import pandas as pd
@@ -326,3 +328,47 @@ def char_count(df, text, new_pd_series):
     print()
 
     return df
+
+
+def apply_func(df, pd_series, new_pd_series, func):
+    """
+    Apply a function to a pandas series (row-wise) and return the resulting DataFrame with the new pandas series,
+    containing the applied result.
+
+    @param df:
+    @param pd_series:
+    @param new_pd_series:
+    @param func:
+    @return:
+    """
+    df[new_pd_series] = df[pd_series].apply(func)
+    print(df[new_pd_series].head())
+    print()
+    print(df.columns)
+    print()
+
+    return df
+
+
+def drop_high_corr(df):
+    """
+    Drop highly correlated features (any feature that has > .79 correlation with another feature) from a DataFrame
+    @param df:
+    @return:
+    """
+    # Calculate the correlation matrix and take the absolute value: corr_matrix
+    corr_matrix = df.corr().abs()
+
+    # Create a True/False mask and apply it: tri_df
+    mask = np.triu(np.ones_like(corr_matrix, dtype=bool))
+    tri_df = corr_matrix.mask(mask)
+
+    # List column names of highly correlated features (r > 0.79): to_drop
+    to_drop = [c for c in tri_df.columns if any(tri_df[c] > 0.79)]
+
+    # Drop the features in the to_drop list: reduced_df
+    reduced_df = df.drop(to_drop, axis=1)
+
+    print("The reduced dataframe has {} columns.".format(reduced_df.shape[1]))
+
+    return reduced_df

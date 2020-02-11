@@ -9,14 +9,15 @@ Please Note:
     The .csv files were created by calling the nyt_api.main module.
 
 created: 12/31/19
-last updated: 2/9/20
+last updated: 2/11/20
 ********************************************************************************************************************
 """
 import pandas as pd
 from core_utils.dataframe import union_csv
 from custom_utils.clean_dataframe import preprocess_df, filter_dataframe
 from model_utils.feature_eng import (date_feats, my_stopwords, tb_sentiment,
-                                     char_count, sentiment_label, lemma_nopunc)
+                                     char_count, sentiment_label, lemma_nopunc,
+                                     apply_func, drop_high_corr)
 from graph_utils.graph import corr_heatmap
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from xgboost import XGBClassifier
@@ -84,22 +85,24 @@ article_df = char_count(
 )
 
 # lemmatize words & remove punctuation: article_df['text_feat']
-article_df['text_feat'] = article_df['text'].apply(lemma_nopunc)
-print(article_df['text_feat'].head())
-print()
-print(article_df.columns)
-print()
+article_df = apply_func(
+    df=article_df,
+    pd_series='text',
+    new_pd_series='text_feat',
+    func=lemma_nopunc)
 
 # return column subsets of article_df for modeling: model_df
 model_df = article_df[
     ['text_feat', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity', 'char_count', 'sentiment_label']
 ]
 
-# drop char_count variable function
 # plot heatmap of feature correlations
 corr_heatmap(df=article_df,
              cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity']
              )
+
+# automatically remove highly correlated features
+model_df = drop_high_corr(df=model_df)
 
 # comment: correct data viz functions below with seaborn
 # # plot word frequencies
@@ -162,38 +165,38 @@ corr_heatmap(df=article_df,
 #     models=models,
 #     df=model_df,
 #     label='sentiment_label',
-#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity']
+#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity']
 # )
 
-# # tune hyper parameters for text model: text_pipe
-# text_pipe = text_random_hyper(
-#     df=model_df,
-#     text_feature='text_feat',
-#     label='sentiment_label',
-#     model=OneVsRestClassifier(XGBClassifier(random_state=42)),
-#     vectorizer=TfidfVectorizer(stop_words=my_stopwords),
-#     n_iters=15,
-#     n_folds=5
-# )
+# tune hyper parameters for text model: text_pipe
+text_pipe = text_random_hyper(
+    df=model_df,
+    text_feature='text_feat',
+    label='sentiment_label',
+    model=OneVsRestClassifier(XGBClassifier(random_state=42)),
+    vectorizer=TfidfVectorizer(stop_words=my_stopwords),
+    n_iters=20,
+    n_folds=5
+)
 
-# comment: correct problem with text_feature_importance func
+# # comment: correct problem with text_feature_importance func
 # # get feature importances from TFIDF scores: tfidf_df
 # tfidf_df = text_feature_importance(df=model_df, text_feature='text_feat', vectorizer=text_pipe[0])
 
 # tune hyper parameters for model with numeric feature inputs: num_pipe
 num_pipe = num_random_hyper(
     df=model_df,
-    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
+    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
     label='sentiment_label',
     model=OneVsRestClassifier(XGBClassifier(random_state=42)),
-    n_iters=15,
+    n_iters=20,
     n_folds=5
 )
 
 # look at most important features for text model
 num_feat_df = num_feature_importance(df=model_df,
                                      model=num_pipe[1],
-                                     features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'])
+                                     features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'])
 
 # print out stacked model metrics
 stacked_model_metrics(
@@ -209,8 +212,13 @@ stacked_model_metrics(
     text_feature='text_feat',
     text_prediction='text_pred',
     text_model_pkl="./models/text_pipe_xgb.pkl",
-    num_model=num_pipe,
-    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity'],
+    num_model=Pipeline([('scaler', MinMaxScaler()),
+                        ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=24, max_depth=3,
+                                                                  learning_rate=0.8395973154362416,
+                                                                  colsample_bytree=0.7, booster='gbtree',
+                                                                  random_state=42)))
+                        ]),
+    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
     num_prediction='num_pred',
     num_model_pkl="./models/num_pipe_xgb.pkl",
     stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
