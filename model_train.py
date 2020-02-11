@@ -14,7 +14,7 @@ last updated: 2/11/20
 """
 import pandas as pd
 from core_utils.dataframe import union_csv
-from custom_utils.clean_dataframe import preprocess_df, filter_dataframe
+from custom_utils.clean_dataframe import preprocess_df
 from model_utils.feature_eng import (date_feats, my_stopwords, tb_sentiment,
                                      char_count, sentiment_label, lemma_nopunc,
                                      apply_func, drop_high_corr)
@@ -169,15 +169,15 @@ model_df = drop_high_corr(df=model_df)
 # )
 
 # tune hyper parameters for text model: text_pipe
-text_pipe = text_random_hyper(
-    df=model_df,
-    text_feature='text_feat',
-    label='sentiment_label',
-    model=OneVsRestClassifier(XGBClassifier(random_state=42)),
-    vectorizer=TfidfVectorizer(stop_words=my_stopwords),
-    n_iters=20,
-    n_folds=5
-)
+# text_pipe = text_random_hyper(
+#     df=model_df,
+#     text_feature='text_feat',
+#     label='sentiment_label',
+#     model=OneVsRestClassifier(XGBClassifier(random_state=42)),
+#     vectorizer=TfidfVectorizer(stop_words=my_stopwords),
+#     n_iters=15,
+#     n_folds=5
+# )
 
 # # comment: correct problem with text_feature_importance func
 # # get feature importances from TFIDF scores: tfidf_df
@@ -189,7 +189,7 @@ num_pipe = num_random_hyper(
     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
     label='sentiment_label',
     model=OneVsRestClassifier(XGBClassifier(random_state=42)),
-    n_iters=20,
+    n_iters=15,
     n_folds=5
 )
 
