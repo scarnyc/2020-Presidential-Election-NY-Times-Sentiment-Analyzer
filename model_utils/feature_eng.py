@@ -6,6 +6,7 @@ This package contains customized utilities for engineering features for Sentimen
     - date_feats (generates date features for model)
     - my_stopwords (dictionary of stopwords for model pre-processing)
     - tb_sentiment (generates sentiment and subjectivity scores for labeling)
+    - sentiment_analyzer (applies sentiment labels row-wise using a text-based column feature)
     - sentiment_label (generates the labels for sentiment analysis: ['positive','neutral','negative']
     - char_count (counts the number of characters in a text string)
     - apply_func (apply a function to a pandas series (row-wise) and return the resulting DataFrame)
@@ -245,11 +246,12 @@ def date_feats(df, date_col):
     df['hour'] = df[date_col].dt.hour
     # reset index: df
     df = df.reset_index()
+
     print('Generated Date Features & reset index!')
     print()
     print(df.columns)
     print()
-    # return df
+
     return df
 
 
@@ -266,6 +268,32 @@ def tb_sentiment(text):
         TextBlob(text).sentiment
     """
     return TextBlob(text).sentiment
+
+
+def sentiment_analyzer(df, text_feature):
+    """
+    This function applies sentiment labels row-wise using a text-based column feature
+    in a Pandas DataFrame. It joins the sentiment scores generated with the source DataFrame.
+
+    @param df:
+    @param text_feature:
+    @return:
+    """
+    # create a new DataFrame filled with scores: tb_sentiment_df
+    tb_sent_scores = [tb_sentiment(text=row) for row in df[text_feature]]
+    tb_sentiment_df = pd.DataFrame(tb_sent_scores)
+
+    # join sentiment scores to original article_df DataFrame
+    df = df.merge(tb_sentiment_df, left_index=True, right_index=True)
+
+    # delete unused variables
+    # del tb_sent_scores, tb_sentiment_df
+    print('Generated TextBlob Sentiment Scores!')
+    print()
+    print(df[df['polarity'] == df['polarity'].max()][text_feature].values)
+    print()
+
+    return df
 
 
 def sentiment_label(df, col_for_label, label_col):
@@ -341,7 +369,10 @@ def apply_func(df, pd_series, new_pd_series, func):
     @param func:
     @return:
     """
+    # apply function to pandas Series row-wise fashion
     df[new_pd_series] = df[pd_series].apply(func)
+
+    # print first 5 rows of new Series
     print(df[new_pd_series].head())
     print()
     print(df.columns)
@@ -370,5 +401,6 @@ def drop_high_corr(df):
     reduced_df = df.drop(to_drop, axis=1)
 
     print("The reduced dataframe has {} columns.".format(reduced_df.shape[1]))
+    print()
 
     return reduced_df

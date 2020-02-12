@@ -12,13 +12,13 @@ created: 12/31/19
 last updated: 2/11/20
 ********************************************************************************************************************
 """
-import pandas as pd
 from core_utils.dataframe import union_csv
 from custom_utils.clean_dataframe import preprocess_df
-from model_utils.feature_eng import (date_feats, my_stopwords, tb_sentiment,
+from model_utils.feature_eng import (date_feats, my_stopwords,
                                      char_count, sentiment_label, lemma_nopunc,
-                                     apply_func, drop_high_corr)
-from graph_utils.graph import corr_heatmap
+                                     apply_func, drop_high_corr, sentiment_analyzer)
+from graph_utils.graph import (corr_heatmap, plot_word_freq, two_dim_tf_viz,
+                               time_series_line_viz)
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from xgboost import XGBClassifier
 from sklearn.multiclass import OneVsRestClassifier
@@ -32,8 +32,6 @@ from sklearn.feature_selection import SelectKBest, chi2
 from model_utils.model_eval import (text_model_metrics, num_model_metrics, num_feature_importance,
                                     text_random_hyper, num_random_hyper, stacked_model_metrics,
                                     text_feature_importance)
-from graph_utils.graph import (plot_word_freq, two_dim_tf_viz,
-                               time_series_line_viz)
 
 
 # read .csv files & union them into a single DataFrame: trump_df
@@ -58,17 +56,7 @@ article_df = preprocess_df(
 article_df = date_feats(article_df, 'pub_date')
 
 # generate TextBlob sentiment and subjectivity scores for each row of 'text' in article_df: tb_sent_scores
-# create a new DataFrame filled with scores: tb_sentiment_df
-# join sentiment scores to original article_df DataFrame
-tb_sent_scores = [tb_sentiment(text=row) for row in article_df['text']]
-tb_sentiment_df = pd.DataFrame(tb_sent_scores)
-article_df = article_df.merge(tb_sentiment_df, left_index=True, right_index=True)
-# delete unused variables
-# del tb_sent_scores, tb_sentiment_df
-print('Generated TextBlob Sentiment Scores!')
-print()
-print(article_df[article_df['polarity'] == article_df['polarity'].max()]['text'].values)
-print()
+article_df = sentiment_analyzer(df=article_df, text_feature='text')
 
 # compute the labels for modelling: article_df['sentiment_label']
 article_df = sentiment_label(
@@ -102,6 +90,7 @@ corr_heatmap(df=article_df,
              )
 
 # automatically remove highly correlated features
+# add functionality for label
 model_df = drop_high_corr(df=model_df)
 
 # comment: correct data viz functions below with seaborn
@@ -126,22 +115,22 @@ model_df = drop_high_corr(df=model_df)
 # time_series_line_viz(
 #     df=article_df,
 #     date_index='pub_date',
-#     pd_series='sentiment',
+#     pd_series='polarity',
 #     plot_title='N.Y. Times Trump Articles Avg. Daily Sentiment'
 # )
 
 # # instantiate list of models: models
-# models = [
-#     OneVsRestClassifier(MultinomialNB()),
-#     OneVsRestClassifier(LinearSVC(C=1000, max_iter=5000, random_state=42, class_weight='balanced')),
-#     OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
-#                                                class_weight='balanced')),
-#     OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)),
-#     OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
-#                                            random_state=42, class_weight='balanced'))
-# ]
-# print('Instantiated models!')
-# print()
+# # models = [
+# #     OneVsRestClassifier(MultinomialNB()),
+# #     OneVsRestClassifier(LinearSVC(C=1000, max_iter=5000, random_state=42, class_weight='balanced')),
+# #     OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42, n_jobs=4,
+# #                                                class_weight='balanced')),
+# #     OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)),
+# #     OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+# #                                            random_state=42, class_weight='balanced'))
+# # ]
+# # print('Instantiated models!')
+# # print()
 
 # # instantiate list of vectorizers: vectorizers
 # vectorizers = [
@@ -168,7 +157,7 @@ model_df = drop_high_corr(df=model_df)
 #     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity']
 # )
 
-# tune hyper parameters for text model: text_pipe
+# # tune hyper parameters for text model: text_pipe
 # text_pipe = text_random_hyper(
 #     df=model_df,
 #     text_feature='text_feat',
@@ -183,20 +172,20 @@ model_df = drop_high_corr(df=model_df)
 # # get feature importances from TFIDF scores: tfidf_df
 # tfidf_df = text_feature_importance(df=model_df, text_feature='text_feat', vectorizer=text_pipe[0])
 
-# tune hyper parameters for model with numeric feature inputs: num_pipe
-num_pipe = num_random_hyper(
-    df=model_df,
-    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
-    label='sentiment_label',
-    model=OneVsRestClassifier(XGBClassifier(random_state=42)),
-    n_iters=15,
-    n_folds=5
-)
+# # tune hyper parameters for model with numeric feature inputs: num_pipe
+# num_pipe = num_random_hyper(
+#     df=model_df,
+#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+#     label='sentiment_label',
+#     model=OneVsRestClassifier(XGBClassifier(random_state=42)),
+#     n_iters=15,
+#     n_folds=5
+# )
 
-# look at most important features for text model
-num_feat_df = num_feature_importance(df=model_df,
-                                     model=num_pipe[1],
-                                     features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'])
+# # look at most important features for text model
+# num_feat_df = num_feature_importance(df=model_df,
+#                                      model=num_pipe[1],
+#                                      features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'])
 
 # print out stacked model metrics
 stacked_model_metrics(
@@ -204,22 +193,20 @@ stacked_model_metrics(
     label='sentiment_label',
     text_model=Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 3), stop_words=my_stopwords)),
                      ('scaler', StandardScaler(with_mean=False)),
-                     ('dim_red', SelectKBest(chi2, k=200)),
-                     ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=48, max_depth=3,
-                                                               learning_rate=1.2476510067114095, colsample_bytree=0.3,
+                     ('dim_red', SelectKBest(chi2, k=1000)),
+                     ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=52, max_depth=20,
+                                                               learning_rate=1.4434343434343435, colsample_bytree=0.7,
                                                                booster='gbtree', random_state=42)))
                      ]),
     text_feature='text_feat',
-    text_prediction='text_pred',
     text_model_pkl="./models/text_pipe_xgb.pkl",
     num_model=Pipeline([('scaler', MinMaxScaler()),
-                        ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=24, max_depth=3,
+                        ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=44, max_depth=10,
                                                                   learning_rate=0.8395973154362416,
                                                                   colsample_bytree=0.7, booster='gbtree',
                                                                   random_state=42)))
                         ]),
     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
-    num_prediction='num_pred',
     num_model_pkl="./models/num_pipe_xgb.pkl",
     stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
                                                          random_state=42, class_weight='balanced')),

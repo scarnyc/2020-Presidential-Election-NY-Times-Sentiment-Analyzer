@@ -260,13 +260,13 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
     # Create the parameter grid
     param_grid = {
         'vectorizer__ngram_range': [(1, 3), (2, 3)],
-        'dim_red__k': [50, 100, 200],
+        'dim_red__k': [100, 500, 100],
         'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
         'clf__estimator__colsample_bytree': [0.3, 0.7],
         'clf__estimator__n_estimators': [100, 500, 1000],
         'clf__estimator__max_depth': [3, 6, 10, 20],
-        'clf__estimator__learning_rate': np.linspace(.1, 2, 150),
-        'clf__estimator__min_samples_leaf': list(range(20, 65))
+        'clf__estimator__learning_rate': np.linspace(.1, 2, 100),
+        'clf__estimator__min_samples_leaf': list(range(20, 60))
     }
 
     # Create a grid search object
@@ -343,8 +343,8 @@ def num_random_hyper(df, num_features, label, model, n_iters, n_folds):
         'clf__estimator__colsample_bytree': [0.3, 0.7],
         'clf__estimator__n_estimators': [100, 500, 1000],
         'clf__estimator__max_depth': [3, 6, 10, 20],
-        'clf__estimator__learning_rate': np.linspace(.1, 2, 150),
-        'clf__estimator__min_samples_leaf': list(range(20, 65))
+        'clf__estimator__learning_rate': np.linspace(.1, 2, 100),
+        'clf__estimator__min_samples_leaf': list(range(20, 60))
     }
 
     # Create a grid search object
@@ -400,11 +400,9 @@ def stacked_model_metrics(
         label,
         text_model,
         text_feature,
-        text_prediction,
         text_model_pkl,
         num_model,
         num_features,
-        num_prediction,
         num_model_pkl,
         stacked_model,
         stacked_model_pkl
@@ -462,39 +460,39 @@ def stacked_model_metrics(
         text_model.fit(train1[text_feature], train1[label])
 
         # Predict test set labels
-        train2[text_prediction] = text_model.predict(train2[text_feature])
-        X_test[text_prediction] = text_model.predict(X_test[text_feature])
+        train2['text_pred'] = text_model.predict(train2[text_feature])
+        X_test['text_pred'] = text_model.predict(X_test[text_feature])
 
         # Fit Numeric Model Pipeline
         num_model.fit(train1[num_features], train1[label])
 
         # Predict test set labels
-        train2[num_prediction] = num_model.predict(train2[num_features])
-        X_test[num_prediction] = num_model.predict(X_test[num_features])
+        train2['num_pred'] = num_model.predict(train2[num_features])
+        X_test['num_pred'] = num_model.predict(X_test[num_features])
 
         # Stacked Model
         print('Stacked Model!')
         print(stacked_model)
 
         # Train 2nd level model on the Part 2 data
-        stacked_model.fit(train2.loc[[text_prediction, num_prediction]], train2[label])
+        stacked_model.fit(train2[['text_pred', 'num_pred']], train2[label])
 
         # Make stacking predictions on the test data
-        X_test['stacking'] = stacked_model.predict(X_test.loc[[text_prediction, num_prediction]])
+        X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
 
         # Look at the model coefficients
         print('LogisticRegression Coefs: {}'.format(stacked_model.coef_))
         print()
         # see if model is overfitting
         print('Training Set Accuracy')
-        print(stacked_model.score(train2.loc[[text_prediction, num_prediction]], train2[label]))
+        print(stacked_model.score(train2[['text_pred', 'num_pred']], train2[label]))
         print()
         print('Test Set Accuracy')
-        print(stacked_model.score(X_test.loc[[text_prediction, num_prediction]], y_test))
+        print(stacked_model.score(X_test[['text_pred', 'num_pred']], y_test))
         print()
 
         # append accuracy score to list: acc
-        acc.append(stacked_model.score(X_test.loc[[text_prediction, num_prediction]], y_test))
+        acc.append(stacked_model.score(X_test[['text_pred', 'num_pred']], y_test))
 
         # append accuracy score to list: f1
         f1.append(f1_score(y_test, X_test['stacking'], average='micro'))
@@ -517,10 +515,10 @@ def stacked_model_metrics(
     with open(text_model_pkl, 'wb') as model_file:
         pickle.dump(text_model, model_file)
 
-    # save model for later
+    # save model with numeric features for later
     with open(num_model_pkl, 'wb') as model_file:
         pickle.dump(num_model, model_file)
 
-    # save model for later
+    # save stacked model for later
     with open(stacked_model_pkl, 'wb') as model_file:
         pickle.dump(stacked_model, model_file)

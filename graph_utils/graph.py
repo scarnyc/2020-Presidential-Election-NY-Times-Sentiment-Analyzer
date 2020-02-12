@@ -17,7 +17,7 @@ last updated: 1/4/20
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from nltk.probability import FreqDist
+# from nltk.probability import FreqDist
 from sklearn.decomposition import TruncatedSVD
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -275,10 +275,13 @@ def plot_word_freq(pd_series, plot_title, n=None):
 
     # concatenate dataframes
     count_df = pd.concat(count_dfs)
+
     # dedupe
     count_df.drop_duplicates(inplace=True)
+
     # name columns
     count_df.columns = ['word', 'freq']
+
     # filter out 'pron'
     count_df = count_df.loc[~count_df['word'].str.contains('pron', case=False)]
 
@@ -290,12 +293,14 @@ def plot_word_freq(pd_series, plot_title, n=None):
         textposition='auto',
         orientation='h'
     )])
+
     # Customize aspect
     fig.update_traces(marker_color='rgb(158,202,225)',
                       marker_line_color='rgb(8,48,107)',
                       marker_line_width=1.5,
                       opacity=0.6
                       )
+
     # customize layout
     fig.update_layout(
         title_text=plot_title,
@@ -386,11 +391,13 @@ def time_series_line_viz(df, date_index, pd_series, plot_title):
     """
     # Set the index of ds_tweets to pub_date
     date_df = df.set_index(date_index).copy()
+
     # Generate average sentiment scores for #python
     sentiment = date_df[pd_series].resample('1 d').mean()
 
     # Create trace
     fig = go.Figure()
+
     # add trace for Line Plot
     fig.add_trace(
         go.Scatter(
@@ -400,8 +407,10 @@ def time_series_line_viz(df, date_index, pd_series, plot_title):
             name='lines+markers',
             marker_color='rgb(49,130,189)'
         ))
+
     # update layout
     fig.update_layout(title_text=plot_title)
+
     # write the figure
     fig.write_image("images/line plot.png")
 
@@ -415,8 +424,13 @@ def corr_heatmap(df, cols):
     @param df:
     @param cols:
     """
+    # print DataFrame summary statistics
+    print('DataFrame descriptive statistics!')
+    print(df.describe())
+    print()
+
     # Create the correlation matrix
-    corr = df.copy() [cols].corr()
+    corr = df.copy()[cols].corr()
 
     # Generate a mask for the upper triangle
     mask = np.triu(np.ones_like(corr, dtype=bool))
