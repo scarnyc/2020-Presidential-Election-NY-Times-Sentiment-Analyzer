@@ -48,7 +48,7 @@ def get_word_freq(pd_series, stopwords, n=None):
     @return: List of top N words & frequencies tuples
     """
     # Build the vectorizer: vectorizer
-    vectorizer = CountVectorizer(ngram_range=(1, 3), stop_words=stopwords)
+    vectorizer = CountVectorizer(ngram_range=(1, 3), stop_words=stopwords, max_features=n)
 
     # Fit and transform pd_series: bow
     bow = vectorizer.fit_transform(pd_series)
@@ -69,7 +69,7 @@ def get_word_freq(pd_series, stopwords, n=None):
     print(bow_df.sum().sort_values(ascending=False))
     print()
 
-    return words_freq[:n]
+    return words_freq
 
 
 def plot_word_freq(pd_series, plot_title, stopwords, n=None):
@@ -110,10 +110,10 @@ def plot_word_freq(pd_series, plot_title, stopwords, n=None):
 
     # visualize the data
     sns.barplot(data=count_df,
-                y=count_df['word'],
-                x=count_df['freq'],
-                kind='h',
-                color='blue'
+                y='word',
+                x='freq',
+                label='freq',
+                color='b'
                 )
 
     # add title to bar plot
@@ -156,16 +156,14 @@ def two_dim_tf_viz(df, pd_series, pd_color_series, plot_title, stopwords, max_fe
     print(svd_df.info())
     print()
 
-    # Define a custom continuous color palette
-    color_palette = sns.light_palette('orangered',
-                                      as_cmap=True)
-
     # Plot mapping the color of the points with custom palette
     sns.scatterplot(x='PC1',
                     y='PC2',
                     hue=pd_color_series,
                     data=svd_df,
-                    palette=color_palette)
+                    # use default color palette
+                    # palette=color_palette
+                    )
 
     # add title to scatter plot
     plt.title(plot_title)
@@ -231,3 +229,21 @@ def corr_heatmap(df, features):
 
     # show and save image
     plt.show()
+
+
+# def learn_rates():
+#     # Set the learning rates & accuracies list
+#     learn_rates = np.linspace(.1, 2, num=50)
+#     accuracies = []
+#
+#     # Create the for loop
+#     for learn_rate in learn_rates:
+#         # Create the model, predictions & save the accuracies as before
+#         model = GradientBoostingClassifier(learning_rate=learn_rate)
+#         predictions = model.fit(X_train, y_train).predict(X_test)
+#         accuracies.append(accuracy_score(y_test, predictions))
+#
+#     # Plot results
+#     plt.plot(learn_rates, accuracies)
+#     plt.gca().set(xlabel='learning_rate', ylabel='Accuracy', title='Accuracy for different learning_rates')
+#     plt.show()

@@ -43,6 +43,8 @@ def lemma_nopunc(text):
     # Remove punctuation: no_punc
     no_punc = ' '.join(re.sub(r'[^\w\s]', '', t) for t in lemmas)
 
+    # add list comprehension to remove digits
+
     return no_punc
 
 
@@ -233,6 +235,8 @@ def date_feats(df, date_col):
     """
     # convert df[date_col] to datetime data type: df[date_col]
     df[date_col] = pd.to_datetime(df[date_col])
+    # scrape month from df[date_col]: df['year']
+    df['year'] = df[date_col].dt.year
     # scrape month from df[date_col]: df['month']
     df['month'] = df[date_col].dt.month
     # scrape day from df[date_col]: df['day']

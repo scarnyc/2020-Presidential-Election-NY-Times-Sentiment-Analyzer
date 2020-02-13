@@ -4,7 +4,7 @@ custom_utils.clean_dataframe
 
 This package contains customized utilities for cleaning data in pandas DataFrames:
     - preprocess_df (drops columns & null rows, creates new columns via concatenation,
-    drops duplicates & returns column subset)
+      drops duplicates & returns column subset)
     - filter_dataframe (Filters pandas DataFrame according to contains expressions in a list)
 
 created: 12/31/19
@@ -34,7 +34,7 @@ def preprocess_df(df, new_col, con_col1, con_col2, subset_list, filter_col_list)
     df = df.dropna(subset=subset_list)
 
     # drop duplicates
-    df = df.drop_duplicates()
+    df = df.drop_duplicates(subset=[new_col])
 
     # return a subset of the DataFrame with only the columns specified by the user.
     df = df[filter_col_list]
@@ -47,25 +47,17 @@ def preprocess_df(df, new_col, con_col1, con_col2, subset_list, filter_col_list)
     return df
 
 
-def filter_dataframe(df, col, contains_list):
+def filter_dataframe(df, col_to_filter, value_to_filter):
     """
-    Filters pandas DataFrame according to contains expressions in a list.
-
-    @param df:
-    @param col:
-    @param contains_list:
-    @return:
+    Filters pandas DataFrame according to datetime parameter
     """
     # deep copy of DataFrame: df
     df = df.copy()
 
-    # search contain list by word tokens: df
-    df = df[df[col].str.contains(
-        '|'.join([word for word in contains_list]),
-        case=False
-    )]
+    # filter DataFrame col_to_filter according to value_to_filter
+    df = df[df[col_to_filter] >= value_to_filter]
 
-    print('Filtered out excess articles!')
+    print('Filtered out articles prior to {}!'.format(value_to_filter))
     print()
     print('DataFrame Shape: {}'.format(df.shape))
     print()

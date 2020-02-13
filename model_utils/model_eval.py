@@ -6,8 +6,8 @@ This module contains customized utilities for training Sentiment Analysis models
     - split_df (splits DataFrame into KFold DataFrames)
     - text_model_metrics (iterate over a list of models, fitting them and getting evaluation metrics on text data)
     - num_model_metrics(iterate over a list of models, fitting them and getting evaluation metrics on numeric data)
-    - text_random_hyper (performs hyper-parameter tuning for a text model)
-    - num_random_hyper (performs hyper-parameter tuning for a model with numeric feature-inputs)
+    - text_random_hyper_tune (performs hyper-parameter tuning for a text model)
+    - num_random_hyper_tune (performs hyper-parameter tuning for a model with numeric feature-inputs)
     - num_feature_importance (Return a DataFrame with most important features for tree-based models with numeric features)
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
@@ -64,15 +64,7 @@ def split_df(df, label_col):
 
 def text_model_metrics(models, vectorizers, df, text_feature, label):
     """
-    Iterate over a list of models, fitting them and printing 5-Fold cross-validation metrics for predictions
-    for Sentiment Analysis. This function allows for the efficient evaluation of the results of models
-    with text-based features against predictions, with respect to holdout sets and ground truth
-
-    @param models: list of models to evaluate metrics for Sentiment Analysis modeling
-    @param vectorizers: list of text vectorizers to use to generate features
-    @param df: pandas DataFrame that contains the text feature and labels
-    @param text_feature: pandas Series that contains the text feature for Sentiment Analysis
-    @param label: pandas Series that contains the ground truth labels for comparing against predictions
+    Iterate over a list of models, fitting them and getting evaluation metrics on text data.
     """
     # split DataFrame into 5-Folds
     kfold_list = split_df(
@@ -97,8 +89,10 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
             print()
 
             # instantiate model training pipeline
+            # instantiate model training pipeline
             pipe = Pipeline([('vectorizer', vectorizer),
                              ('scaler', StandardScaler(with_mean=False)),
+                             ('dim_red', SelectKBest(chi2, k=200)),
                              ('clf', model)
                              ])
             print(pipe)
@@ -150,7 +144,6 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
                 print()
                 print()
 
-            # print average cross-validated metrics
             print('5-fold cross-validated Accuracy: {}'.format(np.mean(acc)))
             print()
             print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
@@ -159,14 +152,12 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
 
 def num_model_metrics(models, df, label, num_features):
     """
-    Iterate over a list of models, fitting them and printing 5-Fold cross-validation metrics for predictions
-    for Sentiment Analysis. This function allows for the efficient evaluation of the results of models
-    with numeric features against predictions, with respect to holdout sets and ground truth
-
-    @param models: list of models to evaluate metrics for Sentiment Analysis modeling
-    @param df: pandas DataFrame that contains the numeric features and labels
-    @param label: pandas Series that contains the ground truth labels for comparing against predictions
-    @param num_features: list of numeric pandas Series' that will make up the feature set for Sentiment Analysis
+    Iterate over a list of models, fitting them and getting evaluation metrics on numeric data.
+    @param models:
+    @param df:
+    @param label:
+    @param num_features:
+    @return:
     """
     # split DataFrame into 5-Folds
     kfold_list = split_df(
@@ -239,17 +230,15 @@ def num_model_metrics(models, df, label, num_features):
             print()
             print()
 
-        # print average cross-validated metrics
         print('5-fold cross-validated Accuracy: {}'.format(np.mean(acc)))
         print()
         print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
         print()
 
 
-def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_folds):
+def text_random_hyper_tune(df, text_feature, label, model, vectorizer, n_iters, n_folds):
     """
     Performs hyper-parameter tuning for a text model.
-
     @param df:
     @param text_feature:
     @param label:
@@ -277,13 +266,13 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
     # Create the parameter grid
     param_grid = {
         'vectorizer__ngram_range': [(1, 3), (2, 3)],
-        'dim_red__k': [100, 500, 100],
+        'dim_red__k': [50, 100, 200],
         'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
         'clf__estimator__colsample_bytree': [0.3, 0.7],
-        'clf__estimator__n_estimators': [100, 500, 1000],
+        'clf__estimator__n_estimators': [100, 200, 300],
         'clf__estimator__max_depth': [3, 6, 10, 20],
-        'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
-        'clf__estimator__min_samples_leaf': list(range(20, 60))
+        'clf__estimator__learning_rate': np.linspace(.1, 2, 150),
+        'clf__estimator__min_samples_leaf': list(range(20, 65))
     }
 
     # Create a grid search object
@@ -323,25 +312,91 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
     print(best_row)
     print()
 
-    return random_model.best_estimator_
+    # # save text model for later
+    # with open(text_model_pkl, 'wb') as model_file:
+    #     pickle.dump(text_model, model_file)
+
+    return random_model.best_estimator_, cv_results_df, column
 
 
-# def learn_rates():
-#     # Set the learning rates & accuracies list
-#     learn_rates = np.linspace(.1, 2, num=50)
-#     accuracies = []
-#
-#     # Create the for loop
-#     for learn_rate in learn_rates:
-#         # Create the model, predictions & save the accuracies as before
-#         model = GradientBoostingClassifier(learning_rate=learn_rate)
-#         predictions = model.fit(X_train, y_train).predict(X_test)
-#         accuracies.append(accuracy_score(y_test, predictions))
-#
-#     # Plot results
-#     plt.plot(learn_rates, accuracies)
-#     plt.gca().set(xlabel='learning_rate', ylabel='Accuracy', title='Accuracy for different learning_rates')
-#     plt.show()
+def num_random_hyper_tune(df, num_features, label, model, n_iters, n_folds):
+    """
+    Performs hyper-parameter tuning for a model with numeric features.
+
+    @param df:
+    @param num_features:
+    @param label:
+    @param model:
+    @param n_iters:
+    @param n_folds:
+    @return:
+    """
+    # define feature set: X
+    X = df[num_features]
+    # define label: y
+    y = df[label]
+
+    # instantiate model pipeline
+    pipe = Pipeline([
+        ('scaler', MinMaxScaler()),
+        ('clf', model)
+    ])
+    print(pipe)
+    print()
+
+    # Create the parameter grid
+    param_grid = {
+        'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
+        'clf__estimator__colsample_bytree': [0.3, 0.7],
+        'clf__estimator__n_estimators': [100, 200, 300],
+        'clf__estimator__max_depth': [3, 6, 10, 20],
+        'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
+        'clf__estimator__min_samples_leaf': list(range(20, 60))
+    }
+
+    # Create a random search object
+    random_model = RandomizedSearchCV(
+        estimator=pipe,
+        param_distributions=param_grid,
+        scoring='accuracy',
+        n_jobs=6,
+        n_iter=n_iters,
+        cv=n_folds,
+        refit=True,
+        return_train_score=True,
+        verbose=1
+    )
+
+    # Fit to the training data
+    random_model.fit(X, y)
+
+    # Print the values used for both Parameters & Score
+    print("Best random Parameters: ", random_model.best_params_)
+    print()
+    print("Best random Score: ", random_model.best_score_)
+    print()
+
+    # Read the cv_results property into a dataframe & print it out
+    cv_results_df = pd.DataFrame(random_model.cv_results_).sort_values(by=["rank_test_score"])
+    print(cv_results_df)
+    print()
+
+    # Extract and print the column with a dictionary of hyperparameters used
+    column = cv_results_df.loc[:, ["params"]]
+    print(column)
+    print()
+
+    # Extract and print the row that had the best mean test score
+    best_row = cv_results_df[cv_results_df["rank_test_score"] == 1]
+    print(best_row)
+    print()
+
+    # # save model with numeric features for later
+    # with open(num_model_pkl, 'wb') as model_file:
+    #     pickle.dump(num_model, model_file)
+
+    return random_model.best_estimator_, cv_results_df, column
+
 
 def text_feature_importance(df, text_feature, vectorizer):
     # split into train & test sets
@@ -356,84 +411,12 @@ def text_feature_importance(df, text_feature, vectorizer):
     # Create new features for the test set
     tfidf_df = pd.DataFrame(tfidf_test.toarray(),
                             columns=vectorizer.get_feature_names()).add_prefix('TFIDF_')
+
+    # print first 5 rows of DataFrame
     print(tfidf_df.head())
     print()
+
     return tfidf_df
-
-
-def num_random_hyper(df, num_features, label, model, n_iters, n_folds):
-    """
-    Performs hyper-parameter tuning for a model with numeric feature-inputs.
-    @param df:
-    @param num_features:
-    @param label:
-    @param model:
-    @param n_iters:
-    @param n_folds:
-    @return:
-    """
-
-    # define feature set: X
-    X = df[num_features]
-    # define label: y
-    y = df[label]
-
-    # instantiate model training pipeline
-    pipe = Pipeline([
-        ('scaler', MinMaxScaler()),
-        ('clf', model)
-    ])
-    print(pipe)
-    print()
-
-    # Create the parameter grid
-    param_grid = {
-        'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
-        'clf__estimator__colsample_bytree': [0.3, 0.7],
-        'clf__estimator__n_estimators': [100, 500, 1000],
-        'clf__estimator__max_depth': [3, 6, 10, 20],
-        'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
-        'clf__estimator__min_samples_leaf': list(range(20, 60))
-    }
-
-    # Create a grid search object
-    random_model = RandomizedSearchCV(
-        estimator=pipe,
-        param_distributions=param_grid,
-        scoring='accuracy',
-        n_jobs=6,
-        n_iter=n_iters,
-        cv=n_folds,
-        refit=True,
-        return_train_score=True,
-        verbose=1
-    )
-
-    # Fit to the training data
-    random_model.fit(X, y)
-
-    # Print the values used for both Parameters & Score
-    print("Best random Parameters: ", random_model.best_params_)
-    print()
-    print("Best random Score: ", random_model.best_score_)
-    print()
-
-    # Read the cv_results property into a dataframe & print it out
-    cv_results_df = pd.DataFrame(random_model.cv_results_)
-    print(cv_results_df)
-    print()
-
-    # Extract and print the column with a dictionary of hyperparameters used
-    column = cv_results_df.loc[:, ["params"]]
-    print(column)
-    print()
-
-    # Extract and print the row that had the best mean test score
-    best_row = cv_results_df[cv_results_df["rank_test_score"] == 1]
-    print(best_row)
-    print()
-
-    return random_model.best_estimator_
 
 
 def num_feature_importance(df, model, features):
@@ -464,12 +447,9 @@ def stacked_model_metrics(
         label,
         text_model,
         text_feature,
-        text_model_pkl,
         num_model,
         num_features,
-        num_model_pkl,
-        stacked_model,
-        stacked_model_pkl
+        stacked_model
 ):
     """
     Fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics.
@@ -514,6 +494,8 @@ def stacked_model_metrics(
         # Split train data into two parts
         train1, train2 = train_test_split(X_train.join(pd.DataFrame(y_train)),
                                           test_size=.5, random_state=42)
+
+        # delete X_train and y_train variables as they will not be used
         del X_train, y_train
         print('Training set 1 shape: {}'.format(train1.shape))
         print()
@@ -545,8 +527,9 @@ def stacked_model_metrics(
         X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
 
         # Look at the model coefficients
-        print('LogisticRegression Coefs: {}'.format(stacked_model.coef_))
+        print('LogisticRegression Coefs: {}'.format(model.coef_))
         print()
+
         # see if model is overfitting
         print('Training Set Accuracy')
         print(stacked_model.score(train2[['text_pred', 'num_pred']], train2[label]))
@@ -570,19 +553,34 @@ def stacked_model_metrics(
         print()
         print()
 
+    # print average cross-validated metrics
     print('5-fold cross-validated Accuracy: {}'.format(np.mean(acc)))
     print()
     print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
     print()
 
-    # save text model for later
-    with open(text_model_pkl, 'wb') as model_file:
-        pickle.dump(text_model, model_file)
+    # # save stacked model for later
+    # with open(stacked_model_pkl, 'wb') as model_file:
+    #     pickle.dump(stacked_model, model_file)
 
-    # save model with numeric features for later
-    with open(num_model_pkl, 'wb') as model_file:
-        pickle.dump(num_model, model_file)
-
-    # save stacked model for later
-    with open(stacked_model_pkl, 'wb') as model_file:
-        pickle.dump(stacked_model, model_file)
+    # # Instantiate the GridSearchCV object and run the search
+    # searcher = GridSearchCV(
+    #     logreg,
+    #     {'C': [0.001, 0.01, 0.1, 1, 10],
+    #      'penalty': ["l1", "l2"],
+    #      'class_weight': [None, "balanced"]
+    #      },
+    #     cv=3,
+    #     verbose=1,
+    #     n_jobs=-1
+    # )
+    # searcher.fit(X_train, y_train)
+    #
+    # # Report the best parameters
+    # print("Best CV params", searcher.best_params_)
+    #
+    # # Find the number of nonzero coefficients (selected features)
+    # best_lr = searcher.best_estimator_
+    # coefs = best_lr.coef_
+    # print("Total number of features:", coefs.size)
+    # print("Number of selected features:", np.count_nonzero(coefs))
