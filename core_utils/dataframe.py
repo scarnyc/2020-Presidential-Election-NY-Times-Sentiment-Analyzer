@@ -2,8 +2,11 @@
 ********************************************************************************************
 core_utils.dataframe
 
-This package contains common utilities for importing & handling data in pandas DataFrames:
+This module contains common utilities for importing & handling data in pandas DataFrames:
     - union_csv (unions similar csv files into a single DataFrame)
+
+created: 1/5/20
+last updated: 2/13/20
 ********************************************************************************************
 """
 import pandas as pd
@@ -15,17 +18,11 @@ def union_csv(csv_path: object, glob_pattern: object) -> object:
     """
     This function accepts a directory where csv files are located
     and a glob pattern for specific .csv naming conventions.
-    It returns a single pandas DataFrame with the contents from all the files in the directory.
+    It returns a single pandas DataFrame with the data from all the .csv files in the directory
 
-    args:
-        - csv_path: Directory that contains .csv files (raw str)
-        - glob_pattern: Glob pattern specifying .csv file naming convention
-    reqs:
-        - pandas
-        - glob.glob
-        - os.path
-    returns:
-        pandas.DataFrame
+    @param csv_path: csv_path: Raw string representation of a directory that contains .csv files
+    @param glob_pattern: glob pattern specifying .csv file naming convention
+    @return: unioned pandas DataFrame that contains all of the data from all the .csv files in the directory
     """
     # assign file path of directory containing csv files with raw string: csv_path
     csv_path = csv_path

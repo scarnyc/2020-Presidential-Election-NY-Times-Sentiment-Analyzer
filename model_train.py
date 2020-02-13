@@ -9,7 +9,7 @@ Please Note:
     The .csv files were created by calling the nyt_api.main module.
 
 created: 12/31/19
-last updated: 2/11/20
+last updated: 2/13/20
 ********************************************************************************************************************
 """
 from core_utils.dataframe import union_csv
@@ -86,38 +86,38 @@ model_df = article_df[
 
 # plot heatmap of feature correlations
 corr_heatmap(df=article_df,
-             cols=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity']
+             features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity']
              )
 
 # automatically remove highly correlated features
 # add functionality for label
 model_df = drop_high_corr(df=model_df)
 
-# comment: correct data viz functions below with seaborn
-# # plot word frequencies
-# plot_word_freq(
-#     pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
-#     plot_title='Trump BOW FREQUENCY',
-#     n=30
-# )
+# plot word frequencies
+plot_word_freq(
+    pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
+    plot_title='BOW FREQUENCY',
+    stopwords=my_stopwords,
+    n=30
+)
 
-# # plot tfidf Scatter plot
-# two_dim_tf_viz(
-#     df=article_df,
-#     pd_series='text',
-#     pd_color_series='sentiment_label',
-#     pd_hover_series='headline_main',
-#     max_features=800,
-#     plot_title='N.Y. Times Trump Articles Sentiment Clusters'
-# )
+# plot tfidf Scatter plot
+two_dim_tf_viz(
+    df=article_df,
+    pd_series='text',
+    stopwords=my_stopwords,
+    pd_color_series='sentiment_label',
+    max_features=1000,
+    plot_title='N.Y. Times Trump Articles Sentiment Clusters'
+)
 
-# # plot Time Series Line plot
-# time_series_line_viz(
-#     df=article_df,
-#     date_index='pub_date',
-#     pd_series='polarity',
-#     plot_title='N.Y. Times Trump Articles Avg. Daily Sentiment'
-# )
+# plot Time Series Line plot
+time_series_line_viz(
+    df=article_df,
+    date_index='pub_date',
+    pd_series='polarity',
+    plot_title='N.Y. Times Trump Articles Avg. Daily Sentiment'
+)
 
 # # instantiate list of models: models
 # # models = [
@@ -172,43 +172,43 @@ model_df = drop_high_corr(df=model_df)
 # # get feature importances from TFIDF scores: tfidf_df
 # tfidf_df = text_feature_importance(df=model_df, text_feature='text_feat', vectorizer=text_pipe[0])
 
-# # tune hyper parameters for model with numeric feature inputs: num_pipe
-# num_pipe = num_random_hyper(
-#     df=model_df,
-#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
-#     label='sentiment_label',
-#     model=OneVsRestClassifier(XGBClassifier(random_state=42)),
-#     n_iters=15,
-#     n_folds=5
-# )
+# tune hyper parameters for model with numeric feature inputs: num_pipe
+num_pipe = num_random_hyper(
+    df=model_df,
+    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+    label='sentiment_label',
+    model=OneVsRestClassifier(XGBClassifier(random_state=42)),
+    n_iters=15,
+    n_folds=5
+)
 
 # # look at most important features for text model
 # num_feat_df = num_feature_importance(df=model_df,
 #                                      model=num_pipe[1],
 #                                      features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'])
 
-# print out stacked model metrics
-stacked_model_metrics(
-    df=model_df,
-    label='sentiment_label',
-    text_model=Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 3), stop_words=my_stopwords)),
-                     ('scaler', StandardScaler(with_mean=False)),
-                     ('dim_red', SelectKBest(chi2, k=1000)),
-                     ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=52, max_depth=20,
-                                                               learning_rate=1.4434343434343435, colsample_bytree=0.7,
-                                                               booster='gbtree', random_state=42)))
-                     ]),
-    text_feature='text_feat',
-    text_model_pkl="./models/text_pipe_xgb.pkl",
-    num_model=Pipeline([('scaler', MinMaxScaler()),
-                        ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=44, max_depth=10,
-                                                                  learning_rate=0.8395973154362416,
-                                                                  colsample_bytree=0.7, booster='gbtree',
-                                                                  random_state=42)))
-                        ]),
-    num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
-    num_model_pkl="./models/num_pipe_xgb.pkl",
-    stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
-                                                         random_state=42, class_weight='balanced')),
-    stacked_model_pkl="./models/lr_stack.pkl"
-)
+# # print out stacked model metrics
+# stacked_model_metrics(
+#     df=model_df,
+#     label='sentiment_label',
+#     text_model=Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 3), stop_words=my_stopwords)),
+#                      ('scaler', StandardScaler(with_mean=False)),
+#                      ('dim_red', SelectKBest(chi2, k=1000)),
+#                      ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=52, max_depth=20,
+#                                                                learning_rate=1.4434343434343435, colsample_bytree=0.7,
+#                                                                booster='gbtree', random_state=42)))
+#                      ]),
+#     text_feature='text_feat',
+#     text_model_pkl="./models/text_pipe_xgb.pkl",
+#     num_model=Pipeline([('scaler', MinMaxScaler()),
+#                         ('clf', OneVsRestClassifier(XGBClassifier(n_estimators=1000, min_samples_leaf=44, max_depth=10,
+#                                                                   learning_rate=0.8395973154362416,
+#                                                                   colsample_bytree=0.7, booster='gbtree',
+#                                                                   random_state=42)))
+#                         ]),
+#     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+#     num_model_pkl="./models/num_pipe_xgb.pkl",
+#     stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+#                                                          random_state=42, class_weight='balanced')),
+#     stacked_model_pkl="./models/lr_stack.pkl"
+# )

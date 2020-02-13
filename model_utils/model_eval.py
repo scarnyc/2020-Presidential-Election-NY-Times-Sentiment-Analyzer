@@ -2,7 +2,7 @@
 *******************************************************************************************************************
 model_utils.model_eval
 
-This package contains customized utilities for training Sentiment Analysis models:
+This module contains customized utilities for training Sentiment Analysis models:
     - split_df (splits DataFrame into KFold DataFrames)
     - text_model_metrics (iterate over a list of models, fitting them and getting evaluation metrics on text data)
     - num_model_metrics(iterate over a list of models, fitting them and getting evaluation metrics on numeric data)
@@ -12,7 +12,7 @@ This package contains customized utilities for training Sentiment Analysis model
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
 created: 1/5/20
-last updated: 2/6/20
+last updated: 2/13/20
 *******************************************************************************************************************
 """
 import numpy as np
@@ -28,18 +28,23 @@ import pickle
 
 def split_df(df, label_col):
     """
-    Splits a pandas DataFrame into a list of DataFrames based on candidate text.
-    @param df:
-    @param label_col:
-    @return:
-    """
+    Splits a pandas DataFrame to split into a list of 5 separate DataFrames
 
+    @param df: pandas DataFrame to split into a list of 5 separate DataFrames
+    @param label_col: pandas Series that will be used as target variable for machine learning modeling
+    @return: list of 5 separate DataFrames derived from original DataFrame
+    """
+    # split original pandas DataFrame into 5 separate DataFrames
+    # each with their own random seed to effectively partition DataFrame into 5 parts
+    # this will ensure that no 2 DataFrames will contain the same index
     df1 = df.sample(frac=0.2, random_state=1)
     df2 = df.sample(frac=0.2, random_state=2)
     df3 = df.sample(frac=0.2, random_state=3)
     df4 = df.sample(frac=0.2, random_state=4)
     df5 = df.sample(frac=0.2, random_state=5)
 
+    # iterate over each of the newly created 5 DataFrames printing each DataFrame's shape,
+    # first 5 rows and target value counts
     for df in [
         df1,
         df2,
@@ -59,7 +64,15 @@ def split_df(df, label_col):
 
 def text_model_metrics(models, vectorizers, df, text_feature, label):
     """
-    Iterate over a list of models, fitting them and getting evaluation metrics on text data.
+    Iterate over a list of models, fitting them and printing 5-Fold cross-validation metrics for predictions
+    for Sentiment Analysis. This function allows for the efficient evaluation of the results of models
+    with text-based features against predictions, with respect to holdout sets and ground truth
+
+    @param models: list of models to evaluate metrics for Sentiment Analysis modeling
+    @param vectorizers: list of text vectorizers to use to generate features
+    @param df: pandas DataFrame that contains the text feature and labels
+    @param text_feature: pandas Series that contains the text feature for Sentiment Analysis
+    @param label: pandas Series that contains the ground truth labels for comparing against predictions
     """
     # split DataFrame into 5-Folds
     kfold_list = split_df(
@@ -137,6 +150,7 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
                 print()
                 print()
 
+            # print average cross-validated metrics
             print('5-fold cross-validated Accuracy: {}'.format(np.mean(acc)))
             print()
             print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
@@ -145,12 +159,14 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
 
 def num_model_metrics(models, df, label, num_features):
     """
-    Iterate over a list of models, fitting them and getting evaluation metrics on numeric data.
-    @param models:
-    @param df:
-    @param label:
-    @param num_features:
-    @return:
+    Iterate over a list of models, fitting them and printing 5-Fold cross-validation metrics for predictions
+    for Sentiment Analysis. This function allows for the efficient evaluation of the results of models
+    with numeric features against predictions, with respect to holdout sets and ground truth
+
+    @param models: list of models to evaluate metrics for Sentiment Analysis modeling
+    @param df: pandas DataFrame that contains the numeric features and labels
+    @param label: pandas Series that contains the ground truth labels for comparing against predictions
+    @param num_features: list of numeric pandas Series' that will make up the feature set for Sentiment Analysis
     """
     # split DataFrame into 5-Folds
     kfold_list = split_df(
@@ -223,6 +239,7 @@ def num_model_metrics(models, df, label, num_features):
             print()
             print()
 
+        # print average cross-validated metrics
         print('5-fold cross-validated Accuracy: {}'.format(np.mean(acc)))
         print()
         print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
@@ -265,7 +282,7 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
         'clf__estimator__colsample_bytree': [0.3, 0.7],
         'clf__estimator__n_estimators': [100, 500, 1000],
         'clf__estimator__max_depth': [3, 6, 10, 20],
-        'clf__estimator__learning_rate': np.linspace(.1, 2, 100),
+        'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
         'clf__estimator__min_samples_leaf': list(range(20, 60))
     }
 
@@ -291,8 +308,40 @@ def text_random_hyper(df, text_feature, label, model, vectorizer, n_iters, n_fol
     print("Best random Score: ", random_model.best_score_)
     print()
 
+    # Read the cv_results property into a dataframe & print it out
+    cv_results_df = pd.DataFrame(random_model.cv_results_)
+    print(cv_results_df)
+    print()
+
+    # Extract and print the column with a dictionary of hyperparameters used
+    column = cv_results_df.loc[:, ["params"]]
+    print(column)
+    print()
+
+    # Extract and print the row that had the best mean test score
+    best_row = cv_results_df[cv_results_df["rank_test_score"] == 1]
+    print(best_row)
+    print()
+
     return random_model.best_estimator_
 
+
+# def learn_rates():
+#     # Set the learning rates & accuracies list
+#     learn_rates = np.linspace(.1, 2, num=50)
+#     accuracies = []
+#
+#     # Create the for loop
+#     for learn_rate in learn_rates:
+#         # Create the model, predictions & save the accuracies as before
+#         model = GradientBoostingClassifier(learning_rate=learn_rate)
+#         predictions = model.fit(X_train, y_train).predict(X_test)
+#         accuracies.append(accuracy_score(y_test, predictions))
+#
+#     # Plot results
+#     plt.plot(learn_rates, accuracies)
+#     plt.gca().set(xlabel='learning_rate', ylabel='Accuracy', title='Accuracy for different learning_rates')
+#     plt.show()
 
 def text_feature_importance(df, text_feature, vectorizer):
     # split into train & test sets
@@ -343,7 +392,7 @@ def num_random_hyper(df, num_features, label, model, n_iters, n_folds):
         'clf__estimator__colsample_bytree': [0.3, 0.7],
         'clf__estimator__n_estimators': [100, 500, 1000],
         'clf__estimator__max_depth': [3, 6, 10, 20],
-        'clf__estimator__learning_rate': np.linspace(.1, 2, 100),
+        'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
         'clf__estimator__min_samples_leaf': list(range(20, 60))
     }
 
@@ -367,6 +416,21 @@ def num_random_hyper(df, num_features, label, model, n_iters, n_folds):
     print("Best random Parameters: ", random_model.best_params_)
     print()
     print("Best random Score: ", random_model.best_score_)
+    print()
+
+    # Read the cv_results property into a dataframe & print it out
+    cv_results_df = pd.DataFrame(random_model.cv_results_)
+    print(cv_results_df)
+    print()
+
+    # Extract and print the column with a dictionary of hyperparameters used
+    column = cv_results_df.loc[:, ["params"]]
+    print(column)
+    print()
+
+    # Extract and print the row that had the best mean test score
+    best_row = cv_results_df[cv_results_df["rank_test_score"] == 1]
+    print(best_row)
     print()
 
     return random_model.best_estimator_
