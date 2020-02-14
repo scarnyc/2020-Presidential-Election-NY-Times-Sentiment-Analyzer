@@ -2,7 +2,7 @@
 ***************************************************************************************************
 graph_utils.graph
 
-This package contains customized utilities for performing graphical EDA:
+This module contains customized utilities for performing graphical EDA:
     - my_stopwords (dictionary of stopwords for model pre-processing)
     - get_word_freq (List the words in a vocabulary according to number of occurrences in a text corpus)
     - plot_word_freq (Plot the word frequencies via a plotly Bar Graph)

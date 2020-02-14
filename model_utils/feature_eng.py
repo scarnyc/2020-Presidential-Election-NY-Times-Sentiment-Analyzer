@@ -2,7 +2,7 @@
 *****************************************************************************************************
 model_utils.feature_eng
 
-This package contains customized utilities for engineering features for Sentiment Analysis models:
+This module contains customized utilities for engineering features for Sentiment Analysis models:
     - date_feats (generates date features for model)
     - my_stopwords (dictionary of stopwords for model pre-processing)
     - tb_sentiment (generates sentiment and subjectivity scores for labeling)

@@ -4,22 +4,18 @@ model_utils.model_eval
 
 This module contains customized utilities for training Sentiment Analysis models:
     - split_df (splits DataFrame into KFold DataFrames)
-    - text_model_metrics (iterate over a list of models, fitting them and getting evaluation metrics on text data)
-    - num_model_metrics(iterate over a list of models, fitting them and getting evaluation metrics on numeric data)
-    - text_random_hyper_tune (performs hyper-parameter tuning for a text model)
-    - num_random_hyper_tune (performs hyper-parameter tuning for a model with numeric feature-inputs)
-    - num_feature_importance (Return a DataFrame with most important features for tree-based models with numeric features)
+    - model_training_metrics (iterate over a list of models, fitting them and getting evaluation metrics)
+    - random_hyper_tune (performs hyper-parameter tuning)
+    - num_feature_importance (Print a DataFrame with most important features for tree-based models with numeric features)
+    - text_feature_importance (Print a DataFrame with the Top N most important n_grams from the text model)
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
-created: 1/5/20
-last updated: 2/13/20
+created: 12/31/19
+last updated: 2/14/20
 *******************************************************************************************************************
 """
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.pipeline import Pipeline
-from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import confusion_matrix, classification_report, f1_score
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
 import pickle
@@ -61,10 +57,17 @@ def split_df(df, label_col):
     return [df1, df2, df3, df4, df5]
 
 
-def text_model_metrics(models, vectorizers, df, text_feature, label):
+def model_training_metrics(models, df, features, label):
     """
-    Iterate over a list of models, fitting them and getting evaluation metrics on text data
+    Splits DataFrame into 5-Fold partitions.
+    Print model validation metrics for each partition and each model passed into the list models.
+    Split each partition into training and test set,
+    and return 5-Fold cross-validated average Accuracy and F1 metrics for multi-class classification
 
+    @param models: list of models passed in for training and evaluation
+    @param df: pandas DataFrame containing features and labels.
+    @param features: pandas Series containing features, can be passed in as a list if specifying multiple features
+    @param label: pandas Series containing labels
     """
     # split DataFrame into 5-Folds
     kfold_list = split_df(
@@ -75,113 +78,12 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
     print()
 
     # Start Text model training
-    print('Text Model Results!')
+    print('Starting Model Training!')
     print()
 
     # iterate over model list
     for model in models:
         print(model)
-        print()
-
-        # iterate over vectorizer list
-        for vectorizer in vectorizers:
-            print(vectorizer)
-            print()
-
-            # instantiate model training pipeline
-            pipe = Pipeline([('vectorizer', vectorizer),
-                             ('scaler', StandardScaler(with_mean=False)),
-                             ('dim_red', SelectKBest(chi2, k=300)),
-                             ('clf', model)
-                             ])
-            print(pipe)
-            print()
-
-            # instantiate lists for loop
-            acc = []
-            f1 = []
-
-            # iterate over list of KFold DataFrames
-            for fold in kfold_list:
-                # define feature set: X
-                X = fold[text_feature]
-                # define label: y
-                y = fold[label]
-                # split each fold into training & test set:
-                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, stratify=y, random_state=42)
-                print('Training set shape: {}'.format(X_train.shape))
-                print()
-                print('Test set shape: {}'.format(X_test.shape))
-                print()
-
-                # Fit the classifier
-                pipe.fit(X_train, y_train)
-
-                # Predict test set labels & probabilities
-                y_pred = pipe.predict(X_test)
-
-                # see if model is overfitting
-                print('Training Set Accuracy')
-                print(pipe.score(X_train, y_train))
-                print()
-                print('Test Set Accuracy')
-                print(pipe.score(X_test, y_test))
-                print()
-
-                # append accuracy score to list: acc
-                acc.append(pipe.score(X_test, y_test))
-
-                # append accuracy score to list: f1
-                f1.append(f1_score(y_test, y_pred, average='micro'))
-
-                # Compute and print the confusion matrix and classification report
-                print('Confusion matrix')
-                print(confusion_matrix(y_test, y_pred))
-                print()
-                print('Classification report')
-                print(classification_report(y_test, y_pred))
-                print()
-                print()
-
-            print('5-fold cross-validated Accuracy: {}'.format(np.mean(acc)))
-            print()
-            print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
-            print()
-
-
-def num_model_metrics(models, df, label, num_features):
-    """
-    Iterate over a list of models, fitting them and getting evaluation metrics on numeric data
-
-    @param models:
-    @param df:
-    @param label:
-    @param num_features:
-    @return:
-    """
-    # split DataFrame into 5-Folds
-    kfold_list = split_df(
-        df=df,
-        label_col=label
-    )
-    print('Split DataFrames into 5-Fold datasets!')
-    print()
-
-    # Start Numeric model training
-    print('Numeric Model Results!')
-    print()
-
-    # iterate over model list
-    for model in models:
-        print(model)
-        print()
-
-        # instantiate model training pipeline
-        pipe = Pipeline([
-                         ('scaler', MinMaxScaler()),
-                         ('clf', model)
-                         ])
-        print(pipe)
         print()
 
         # instantiate lists for loop
@@ -191,7 +93,7 @@ def num_model_metrics(models, df, label, num_features):
         # iterate over list of KFold DataFrames
         for fold in kfold_list:
             # define feature set: X
-            X = fold[num_features]
+            X = fold[features]
             # define label: y
             y = fold[label]
             # split each fold into training & test set:
@@ -202,21 +104,21 @@ def num_model_metrics(models, df, label, num_features):
             print()
 
             # Fit the classifier
-            pipe.fit(X_train, y_train)
+            model.fit(X_train, y_train)
 
             # Predict test set labels & probabilities
-            y_pred = pipe.predict(X_test)
+            y_pred = model.predict(X_test)
 
             # see if model is overfitting
             print('Training Set Accuracy')
-            print(pipe.score(X_train, y_train))
+            print(model.score(X_train, y_train))
             print()
             print('Test Set Accuracy')
-            print(pipe.score(X_test, y_test))
+            print(model.score(X_test, y_test))
             print()
 
             # append accuracy score to list: acc
-            acc.append(pipe.score(X_test, y_test))
+            acc.append(model.score(X_test, y_test))
 
             # append accuracy score to list: f1
             f1.append(f1_score(y_test, y_pred, average='micro'))
@@ -236,128 +138,32 @@ def num_model_metrics(models, df, label, num_features):
         print()
 
 
-def text_random_hyper_tune(df, text_feature, label, model, vectorizer, n_iters, n_folds):
+def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_folds, model_file_path):
     """
-    Performs hyper-parameter tuning for a text model
+    Performs hyper-parameter tuning for a model using Randomized Search.
+    In addition to specifying the pandas DataFrame, features, labels and model to cross-validate,
+    specify the number of iterations and number of cross-validation folds.
+    Finally specify the path to export the pickle file, which can be used for later.
 
-    @param df:
-    @param text_feature:
-    @param label:
-    @param model:
-    @param vectorizer:
-    @param n_iters:
-    @param n_folds:
-    @return:
+    @param model: model to tune
+    @param df: pandas DataFrame containing features and labels
+    @param features: pandas Series containing features, can be passed in as a list if specifying multiple features
+    @param label: pandas Series containing labels
+    @param param_grid: dictionary of hyper-parameters to tune
+    @param n_iters: nubmer of iterations to specify before training is ceased
+    @param n_folds: number of cross-validation folds to partition pandas DataFrame
+    @param model_file_path: path to export the model as a pickle file
+    @return: return a tuple of the best performant model and a pandas DataFrame with all of the parameters and training/holdout results
     """
 
     # define feature set: X
-    X = df[text_feature]
+    X = df[features]
     # define label: y
     y = df[label]
-
-    # instantiate model training pipeline
-    pipe = Pipeline([('vectorizer', vectorizer),
-                     ('scaler', StandardScaler(with_mean=False)),
-                     ('dim_red', SelectKBest(chi2)),
-                     ('clf', model)
-                     ])
-    print(pipe)
-    print()
-
-    # Create the parameter grid
-    param_grid = {
-        'vectorizer__ngram_range': [(1, 3), (2, 3)],
-        'dim_red__k': [100, 200, 300],
-        'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
-        'clf__estimator__colsample_bytree': [0.3, 0.7],
-        'clf__estimator__n_estimators': [100, 200, 300],
-        'clf__estimator__max_depth': [3, 6, 10, 20],
-        'clf__estimator__learning_rate': np.linspace(.1, 2, 150),
-        'clf__estimator__min_samples_leaf': list(range(20, 65))
-    }
-
-    # Create a grid search object
-    random_model = RandomizedSearchCV(
-        estimator=pipe,
-        param_distributions=param_grid,
-        scoring='accuracy',
-        n_jobs=6,
-        n_iter=n_iters,
-        cv=n_folds,
-        refit=True,
-        return_train_score=True,
-        verbose=1
-    )
-
-    # Fit to the training data
-    random_model.fit(X, y)
-
-    # Print the values used for both Parameters & Score
-    print("Best random Parameters: ", random_model.best_params_)
-    print()
-    print("Best random Score: ", random_model.best_score_)
-    print()
-
-    # Read the cv_results property into a dataframe & print it out
-    cv_results_df = pd.DataFrame(random_model.cv_results_).sort_values(by=["rank_test_score"])
-    print(cv_results_df)
-    print()
-
-    # Extract and print the column with a dictionary of hyperparameters used
-    column = cv_results_df.loc[:, ["params"]]
-    print(column)
-    print()
-
-    # Extract and print the row that had the best mean test score
-    best_row = cv_results_df[cv_results_df["rank_test_score"] == 1]
-    print(best_row)
-    print()
-
-    # save text model for later
-    with open("./models/text_pipe_xgb.pkl", 'wb') as model_file:
-        pickle.dump(random_model.best_estimator_, model_file)
-
-    return random_model.best_estimator_, cv_results_df, column
-
-
-def num_random_hyper_tune(df, num_features, label, model, n_iters, n_folds):
-    """
-    Performs hyper-parameter tuning for a model with numeric features
-
-    @param df:
-    @param num_features:
-    @param label:
-    @param model:
-    @param n_iters:
-    @param n_folds:
-    @return:
-    """
-    # define feature set: X
-    X = df[num_features]
-    # define label: y
-    y = df[label]
-
-    # instantiate model pipeline
-    pipe = Pipeline([
-        ('scaler', MinMaxScaler()),
-        ('clf', model)
-    ])
-    print(pipe)
-    print()
-
-    # Create the parameter grid
-    param_grid = {
-        'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
-        'clf__estimator__colsample_bytree': [0.3, 0.7],
-        'clf__estimator__n_estimators': [100, 200, 300],
-        'clf__estimator__max_depth': [3, 6, 10, 20],
-        'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
-        'clf__estimator__min_samples_leaf': list(range(20, 60))
-    }
 
     # Create a random search object
     random_model = RandomizedSearchCV(
-        estimator=pipe,
+        estimator=model,
         param_distributions=param_grid,
         scoring='accuracy',
         n_jobs=6,
@@ -379,55 +185,70 @@ def num_random_hyper_tune(df, num_features, label, model, n_iters, n_folds):
 
     # Read the cv_results property into a dataframe & print it out
     cv_results_df = pd.DataFrame(random_model.cv_results_).sort_values(by=["rank_test_score"])
-    print(cv_results_df)
+    print(dict(cv_results_df))
     print()
 
     # Extract and print the column with a dictionary of hyperparameters used
     column = cv_results_df.loc[:, ["params"]]
-    print(column)
+    print(dict(column))
     print()
 
     # Extract and print the row that had the best mean test score
     best_row = cv_results_df[cv_results_df["rank_test_score"] == 1]
-    print(best_row)
+    print(dict(best_row))
     print()
 
-    # save model with numeric features for later
-    with open("./models/num_pipe_xgb.pkl", 'wb') as model_file:
+    # save text model for later
+    with open(model_file_path, 'wb') as model_file:
         pickle.dump(random_model.best_estimator_, model_file)
 
-    return random_model.best_estimator_, cv_results_df, column
+    return random_model.best_estimator_, cv_results_df
 
 
-def text_feature_importance(df, text_feature, vectorizer):
-    # https://buhrmann.github.io/tfidf-analysis.html
-    # split into train & test sets
-    train_df, test_df = train_test_split(df[[text_feature]], test_size=.2, random_state=42)
+def text_feature_importance(df, text_feature, vectorizer, top_n=20):
+    """
+    Print a pandas DataFrame with the Top N most important n_grams by the TfIdf Vectorizer weights,
+    used as input features for the text model
 
-    # Fit the vectorizer and transform the data
-    vectorizer.fit(train_df)
+    @param df: pandas DataFrame containing the text feature
+    @param text_feature: pandas Series containing the text feature
+    @param vectorizer: TfIdf Vectorizer that was used for feature engineering for text model
+    @param top_n: Number of words to output
+    """
+    # fit vectorizer
+    tfidf_matrix = vectorizer.fit_transform(df[text_feature])
 
-    # Transform test data
-    tfidf_test = vectorizer.transform(test_df)
+    # get feature names
+    features = vectorizer.get_feature_names()
 
-    # Create new features for the test set
-    tfidf_df = pd.DataFrame(tfidf_test.toarray(),
-                            columns=vectorizer.get_feature_names()).add_prefix('TFIDF_')
+    # Return the top n features that on average are most important amongst documents
+    rows = np.squeeze(tfidf_matrix.toarray())
 
-    # print first 5 rows of DataFrame
-    print(tfidf_df.head())
-    print()
+    # compute mean tfidf weights across documents
+    tfidf_means = np.mean(rows, axis=0)
 
-    return tfidf_df
+    # Get top n tfidf values in row and return them with their corresponding feature names
+    topn_ids = np.argsort(tfidf_means)[::-1][:top_n]
+
+    # return top features
+    top_feats = [(features[i], tfidf_means[i]) for i in topn_ids]
+
+    # create pandas DataFrame
+    df = pd.DataFrame(top_feats)
+    df.columns = ['feature', 'tfidf']
+
+    # print pandas DataFrame
+    print(df)
 
 
 def num_feature_importance(df, model, features):
     """
-    Return a DataFrame with most important features for tree-based models with numeric features
+    Return a pandas DataFrame with most important features for tree-based models with numeric features,
+    sorted in descending order by feature importance.
 
-    @param df:
-    @param model:
-    @param features:
+    @param df: pandas DataFrame containing the features
+    @param model: model that was used for training
+    @param features: list of numeric features
     @return:
     """
     # Calculate feature importance: feature_importance
@@ -440,9 +261,7 @@ def num_feature_importance(df, model, features):
     relative_importance = pd.DataFrame(index=feature_list, data=feature_importance, columns=["importance"])
 
     # print only features with relative importance higher than 1%
-    print(relative_importance[relative_importance['importance'] > 0.01].sort_values('importance', ascending=False))
-
-    return relative_importance
+    print(dict(relative_importance[relative_importance['importance'] > 0.01].sort_values('importance', ascending=False)))
 
 
 def stacked_model_metrics(
@@ -455,16 +274,18 @@ def stacked_model_metrics(
         stacked_model
 ):
     """
-    Fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics
+    Splits DataFrame into 5-Fold partitions.
+    Fits both numeric, text and stacked model and prints model validation metrics for stacked models for each partition.
+    Split each partition into training, test and holdout set,
+    and return 5-Fold cross-validated average Accuracy and F1 metrics for multi-class classification
 
-    @param df:
-    @param label:
-    @param text_model:
-    @param text_feature:
-    @param num_model:
-    @param num_features:
-    @param stacked_model:
-    @return:
+    @param df: pandas DataFrame containing features and labels
+    @param label: pandas Series containing labels
+    @param text_model: text model that will be used for training
+    @param text_feature: pandas series that will be used as feature for text model
+    @param num_model: model that will use numeric features for training
+    @param num_features: list of pandas series that will be used as features for model with numeric features
+    @param stacked_model: model that will be used in second layer of modeling pipeline
     """
     # split DataFrame into 5-Folds
     kfold_list = split_df(
