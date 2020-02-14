@@ -21,8 +21,7 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import confusion_matrix, classification_report, f1_score
-from sklearn.model_selection import train_test_split, RandomizedSearchCV \
-    # , GridSearchCV
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
 import pickle
 
 
@@ -64,7 +63,8 @@ def split_df(df, label_col):
 
 def text_model_metrics(models, vectorizers, df, text_feature, label):
     """
-    Iterate over a list of models, fitting them and getting evaluation metrics on text data.
+    Iterate over a list of models, fitting them and getting evaluation metrics on text data
+
     """
     # split DataFrame into 5-Folds
     kfold_list = split_df(
@@ -89,10 +89,9 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
             print()
 
             # instantiate model training pipeline
-            # instantiate model training pipeline
             pipe = Pipeline([('vectorizer', vectorizer),
                              ('scaler', StandardScaler(with_mean=False)),
-                             ('dim_red', SelectKBest(chi2, k=200)),
+                             ('dim_red', SelectKBest(chi2, k=300)),
                              ('clf', model)
                              ])
             print(pipe)
@@ -152,7 +151,8 @@ def text_model_metrics(models, vectorizers, df, text_feature, label):
 
 def num_model_metrics(models, df, label, num_features):
     """
-    Iterate over a list of models, fitting them and getting evaluation metrics on numeric data.
+    Iterate over a list of models, fitting them and getting evaluation metrics on numeric data
+
     @param models:
     @param df:
     @param label:
@@ -238,7 +238,8 @@ def num_model_metrics(models, df, label, num_features):
 
 def text_random_hyper_tune(df, text_feature, label, model, vectorizer, n_iters, n_folds):
     """
-    Performs hyper-parameter tuning for a text model.
+    Performs hyper-parameter tuning for a text model
+
     @param df:
     @param text_feature:
     @param label:
@@ -266,7 +267,7 @@ def text_random_hyper_tune(df, text_feature, label, model, vectorizer, n_iters, 
     # Create the parameter grid
     param_grid = {
         'vectorizer__ngram_range': [(1, 3), (2, 3)],
-        'dim_red__k': [50, 100, 200],
+        'dim_red__k': [100, 200, 300],
         'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
         'clf__estimator__colsample_bytree': [0.3, 0.7],
         'clf__estimator__n_estimators': [100, 200, 300],
@@ -298,7 +299,7 @@ def text_random_hyper_tune(df, text_feature, label, model, vectorizer, n_iters, 
     print()
 
     # Read the cv_results property into a dataframe & print it out
-    cv_results_df = pd.DataFrame(random_model.cv_results_)
+    cv_results_df = pd.DataFrame(random_model.cv_results_).sort_values(by=["rank_test_score"])
     print(cv_results_df)
     print()
 
@@ -312,16 +313,16 @@ def text_random_hyper_tune(df, text_feature, label, model, vectorizer, n_iters, 
     print(best_row)
     print()
 
-    # # save text model for later
-    # with open(text_model_pkl, 'wb') as model_file:
-    #     pickle.dump(text_model, model_file)
+    # save text model for later
+    with open("./models/text_pipe_xgb.pkl", 'wb') as model_file:
+        pickle.dump(random_model.best_estimator_, model_file)
 
     return random_model.best_estimator_, cv_results_df, column
 
 
 def num_random_hyper_tune(df, num_features, label, model, n_iters, n_folds):
     """
-    Performs hyper-parameter tuning for a model with numeric features.
+    Performs hyper-parameter tuning for a model with numeric features
 
     @param df:
     @param num_features:
@@ -391,14 +392,15 @@ def num_random_hyper_tune(df, num_features, label, model, n_iters, n_folds):
     print(best_row)
     print()
 
-    # # save model with numeric features for later
-    # with open(num_model_pkl, 'wb') as model_file:
-    #     pickle.dump(num_model, model_file)
+    # save model with numeric features for later
+    with open("./models/num_pipe_xgb.pkl", 'wb') as model_file:
+        pickle.dump(random_model.best_estimator_, model_file)
 
     return random_model.best_estimator_, cv_results_df, column
 
 
 def text_feature_importance(df, text_feature, vectorizer):
+    # https://buhrmann.github.io/tfidf-analysis.html
     # split into train & test sets
     train_df, test_df = train_test_split(df[[text_feature]], test_size=.2, random_state=42)
 
@@ -421,7 +423,8 @@ def text_feature_importance(df, text_feature, vectorizer):
 
 def num_feature_importance(df, model, features):
     """
-    Return a DataFrame with most important features for tree-based models with numeric features.
+    Return a DataFrame with most important features for tree-based models with numeric features
+
     @param df:
     @param model:
     @param features:
@@ -452,8 +455,16 @@ def stacked_model_metrics(
         stacked_model
 ):
     """
-    Fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics.
+    Fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics
 
+    @param df:
+    @param label:
+    @param text_model:
+    @param text_feature:
+    @param num_model:
+    @param num_features:
+    @param stacked_model:
+    @return:
     """
     # split DataFrame into 5-Folds
     kfold_list = split_df(
@@ -527,7 +538,7 @@ def stacked_model_metrics(
         X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
 
         # Look at the model coefficients
-        print('LogisticRegression Coefs: {}'.format(model.coef_))
+        print('LogisticRegression Coefs: {}'.format(stacked_model.coef_))
         print()
 
         # see if model is overfitting
@@ -559,28 +570,6 @@ def stacked_model_metrics(
     print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
     print()
 
-    # # save stacked model for later
-    # with open(stacked_model_pkl, 'wb') as model_file:
-    #     pickle.dump(stacked_model, model_file)
-
-    # # Instantiate the GridSearchCV object and run the search
-    # searcher = GridSearchCV(
-    #     logreg,
-    #     {'C': [0.001, 0.01, 0.1, 1, 10],
-    #      'penalty': ["l1", "l2"],
-    #      'class_weight': [None, "balanced"]
-    #      },
-    #     cv=3,
-    #     verbose=1,
-    #     n_jobs=-1
-    # )
-    # searcher.fit(X_train, y_train)
-    #
-    # # Report the best parameters
-    # print("Best CV params", searcher.best_params_)
-    #
-    # # Find the number of nonzero coefficients (selected features)
-    # best_lr = searcher.best_estimator_
-    # coefs = best_lr.coef_
-    # print("Total number of features:", coefs.size)
-    # print("Number of selected features:", np.count_nonzero(coefs))
+    # save stacked model for later
+    with open("./models/lr_stack.pkl", 'wb') as model_file:
+        pickle.dump(stacked_model, model_file)
