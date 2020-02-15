@@ -1,0 +1,5442 @@
+C:\Users\bscard\miniconda3\python.exe "C:/Users/bscard/Documents/Pycharm Projects/nyt_sentiment_analyzer/nyt_sentiment_analyzer.py"
+
+DataFrame Sample
+  Unnamed: 0  ... slideshow_credits
+0          0  ...               NaN
+1          1  ...               NaN
+2          2  ...               NaN
+3          3  ...               NaN
+4          4  ...               NaN
+
+[5 rows x 30 columns]
+
+DataFrame Shape: (46563, 30)
+
+DataFrame Metadata
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 46563 entries, 0 to 46562
+Data columns (total 30 columns):
+Unnamed: 0                 46563 non-null object
+abstract                   45579 non-null object
+web_url                    46559 non-null object
+snippet                    44603 non-null object
+lead_paragraph             44806 non-null object
+source                     45569 non-null object
+multimedia                 46563 non-null object
+keywords                   46563 non-null object
+pub_date                   46563 non-null object
+document_type              46563 non-null object
+news_desk                  45774 non-null object
+section_name               46559 non-null object
+type_of_material           45496 non-null object
+_id                        46563 non-null object
+word_count                 46563 non-null float64
+uri                        46563 non-null object
+headline_main              46563 non-null object
+headline_kicker            8585 non-null object
+headline_content_kicker    0 non-null float64
+headline_print_headline    28511 non-null object
+headline_name              0 non-null float64
+headline_seo               0 non-null float64
+headline_sub               0 non-null float64
+byline_original            38974 non-null object
+byline_person              46563 non-null object
+byline_organization        4945 non-null object
+subsection_name            26972 non-null object
+print_section              21486 non-null object
+print_page                 23522 non-null object
+slideshow_credits          12 non-null object
+dtypes: float64(5), object(25)
+memory usage: 10.7+ MB
+None
+
+Preprocessed DataFrame!
+
+New DataFrame Shape: (18486, 5)
+
+Generated Date Features & reset index!
+
+Index(['headline_main', 'web_url', 'text', 'word_count', 'pub_date', 'year',
+       'month', 'day', 'dayofweek', 'hour'],
+      dtype='object')
+
+Filtered out articles prior to 2019!
+
+DataFrame Shape: (11187, 10)
+
+Generated TextBlob Sentiment Scores!
+
+['What’s on TV Tuesday: Leslie Jones and the Democratic Debate Leslie Jones looks back at her life in a new stand-up special, and the first Democratic presidential debate of the year airs on CNN.'
+ 'The Most Important Week of the Democratic Primary in 2019 How a series of turning points in mid-October explains the state of the race today and can serve as a cheat sheet for the casual 2020 primary observer.'
+ 'What Do You Think About Beto? What this country needs is a skateboarder president.'
+ 'Here Is Every 2020 Democrat, Roasted by Haiku Because there are too many candidates to use full sentences.'
+ 'Where in N.Y.C. to Watch the Democratic Debates Wednesday: Two nights of debates means two nights of watch parties across the city.'
+ "Democrats, Prince Charles, N.F.L.: Your Monday Briefing Here's what you need to know."
+ 'The Awkward but Essential Art of Office Chitchat We regret to inform you that you need to make small talk with your co-workers. Here’s how to master it.'
+ 'Naomi Wolf’s Publisher Cancels U.S. Release of ‘Outrages’ The book had been postponed for months after errors were uncovered earlier this year.'
+ 'Tape Made Public of Trump Discussing Ukraine With Donors The recording from a dinner in 2018 showed that the president spent an hour with two key players in the Ukraine pressure campaign. He has repeatedly said he does not know them.'
+ 'Schiff sought to head off the defense. Now it’s coming for him. President Trump’s defense team wasted little time on Saturday coming straight after the House managers on the process, playing a clip at the outset of Mr. Schiff at a hearing last year'
+ '\'Denial of Justice\': Britain Rebukes U.S. for Not Giving Up Diplomat\'s Wife Britain criticized the United States on Friday for refusing to extradite a U.S. diplomat\'s wife who was involved in a car crash that killed a British teenager, saying it amounted to a "denial of justice".'
+ 'Tougher Huawei Restrictions Stall After Defense Department Objects Proposed changes to further limit American shipments to Huawei have been delayed amid arguments they could backfire.'
+ 'In Private, Republicans Admit They Acquitted Trump Out of Fear One journalist remarked to me, “How in the world can these senators walk around here upright when they have no backbone?”'
+ 'What’s on TV Tuesday: ‘Contact’ and the State of the Union A film starring Jodie Foster is airing. And President Trump delivers his third State of the Union Address.'
+ "Saudi Arabia Blocks Iran From Islamic Grouping's Meeting: Tehran Saudi Arabia has barred an Iranian delegation from an Organization of Islamic Cooperation (OIC) meeting in Jeddah on Monday where U.S. President Donald Trump's Middle East peace plan will be discussed, the Iranian foreign ministry said."
+ 'Judge Reverses Convictions of Activists Who Left Water for Migrants A federal judge found that four volunteers with the group “No More Deaths” were acting on their religious beliefs when they left food and water for migrants in the desert.'
+ 'Polling: Americans Dissatisfied With the State of the Union The turbulence of impeachment, a contentious presidential campaign and a global virus health threat confront President Donald Trump as he prepares to deliver his State of the Union address Tuesday night. But one thing about the Trump era has remained remarkably steady: public opinion on the president.'
+ 'How Trump Made a Writer of Thrillers Stick to Facts Richard North Patterson wrote best-selling novels about presidents, until he decided that the political moment was too strange to make anything up.'
+ 'Wells Fargo Is Reviewing Its Account-Closing Practices The chief executive, C. Allen Parker, told Senator Elizabeth Warren that the bank had begun an “extensive review” of overdraft fees for such accounts in response to a New York Times article.'
+ 'In Tribute to Cummings, Obama Hints at Rebuke of Trump The former president said that Representative Elijah E. Cummings showed that “you’re not a sucker to have integrity.”'
+ "Boris Johnson, United Nations, Puerto Rico: Your Tuesday Briefing  Here's what you need to know"
+ "Ukraine, Emmy Awards, Thomas Cook: Your Monday Briefing Here's what you need to know."
+ 'Hong Kong, Impeachment Hearings, Tom Hanks: Your Thursday Briefing Here’s what you need to know.'
+ 'There’s No Boom in Youngstown, but Blue-Collar Workers Are Sticking With Trump The recovery, which has brought low unemployment and rising wages elsewhere, hasn’t really lifted industrial northeast Ohio. But President Trump has lost little of his support there.'
+ 'Biden Makes First Campaign Appearance in South Carolina, Key Primary State The speech indicated how Mr. Biden will bring his “working-class Joe” brand to a more diverse Democratic electorate, with black voters playing a dominant role.'
+ 'Sri Lanka, Notre-Dame, Joe Biden: Your Friday Briefing A strategy shift for ISIS.']
+
+Computed labels for Modeling
+
+['positive' 'neutral' 'negative']
+
+positive    4599
+neutral     3558
+negative    1862
+Name: sentiment_label, dtype: int64
+
+0    120
+1    265
+2    194
+3    202
+4     83
+Name: char_count, dtype: int64
+
+0    Impeachment North Korea Eddie Murphy Your Week...
+1    Warren Souvenir Wine Bottle Pops Up in Big Don...
+2    Impeachment and a Wine Cave Debate This Week i...
+3    Buttigieg Leads Rivals in Wall Street Contribu...
+4    Guest Lineups for the Sunday News Shows Guest ...
+Name: text_feat, dtype: object
+
+Index(['headline_main', 'web_url', 'text', 'word_count', 'pub_date', 'year',
+       'month', 'day', 'dayofweek', 'hour', 'polarity', 'subjectivity',
+       'sentiment_label', 'char_count', 'text_feat'],
+      dtype='object')
+
+DataFrame descriptive statistics:
+{'word_count': count    10019.000000
+mean      1045.977044
+std        944.576796
+min          0.000000
+25%        534.000000
+50%        969.000000
+75%       1345.000000
+max      20056.000000
+Name: word_count, dtype: float64, 'year': count    10019.000000
+mean      2019.264997
+std          0.441353
+min       2019.000000
+25%       2019.000000
+50%       2019.000000
+75%       2020.000000
+max       2020.000000
+Name: year, dtype: float64, 'month': count    10019.000000
+mean         6.721429
+std          4.237385
+min          1.000000
+25%          2.000000
+50%          7.000000
+75%         11.000000
+max         12.000000
+Name: month, dtype: float64, 'day': count    10019.000000
+mean        16.294640
+std          9.224536
+min          1.000000
+25%          8.000000
+50%         17.000000
+75%         25.000000
+max         31.000000
+Name: day, dtype: float64, 'dayofweek': count    10019.000000
+mean         2.605549
+std          1.753960
+min          0.000000
+25%          1.000000
+50%          3.000000
+75%          4.000000
+max          6.000000
+Name: dayofweek, dtype: float64, 'hour': count    10019.000000
+mean        13.043717
+std          6.818533
+min          0.000000
+25%          9.000000
+50%         14.000000
+75%         19.000000
+max         23.000000
+Name: hour, dtype: float64, 'polarity': count    10019.000000
+mean         0.071684
+std          0.212364
+min         -1.000000
+25%          0.000000
+50%          0.018182
+75%          0.171429
+max          1.000000
+Name: polarity, dtype: float64, 'subjectivity': count    10019.000000
+mean         0.351452
+std          0.257319
+min          0.000000
+25%          0.125000
+50%          0.360000
+75%          0.500000
+max          1.000000
+Name: subjectivity, dtype: float64, 'char_count': count    10019.000000
+mean       198.683501
+std         69.853475
+min         30.000000
+25%        152.000000
+50%        199.000000
+75%        239.000000
+max        737.000000
+Name: char_count, dtype: float64}
+
+The reduced dataframe has 10 columns.
+
+trump                     1767
+president                 1207
+is                        1203
+as                         787
+impeachment                655
+new                        641
+democratic                 595
+are                        592
+an                         574
+has                        510
+democrats                  489
+was                        483
+biden                      449
+2020                       432
+will                       430
+house                      418
+said                       408
+presidential               393
+not                        390
+donald                     382
+donald trump               379
+more                       367
+president trump            346
+candidates                 333
+warren                     315
+president donald           312
+president donald trump     312
+debate                     295
+state                      294
+sanders                    284
+dtype: int64
+
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 10019 entries, 0 to 11186
+Data columns (total 17 columns):
+headline_main      10019 non-null object
+web_url            10016 non-null object
+text               10019 non-null object
+word_count         10019 non-null float64
+pub_date           10019 non-null datetime64[ns, UTC]
+year               10019 non-null int64
+month              10019 non-null int64
+day                10019 non-null int64
+dayofweek          10019 non-null int64
+hour               10019 non-null int64
+polarity           10019 non-null float64
+subjectivity       10019 non-null float64
+sentiment_label    10019 non-null object
+char_count         10019 non-null int64
+text_feat          10019 non-null object
+PC1                8851 non-null float64
+PC2                8851 non-null float64
+dtypes: datetime64[ns, UTC](1), float64(5), int64(6), object(5)
+memory usage: 1.7+ MB
+None
+
+C:\Users\bscard\miniconda3\lib\site-packages\pandas\plotting\_matplotlib\converter.py:103: FutureWarning: Using an implicitly registered datetime converter for a matplotlib plotting method. The converter was registered by pandas on import. Future versions of pandas will require you to explicitly register matplotlib converters.
+
+To register the converters:
+	>>> from pandas.plotting import register_matplotlib_converters
+	>>> register_matplotlib_converters()
+  warnings.warn(msg, FutureWarning)
+Instantiated list of text models!
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                               text_feat  ...  sentiment_label
+7809  Lisa Page Ex Lawyer Whose Texts Criticized Tru...  ...          neutral
+5590  This Mexican Chef Is Having a Very Good Year G...  ...          neutral
+3329  Why be Democrats Talking About Impeachment Bec...  ...         positive
+1728  Democratic Presidential Hopeful Klobuchar Sets...  ...          neutral
+9926  Jeffrey Epstein Gun Control Simone Biles Your ...  ...          neutral
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    937
+neutral     717
+negative    350
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                                text_feat  ...  sentiment_label
+1922   Elizabeth Warren Wants to Cancel Student Loans...  ...          neutral
+10223  Trump Presses His Argument of a Border Crisis ...  ...          neutral
+8313   Big Business Says It Will Tackle Climate Chang...  ...          neutral
+2055   Unable to Post Bail You Will Pay for That for ...  ...         negative
+1951   Eliminating Child Poverty With a Government Ch...  ...         positive
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    908
+neutral     703
+negative    393
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                                text_feat  ...  sentiment_label
+10432  The Impeachment Questions We Were Afraid to As...  ...         positive
+1304   Who Won the Debate Experts Weigh In There be l...  ...         positive
+9176   Years Later Native American Tribe in Montana G...  ...          neutral
+2669   In a Collection of Tributes the Gang Is All He...  ...         positive
+8691   Trial date be set for Lev Parnas Parnas have s...  ...         positive
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    907
+neutral     697
+negative    400
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                               text_feat  ...  sentiment_label
+5266  How Can You Put Life of Onstage With Puppets I...  ...          neutral
+1432  Momentum for Harris Big Haul for Buttigieg Thi...  ...         negative
+1515  Should College Be Free The Democratic Party be...  ...          neutral
+7793  Trump Possible Policy Shift on the Taliban A r...  ...         positive
+5133  You Oughta The Road to Making a Anthem a Broad...  ...          neutral
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    910
+neutral     733
+negative    361
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                                text_feat  ...  sentiment_label
+7242   Impeachment Briefing What Happened Today Anoth...  ...         positive
+10153  Wartime Secrets and Intrigue From the Hotel Ri...  ...         positive
+4061   Joe Biden and the Apologies That be Politician...  ...         negative
+6344   Elizabeth Warren Has a Poet on Her Team Here W...  ...          neutral
+10739  Trump Wants a Fight Pelosi Can Hit Back With r...  ...         positive
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    935
+neutral     715
+negative    354
+Name: sentiment_label, dtype: int64
+
+Split DataFrames into 5-Fold datasets!
+
+Starting Model Training!
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 CountVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.int64'>, encoding='utf-8',
+                                 input='content', lowercase=True, max_df=1.0,
+                                 max_features=None, min_df=1,
+                                 ngram_range=(1, 2), preprocessor=None,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be', 'a',
+                                             'and', 'any', 'be', 'a', '...
+                                             'be', 'below', 'between', 'both',
+                                             'but', 'by', 'can', 'com', 'can',
+                                             'do', 'do', 'doe', ...],
+                                 strip_accents=None,
+                                 token_pattern='(?u)\\b\\w\\w+\\b',
+                                 tokenizer=None, vocabulary=None)),
+                ('dim_red',
+                 SelectKBest(k=300,
+                             score_func=<function chi2 at 0x0000018482EFEE18>)),
+                ('clf',
+                 OneVsRestClassifier(estimator=MultinomialNB(alpha=1.0,
+                                                             class_prior=None,
+                                                             fit_prior=True),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6631316281971303
+
+Test Set Accuracy
+0.4389027431421446
+
+Confusion matrix
+[[  2  21  47]
+ [  6  49  88]
+ [ 13  50 125]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.10      0.03      0.04        70
+     neutral       0.41      0.34      0.37       143
+    positive       0.48      0.66      0.56       188
+
+    accuracy                           0.44       401
+   macro avg       0.33      0.35      0.32       401
+weighted avg       0.39      0.44      0.40       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6444167186525265
+
+Test Set Accuracy
+0.4139650872817955
+
+Confusion matrix
+[[ 10  14  54]
+ [ 14  37  90]
+ [ 18  45 119]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.24      0.13      0.17        78
+     neutral       0.39      0.26      0.31       141
+    positive       0.45      0.65      0.53       182
+
+    accuracy                           0.41       401
+   macro avg       0.36      0.35      0.34       401
+weighted avg       0.39      0.41      0.38       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6431690580162196
+
+Test Set Accuracy
+0.4239401496259352
+
+Confusion matrix
+[[  4  21  55]
+ [ 13  26 100]
+ [ 14  28 140]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.13      0.05      0.07        80
+     neutral       0.35      0.19      0.24       139
+    positive       0.47      0.77      0.59       182
+
+    accuracy                           0.42       401
+   macro avg       0.32      0.34      0.30       401
+weighted avg       0.36      0.42      0.37       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.669369931378665
+
+Test Set Accuracy
+0.3865336658354115
+
+Confusion matrix
+[[  5  28  39]
+ [  9  43  95]
+ [ 16  59 107]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.17      0.07      0.10        72
+     neutral       0.33      0.29      0.31       147
+    positive       0.44      0.59      0.51       182
+
+    accuracy                           0.39       401
+   macro avg       0.31      0.32      0.30       401
+weighted avg       0.35      0.39      0.36       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6319401122894572
+
+Test Set Accuracy
+0.4513715710723192
+
+Confusion matrix
+[[  4  19  48]
+ [  5  24 114]
+ [ 13  21 153]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.18      0.06      0.09        71
+     neutral       0.38      0.17      0.23       143
+    positive       0.49      0.82      0.61       187
+
+    accuracy                           0.45       401
+   macro avg       0.35      0.35      0.31       401
+weighted avg       0.39      0.45      0.38       401
+
+
+
+5-fold cross-validated Accuracy: 0.42294264339152116
+
+5-fold cross-validated F1 score: 0.42294264339152116
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 TfidfVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.float64'>,
+                                 encoding='utf-8', input='content',
+                                 lowercase=True, max_df=1.0, max_features=None,
+                                 min_df=1, ngram_range=(1, 2), norm='l2',
+                                 preprocessor=None, smooth_idf=True,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be...
+                                 strip_accents=None, sublinear_tf=False,
+                                 token_pattern='(?u)\\b\\w\\w+\\b',
+                                 tokenizer=None, use_idf=True,
+                                 vocabulary=None)),
+                ('scaler',
+                 StandardScaler(copy=True, with_mean=False, with_std=True)),
+                ('dim_red',
+                 SelectKBest(k=300,
+                             score_func=<function chi2 at 0x0000018482EFEE18>)),
+                ('clf',
+                 OneVsRestClassifier(estimator=MultinomialNB(alpha=1.0,
+                                                             class_prior=None,
+                                                             fit_prior=True),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.527760449157829
+
+Test Set Accuracy
+0.4488778054862843
+
+Confusion matrix
+[[  2   0  68]
+ [  8   1 134]
+ [ 10   1 177]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.10      0.03      0.04        70
+     neutral       0.50      0.01      0.01       143
+    positive       0.47      0.94      0.62       188
+
+    accuracy                           0.45       401
+   macro avg       0.36      0.33      0.23       401
+weighted avg       0.41      0.45      0.31       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5346225826575172
+
+Test Set Accuracy
+0.42144638403990026
+
+Confusion matrix
+[[  3   1  74]
+ [  4   0 137]
+ [ 15   1 166]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.14      0.04      0.06        78
+     neutral       0.00      0.00      0.00       141
+    positive       0.44      0.91      0.59       182
+
+    accuracy                           0.42       401
+   macro avg       0.19      0.32      0.22       401
+weighted avg       0.23      0.42      0.28       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5221459762944479
+
+Test Set Accuracy
+0.4613466334164589
+
+Confusion matrix
+[[  9   1  70]
+ [ 11   5 123]
+ [ 10   1 171]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.30      0.11      0.16        80
+     neutral       0.71      0.04      0.07       139
+    positive       0.47      0.94      0.63       182
+
+    accuracy                           0.46       401
+   macro avg       0.49      0.36      0.29       401
+weighted avg       0.52      0.46      0.34       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5208983156581409
+
+Test Set Accuracy
+0.4339152119700748
+
+Confusion matrix
+[[  1   0  71]
+ [  7   3 137]
+ [  6   6 170]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.07      0.01      0.02        72
+     neutral       0.33      0.02      0.04       147
+    positive       0.45      0.93      0.61       182
+
+    accuracy                           0.43       401
+   macro avg       0.28      0.32      0.22       401
+weighted avg       0.34      0.43      0.29       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5570804741110418
+
+Test Set Accuracy
+0.4488778054862843
+
+Confusion matrix
+[[  6   1  64]
+ [  5   1 137]
+ [ 13   1 173]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.25      0.08      0.13        71
+     neutral       0.33      0.01      0.01       143
+    positive       0.46      0.93      0.62       187
+
+    accuracy                           0.45       401
+   macro avg       0.35      0.34      0.25       401
+weighted avg       0.38      0.45      0.31       401
+
+
+
+5-fold cross-validated Accuracy: 0.44289276807980055
+
+5-fold cross-validated F1 score: 0.44289276807980055
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 CountVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.int64'>, encoding='utf-8',
+                                 input='content', lowercase=True, max_df=1.0,
+                                 max_features=None, min_df=1,
+                                 ngram_range=(1, 2), preprocessor=None,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be', 'a',
+                                             'and', 'any', 'be', 'a', '...
+                                 tokenizer=None, vocabulary=None)),
+                ('dim_red',
+                 SelectKBest(k=300,
+                             score_func=<function chi2 at 0x0000018482EFEE18>)),
+                ('clf',
+                 OneVsRestClassifier(estimator=LinearSVC(C=1000,
+                                                         class_weight='balanced',
+                                                         dual=True,
+                                                         fit_intercept=True,
+                                                         intercept_scaling=1,
+                                                         loss='squared_hinge',
+                                                         max_iter=5000,
+                                                         multi_class='ovr',
+                                                         penalty='l2',
+                                                         random_state=42,
+                                                         tol=0.0001,
+                                                         verbose=0),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.6662507797878977
+
+Test Set Accuracy
+0.38902743142144636
+
+Confusion matrix
+[[ 14  17  39]
+ [ 23  39  81]
+ [ 43  42 103]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.17      0.20      0.19        70
+     neutral       0.40      0.27      0.32       143
+    positive       0.46      0.55      0.50       188
+
+    accuracy                           0.39       401
+   macro avg       0.34      0.34      0.34       401
+weighted avg       0.39      0.39      0.38       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.6026200873362445
+
+Test Set Accuracy
+0.3491271820448878
+
+Confusion matrix
+[[  8  43  27]
+ [ 15  92  34]
+ [ 15 127  40]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.21      0.10      0.14        78
+     neutral       0.35      0.65      0.46       141
+    positive       0.40      0.22      0.28       182
+
+    accuracy                           0.35       401
+   macro avg       0.32      0.32      0.29       401
+weighted avg       0.34      0.35      0.32       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.6331877729257642
+
+Test Set Accuracy
+0.38403990024937656
+
+Confusion matrix
+[[ 20  17  43]
+ [ 40  25  74]
+ [ 46  27 109]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.19      0.25      0.22        80
+     neutral       0.36      0.18      0.24       139
+    positive       0.48      0.60      0.53       182
+
+    accuracy                           0.38       401
+   macro avg       0.34      0.34      0.33       401
+weighted avg       0.38      0.38      0.37       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.6880848409232688
+
+Test Set Accuracy
+0.38902743142144636
+
+Confusion matrix
+[[  6  29  37]
+ [ 17  48  82]
+ [ 32  48 102]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.11      0.08      0.09        72
+     neutral       0.38      0.33      0.35       147
+    positive       0.46      0.56      0.51       182
+
+    accuracy                           0.39       401
+   macro avg       0.32      0.32      0.32       401
+weighted avg       0.37      0.39      0.38       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.6512788521522146
+
+Test Set Accuracy
+0.4389027431421446
+
+Confusion matrix
+[[  8  24  39]
+ [ 11  41  91]
+ [ 18  42 127]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.22      0.11      0.15        71
+     neutral       0.38      0.29      0.33       143
+    positive       0.49      0.68      0.57       187
+
+    accuracy                           0.44       401
+   macro avg       0.36      0.36      0.35       401
+weighted avg       0.41      0.44      0.41       401
+
+
+
+5-fold cross-validated Accuracy: 0.3900249376558603
+
+5-fold cross-validated F1 score: 0.3900249376558603
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 TfidfVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.float64'>,
+                                 encoding='utf-8', input='content',
+                                 lowercase=True, max_df=1.0, max_features=None,
+                                 min_df=1, ngram_range=(1, 2), norm='l2',
+                                 preprocessor=None, smooth_idf=True,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be...
+                 StandardScaler(copy=True, with_mean=False, with_std=True)),
+                ('dim_red',
+                 SelectKBest(k=300,
+                             score_func=<function chi2 at 0x0000018482EFEE18>)),
+                ('clf',
+                 OneVsRestClassifier(estimator=LinearSVC(C=1000,
+                                                         class_weight='balanced',
+                                                         dual=True,
+                                                         fit_intercept=True,
+                                                         intercept_scaling=1,
+                                                         loss='squared_hinge',
+                                                         max_iter=5000,
+                                                         multi_class='ovr',
+                                                         penalty='l2',
+                                                         random_state=42,
+                                                         tol=0.0001,
+                                                         verbose=0),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.5683094198378041
+
+Test Set Accuracy
+0.44139650872817954
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Confusion matrix
+[[  3   0  67]
+ [ 10   0 133]
+ [ 14   0 174]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.11      0.04      0.06        70
+     neutral       0.00      0.00      0.00       143
+    positive       0.47      0.93      0.62       188
+
+    accuracy                           0.44       401
+   macro avg       0.19      0.32      0.23       401
+weighted avg       0.24      0.44      0.30       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.5427323767935122
+
+Test Set Accuracy
+0.43640897755610975
+
+Confusion matrix
+[[  5   0  73]
+ [  2   0 139]
+ [ 12   0 170]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.26      0.06      0.10        78
+     neutral       0.00      0.00      0.00       141
+    positive       0.45      0.93      0.60       182
+
+    accuracy                           0.44       401
+   macro avg       0.24      0.33      0.24       401
+weighted avg       0.25      0.44      0.29       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.42046163443543355
+
+Test Set Accuracy
+0.341645885286783
+
+Confusion matrix
+[[  9  71   0]
+ [ 11 128   0]
+ [ 13 169   0]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.27      0.11      0.16        80
+     neutral       0.35      0.92      0.50       139
+    positive       0.00      0.00      0.00       182
+
+    accuracy                           0.34       401
+   macro avg       0.21      0.34      0.22       401
+weighted avg       0.17      0.34      0.21       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.5258889582033687
+
+Test Set Accuracy
+0.4389027431421446
+
+Confusion matrix
+[[  1   0  71]
+ [  6   2 139]
+ [  7   2 173]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.07      0.01      0.02        72
+     neutral       0.50      0.01      0.03       147
+    positive       0.45      0.95      0.61       182
+
+    accuracy                           0.44       401
+   macro avg       0.34      0.33      0.22       401
+weighted avg       0.40      0.44      0.29       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.5620711166562695
+
+Test Set Accuracy
+0.4488778054862843
+
+Confusion matrix
+[[  6   1  64]
+ [  6   1 136]
+ [ 13   1 173]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.24      0.08      0.12        71
+     neutral       0.33      0.01      0.01       143
+    positive       0.46      0.93      0.62       187
+
+    accuracy                           0.45       401
+   macro avg       0.35      0.34      0.25       401
+weighted avg       0.38      0.45      0.32       401
+
+
+
+5-fold cross-validated Accuracy: 0.4214463840399002
+
+5-fold cross-validated F1 score: 0.4214463840399002
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 CountVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.int64'>, encoding='utf-8',
+                                 input='content', lowercase=True, max_df=1.0,
+                                 max_features=None, min_df=1,
+                                 ngram_range=(1, 2), preprocessor=None,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be', 'a',
+                                             'and', 'any', 'be', 'a', '...
+                                                                      ccp_alpha=0.0,
+                                                                      class_weight='balanced',
+                                                                      criterion='gini',
+                                                                      max_depth=3,
+                                                                      max_features='auto',
+                                                                      max_leaf_nodes=None,
+                                                                      max_samples=None,
+                                                                      min_impurity_decrease=0.0,
+                                                                      min_impurity_split=None,
+                                                                      min_samples_leaf=1,
+                                                                      min_samples_split=2,
+                                                                      min_weight_fraction_leaf=0.0,
+                                                                      n_estimators=100,
+                                                                      n_jobs=4,
+                                                                      oob_score=False,
+                                                                      random_state=42,
+                                                                      verbose=0,
+                                                                      warm_start=False),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6257018091079226
+
+Test Set Accuracy
+0.4014962593516209
+
+Confusion matrix
+[[  6  21  43]
+ [ 14  45  84]
+ [ 28  50 110]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.12      0.09      0.10        70
+     neutral       0.39      0.31      0.35       143
+    positive       0.46      0.59      0.52       188
+
+    accuracy                           0.40       401
+   macro avg       0.33      0.33      0.32       401
+weighted avg       0.38      0.40      0.38       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5926388022457891
+
+Test Set Accuracy
+0.44139650872817954
+
+Confusion matrix
+[[ 18  14  46]
+ [ 20  38  83]
+ [ 20  41 121]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.31      0.23      0.26        78
+     neutral       0.41      0.27      0.32       141
+    positive       0.48      0.66      0.56       182
+
+    accuracy                           0.44       401
+   macro avg       0.40      0.39      0.38       401
+weighted avg       0.42      0.44      0.42       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5907673112913288
+
+Test Set Accuracy
+0.40399002493765584
+
+Confusion matrix
+[[  9  21  50]
+ [ 31  25  83]
+ [ 28  26 128]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.13      0.11      0.12        80
+     neutral       0.35      0.18      0.24       139
+    positive       0.49      0.70      0.58       182
+
+    accuracy                           0.40       401
+   macro avg       0.32      0.33      0.31       401
+weighted avg       0.37      0.40      0.37       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6013724266999376
+
+Test Set Accuracy
+0.3940149625935162
+
+Confusion matrix
+[[  7  17  48]
+ [ 14  37  96]
+ [ 19  49 114]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.17      0.10      0.12        72
+     neutral       0.36      0.25      0.30       147
+    positive       0.44      0.63      0.52       182
+
+    accuracy                           0.39       401
+   macro avg       0.33      0.33      0.31       401
+weighted avg       0.36      0.39      0.37       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6026200873362445
+
+Test Set Accuracy
+0.4513715710723192
+
+Confusion matrix
+[[  8  14  49]
+ [ 13  26 104]
+ [ 17  23 147]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.21      0.11      0.15        71
+     neutral       0.41      0.18      0.25       143
+    positive       0.49      0.79      0.60       187
+
+    accuracy                           0.45       401
+   macro avg       0.37      0.36      0.33       401
+weighted avg       0.41      0.45      0.40       401
+
+
+
+5-fold cross-validated Accuracy: 0.4184538653366583
+
+5-fold cross-validated F1 score: 0.4184538653366583
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 TfidfVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.float64'>,
+                                 encoding='utf-8', input='content',
+                                 lowercase=True, max_df=1.0, max_features=None,
+                                 min_df=1, ngram_range=(1, 2), norm='l2',
+                                 preprocessor=None, smooth_idf=True,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be...
+                                                                      ccp_alpha=0.0,
+                                                                      class_weight='balanced',
+                                                                      criterion='gini',
+                                                                      max_depth=3,
+                                                                      max_features='auto',
+                                                                      max_leaf_nodes=None,
+                                                                      max_samples=None,
+                                                                      min_impurity_decrease=0.0,
+                                                                      min_impurity_split=None,
+                                                                      min_samples_leaf=1,
+                                                                      min_samples_split=2,
+                                                                      min_weight_fraction_leaf=0.0,
+                                                                      n_estimators=100,
+                                                                      n_jobs=4,
+                                                                      oob_score=False,
+                                                                      random_state=42,
+                                                                      verbose=0,
+                                                                      warm_start=False),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5383655645664379
+
+Test Set Accuracy
+0.4488778054862843
+
+Confusion matrix
+[[  2   0  68]
+ [  9   0 134]
+ [ 10   0 178]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.10      0.03      0.04        70
+     neutral       0.00      0.00      0.00       143
+    positive       0.47      0.95      0.63       188
+
+    accuracy                           0.45       401
+   macro avg       0.19      0.33      0.22       401
+weighted avg       0.24      0.45      0.30       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.529008109794136
+
+Test Set Accuracy
+0.4339152119700748
+
+Confusion matrix
+[[  4   1  73]
+ [  2   0 139]
+ [ 10   2 170]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.25      0.05      0.09        78
+     neutral       0.00      0.00      0.00       141
+    positive       0.45      0.93      0.60       182
+
+    accuracy                           0.43       401
+   macro avg       0.23      0.33      0.23       401
+weighted avg       0.25      0.43      0.29       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5152838427947598
+
+Test Set Accuracy
+0.4538653366583541
+
+Confusion matrix
+[[  7   0  73]
+ [ 10   0 129]
+ [  7   0 175]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.29      0.09      0.13        80
+     neutral       0.00      0.00      0.00       139
+    positive       0.46      0.96      0.63       182
+
+    accuracy                           0.45       401
+   macro avg       0.25      0.35      0.25       401
+weighted avg       0.27      0.45      0.31       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.5134123518402994
+
+Test Set Accuracy
+0.4314214463840399
+
+Confusion matrix
+[[  2   0  70]
+ [  6   1 140]
+ [ 12   0 170]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.10      0.03      0.04        72
+     neutral       1.00      0.01      0.01       147
+    positive       0.45      0.93      0.60       182
+
+    accuracy                           0.43       401
+   macro avg       0.52      0.32      0.22       401
+weighted avg       0.59      0.43      0.29       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.537117903930131
+
+Test Set Accuracy
+0.4538653366583541
+
+Confusion matrix
+[[  6   1  64]
+ [  5   0 138]
+ [ 11   0 176]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.27      0.08      0.13        71
+     neutral       0.00      0.00      0.00       143
+    positive       0.47      0.94      0.62       187
+
+    accuracy                           0.45       401
+   macro avg       0.25      0.34      0.25       401
+weighted avg       0.27      0.45      0.31       401
+
+
+
+5-fold cross-validated Accuracy: 0.44438902743142145
+
+5-fold cross-validated F1 score: 0.44438902743142145
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 CountVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.int64'>, encoding='utf-8',
+                                 input='content', lowercase=True, max_df=1.0,
+                                 max_features=None, min_df=1,
+                                 ngram_range=(1, 2), preprocessor=None,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be', 'a',
+                                             'and', 'any', 'be', 'a', '...
+                                                             booster='gbtree',
+                                                             colsample_bylevel=1,
+                                                             colsample_bynode=1,
+                                                             colsample_bytree=1,
+                                                             gamma=0,
+                                                             learning_rate=0.1,
+                                                             max_delta_step=0,
+                                                             max_depth=3,
+                                                             min_child_weight=1,
+                                                             missing=None,
+                                                             n_estimators=100,
+                                                             n_jobs=4,
+                                                             nthread=None,
+                                                             objective='binary:logistic',
+                                                             random_state=42,
+                                                             reg_alpha=0,
+                                                             reg_lambda=1,
+                                                             scale_pos_weight=1,
+                                                             seed=None,
+                                                             silent=None,
+                                                             subsample=1,
+                                                             verbosity=1),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5714285714285714
+
+Test Set Accuracy
+0.456359102244389
+
+Confusion matrix
+[[  1  14  55]
+ [  2  27 114]
+ [  3  30 155]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.17      0.01      0.03        70
+     neutral       0.38      0.19      0.25       143
+    positive       0.48      0.82      0.61       188
+
+    accuracy                           0.46       401
+   macro avg       0.34      0.34      0.29       401
+weighted avg       0.39      0.46      0.38       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5545851528384279
+
+Test Set Accuracy
+0.44389027431421446
+
+Confusion matrix
+[[  5   4  69]
+ [  6  19 116]
+ [  5  23 154]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.31      0.06      0.11        78
+     neutral       0.41      0.13      0.20       141
+    positive       0.45      0.85      0.59       182
+
+    accuracy                           0.44       401
+   macro avg       0.39      0.35      0.30       401
+weighted avg       0.41      0.44      0.36       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5601996257018091
+
+Test Set Accuracy
+0.44139650872817954
+
+Confusion matrix
+[[  2  19  59]
+ [  2  23 114]
+ [  5  25 152]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.22      0.03      0.04        80
+     neutral       0.34      0.17      0.22       139
+    positive       0.47      0.84      0.60       182
+
+    accuracy                           0.44       401
+   macro avg       0.34      0.34      0.29       401
+weighted avg       0.38      0.44      0.36       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.578914535246413
+
+Test Set Accuracy
+0.43640897755610975
+
+Confusion matrix
+[[  1  15  56]
+ [  2  31 114]
+ [  6  33 143]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.11      0.01      0.02        72
+     neutral       0.39      0.21      0.27       147
+    positive       0.46      0.79      0.58       182
+
+    accuracy                           0.44       401
+   macro avg       0.32      0.34      0.29       401
+weighted avg       0.37      0.44      0.37       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5639426076107299
+
+Test Set Accuracy
+0.4713216957605985
+
+Confusion matrix
+[[  0  10  61]
+ [  1  17 125]
+ [  1  14 172]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        71
+     neutral       0.41      0.12      0.18       143
+    positive       0.48      0.92      0.63       187
+
+    accuracy                           0.47       401
+   macro avg       0.30      0.35      0.27       401
+weighted avg       0.37      0.47      0.36       401
+
+
+
+5-fold cross-validated Accuracy: 0.4498753117206983
+
+5-fold cross-validated F1 score: 0.4498753117206983
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 TfidfVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.float64'>,
+                                 encoding='utf-8', input='content',
+                                 lowercase=True, max_df=1.0, max_features=None,
+                                 min_df=1, ngram_range=(1, 2), norm='l2',
+                                 preprocessor=None, smooth_idf=True,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be...
+                                                             booster='gbtree',
+                                                             colsample_bylevel=1,
+                                                             colsample_bynode=1,
+                                                             colsample_bytree=1,
+                                                             gamma=0,
+                                                             learning_rate=0.1,
+                                                             max_delta_step=0,
+                                                             max_depth=3,
+                                                             min_child_weight=1,
+                                                             missing=None,
+                                                             n_estimators=100,
+                                                             n_jobs=4,
+                                                             nthread=None,
+                                                             objective='binary:logistic',
+                                                             random_state=42,
+                                                             reg_alpha=0,
+                                                             reg_lambda=1,
+                                                             scale_pos_weight=1,
+                                                             seed=None,
+                                                             silent=None,
+                                                             subsample=1,
+                                                             verbosity=1),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.4672489082969432
+
+Test Set Accuracy
+0.4688279301745636
+
+Confusion matrix
+[[  0   0  70]
+ [  0   0 143]
+ [  0   0 188]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        70
+     neutral       0.00      0.00      0.00       143
+    positive       0.47      1.00      0.64       188
+
+    accuracy                           0.47       401
+   macro avg       0.16      0.33      0.21       401
+weighted avg       0.22      0.47      0.30       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.45726762320648784
+
+Test Set Accuracy
+0.4538653366583541
+
+Confusion matrix
+[[  1   0  77]
+ [  0   0 141]
+ [  1   0 181]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.50      0.01      0.03        78
+     neutral       0.00      0.00      0.00       141
+    positive       0.45      0.99      0.62       182
+
+    accuracy                           0.45       401
+   macro avg       0.32      0.34      0.22       401
+weighted avg       0.30      0.45      0.29       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.4647535870243294
+
+Test Set Accuracy
+0.4538653366583541
+
+Confusion matrix
+[[  1   0  79]
+ [  4   0 135]
+ [  1   0 181]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.17      0.01      0.02        80
+     neutral       0.00      0.00      0.00       139
+    positive       0.46      0.99      0.63       182
+
+    accuracy                           0.45       401
+   macro avg       0.21      0.34      0.22       401
+weighted avg       0.24      0.45      0.29       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.4578914535246413
+
+Test Set Accuracy
+0.4463840399002494
+
+Confusion matrix
+[[  1   0  71]
+ [  2   0 145]
+ [  4   0 178]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.14      0.01      0.03        72
+     neutral       0.00      0.00      0.00       147
+    positive       0.45      0.98      0.62       182
+
+    accuracy                           0.45       401
+   macro avg       0.20      0.33      0.21       401
+weighted avg       0.23      0.45      0.29       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.47473487211478477
+
+Test Set Accuracy
+0.46384039900249374
+
+Confusion matrix
+[[  0   0  71]
+ [  1   0 142]
+ [  1   0 186]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        71
+     neutral       0.00      0.00      0.00       143
+    positive       0.47      0.99      0.63       187
+
+    accuracy                           0.46       401
+   macro avg       0.16      0.33      0.21       401
+weighted avg       0.22      0.46      0.30       401
+
+
+
+5-fold cross-validated Accuracy: 0.45735660847880305
+
+5-fold cross-validated F1 score: 0.45735660847880305
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 CountVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.int64'>, encoding='utf-8',
+                                 input='content', lowercase=True, max_df=1.0,
+                                 max_features=None, min_df=1,
+                                 ngram_range=(1, 2), preprocessor=None,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be', 'a',
+                                             'and', 'any', 'be', 'a', '...
+                             score_func=<function chi2 at 0x0000018482EFEE18>)),
+                ('clf',
+                 OneVsRestClassifier(estimator=LogisticRegression(C=100,
+                                                                  class_weight='balanced',
+                                                                  dual=False,
+                                                                  fit_intercept=True,
+                                                                  intercept_scaling=1,
+                                                                  l1_ratio=None,
+                                                                  max_iter=5000,
+                                                                  multi_class='auto',
+                                                                  n_jobs=None,
+                                                                  penalty='l2',
+                                                                  random_state=42,
+                                                                  solver='liblinear',
+                                                                  tol=0.0001,
+                                                                  verbose=0,
+                                                                  warm_start=False),
+                                     n_jobs=None))],
+         verbose=False)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6805988771054273
+
+Test Set Accuracy
+0.39650872817955113
+
+Confusion matrix
+[[ 12  18  40]
+ [ 20  44  79]
+ [ 37  48 103]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.17      0.17      0.17        70
+     neutral       0.40      0.31      0.35       143
+    positive       0.46      0.55      0.50       188
+
+    accuracy                           0.40       401
+   macro avg       0.35      0.34      0.34       401
+weighted avg       0.39      0.40      0.39       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6749844042420462
+
+Test Set Accuracy
+0.4089775561097257
+
+Confusion matrix
+[[ 16  16  46]
+ [ 20  40  81]
+ [ 27  47 108]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.25      0.21      0.23        78
+     neutral       0.39      0.28      0.33       141
+    positive       0.46      0.59      0.52       182
+
+    accuracy                           0.41       401
+   macro avg       0.37      0.36      0.36       401
+weighted avg       0.39      0.41      0.39       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6781035558328135
+
+Test Set Accuracy
+0.4089775561097257
+
+Confusion matrix
+[[ 15  22  43]
+ [ 28  35  76]
+ [ 27  41 114]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.21      0.19      0.20        80
+     neutral       0.36      0.25      0.30       139
+    positive       0.49      0.63      0.55       182
+
+    accuracy                           0.41       401
+   macro avg       0.35      0.36      0.35       401
+weighted avg       0.39      0.41      0.39       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.686837180286962
+
+Test Set Accuracy
+0.3865336658354115
+
+Confusion matrix
+[[ 9 30 33]
+ [22 50 75]
+ [37 49 96]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.13      0.12      0.13        72
+     neutral       0.39      0.34      0.36       147
+    positive       0.47      0.53      0.50       182
+
+    accuracy                           0.39       401
+   macro avg       0.33      0.33      0.33       401
+weighted avg       0.38      0.39      0.38       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.6575171553337492
+
+Test Set Accuracy
+0.4314214463840399
+
+Confusion matrix
+[[ 12  22  37]
+ [ 18  32  93]
+ [ 31  27 129]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.20      0.17      0.18        71
+     neutral       0.40      0.22      0.29       143
+    positive       0.50      0.69      0.58       187
+
+    accuracy                           0.43       401
+   macro avg       0.36      0.36      0.35       401
+weighted avg       0.41      0.43      0.40       401
+
+
+
+5-fold cross-validated Accuracy: 0.40648379052369077
+
+5-fold cross-validated F1 score: 0.4064837905236908
+
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 TfidfVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.float64'>,
+                                 encoding='utf-8', input='content',
+                                 lowercase=True, max_df=1.0, max_features=None,
+                                 min_df=1, ngram_range=(1, 2), norm='l2',
+                                 preprocessor=None, smooth_idf=True,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be...
+                             score_func=<function chi2 at 0x0000018482EFEE18>)),
+                ('clf',
+                 OneVsRestClassifier(estimator=LogisticRegression(C=100,
+                                                                  class_weight='balanced',
+                                                                  dual=False,
+                                                                  fit_intercept=True,
+                                                                  intercept_scaling=1,
+                                                                  l1_ratio=None,
+                                                                  max_iter=5000,
+                                                                  multi_class='auto',
+                                                                  n_jobs=None,
+                                                                  penalty='l2',
+                                                                  random_state=42,
+                                                                  solver='liblinear',
+                                                                  tol=0.0001,
+                                                                  verbose=0,
+                                                                  warm_start=False),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5689332501559575
+
+Test Set Accuracy
+0.4389027431421446
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Confusion matrix
+[[  3   0  67]
+ [ 12   0 131]
+ [ 15   0 173]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.10      0.04      0.06        70
+     neutral       0.00      0.00      0.00       143
+    positive       0.47      0.92      0.62       188
+
+    accuracy                           0.44       401
+   macro avg       0.19      0.32      0.23       401
+weighted avg       0.24      0.44      0.30       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+Training Set Accuracy
+0.5433562071116657
+
+Test Set Accuracy
+0.428927680798005
+
+Confusion matrix
+[[  5   0  73]
+ [  5   0 136]
+ [ 15   0 167]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.20      0.06      0.10        78
+     neutral       0.00      0.00      0.00       141
+    positive       0.44      0.92      0.60       182
+
+    accuracy                           0.43       401
+   macro avg       0.21      0.33      0.23       401
+weighted avg       0.24      0.43      0.29       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.5327510917030568
+
+Test Set Accuracy
+0.4463840399002494
+
+Confusion matrix
+[[ 10   0  70]
+ [ 18   0 121]
+ [ 13   0 169]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.24      0.12      0.17        80
+     neutral       0.00      0.00      0.00       139
+    positive       0.47      0.93      0.62       182
+
+    accuracy                           0.45       401
+   macro avg       0.24      0.35      0.26       401
+weighted avg       0.26      0.45      0.32       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.5265127885215222
+
+Test Set Accuracy
+0.42643391521197005
+
+Confusion matrix
+[[  2   0  70]
+ [ 10   0 137]
+ [ 13   0 169]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.08      0.03      0.04        72
+     neutral       0.00      0.00      0.00       147
+    positive       0.45      0.93      0.61       182
+
+    accuracy                           0.43       401
+   macro avg       0.18      0.32      0.22       401
+weighted avg       0.22      0.43      0.28       401
+
+
+
+Training set shape: (1603,)
+
+Test set shape: (401,)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.5664379288833438
+
+Test Set Accuracy
+0.4463840399002494
+
+Confusion matrix
+[[  8   0  63]
+ [  8   0 135]
+ [ 16   0 171]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.25      0.11      0.16        71
+     neutral       0.00      0.00      0.00       143
+    positive       0.46      0.91      0.62       187
+
+    accuracy                           0.45       401
+   macro avg       0.24      0.34      0.26       401
+weighted avg       0.26      0.45      0.31       401
+
+
+
+5-fold cross-validated Accuracy: 0.43740648379052366
+
+5-fold cross-validated F1 score: 0.43740648379052366
+
+Instantiated list of models with numeric features!
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                               text_feat  ...  sentiment_label
+7809  Lisa Page Ex Lawyer Whose Texts Criticized Tru...  ...          neutral
+5590  This Mexican Chef Is Having a Very Good Year G...  ...          neutral
+3329  Why be Democrats Talking About Impeachment Bec...  ...         positive
+1728  Democratic Presidential Hopeful Klobuchar Sets...  ...          neutral
+9926  Jeffrey Epstein Gun Control Simone Biles Your ...  ...          neutral
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    937
+neutral     717
+negative    350
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                                text_feat  ...  sentiment_label
+1922   Elizabeth Warren Wants to Cancel Student Loans...  ...          neutral
+10223  Trump Presses His Argument of a Border Crisis ...  ...          neutral
+8313   Big Business Says It Will Tackle Climate Chang...  ...          neutral
+2055   Unable to Post Bail You Will Pay for That for ...  ...         negative
+1951   Eliminating Child Poverty With a Government Ch...  ...         positive
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    908
+neutral     703
+negative    393
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                                text_feat  ...  sentiment_label
+10432  The Impeachment Questions We Were Afraid to As...  ...         positive
+1304   Who Won the Debate Experts Weigh In There be l...  ...         positive
+9176   Years Later Native American Tribe in Montana G...  ...          neutral
+2669   In a Collection of Tributes the Gang Is All He...  ...         positive
+8691   Trial date be set for Lev Parnas Parnas have s...  ...         positive
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    907
+neutral     697
+negative    400
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                               text_feat  ...  sentiment_label
+5266  How Can You Put Life of Onstage With Puppets I...  ...          neutral
+1432  Momentum for Harris Big Haul for Buttigieg Thi...  ...         negative
+1515  Should College Be Free The Democratic Party be...  ...          neutral
+7793  Trump Possible Policy Shift on the Taliban A r...  ...         positive
+5133  You Oughta The Road to Making a Anthem a Broad...  ...          neutral
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    910
+neutral     733
+negative    361
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                                text_feat  ...  sentiment_label
+7242   Impeachment Briefing What Happened Today Anoth...  ...         positive
+10153  Wartime Secrets and Intrigue From the Hotel Ri...  ...         positive
+4061   Joe Biden and the Apologies That be Politician...  ...         negative
+6344   Elizabeth Warren Has a Poet on Her Team Here W...  ...          neutral
+10739  Trump Wants a Fight Pelosi Can Hit Back With r...  ...         positive
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    935
+neutral     715
+negative    354
+Name: sentiment_label, dtype: int64
+
+Split DataFrames into 5-Fold datasets!
+
+Starting Model Training!
+
+Pipeline(memory=None,
+         steps=[('scaler', MinMaxScaler(copy=True, feature_range=(0, 1))),
+                ('clf',
+                 OneVsRestClassifier(estimator=MultinomialNB(alpha=1.0,
+                                                             class_prior=None,
+                                                             fit_prior=True),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.5583281347473488
+
+Test Set Accuracy
+0.5685785536159601
+
+Confusion matrix
+[[  0   0  70]
+ [  0  41 102]
+ [  0   1 187]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        70
+     neutral       0.98      0.29      0.44       143
+    positive       0.52      0.99      0.68       188
+
+    accuracy                           0.57       401
+   macro avg       0.50      0.43      0.38       401
+weighted avg       0.59      0.57      0.48       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.5514660012476607
+
+Test Set Accuracy
+0.5536159600997507
+
+Confusion matrix
+[[  0   2  76]
+ [  0  41 100]
+ [  0   1 181]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        78
+     neutral       0.93      0.29      0.44       141
+    positive       0.51      0.99      0.67       182
+
+    accuracy                           0.55       401
+   macro avg       0.48      0.43      0.37       401
+weighted avg       0.56      0.55      0.46       401
+
+
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.5302557704304429
+
+Test Set Accuracy
+0.5236907730673317
+
+Confusion matrix
+[[  0   4  76]
+ [  0  32 107]
+ [  0   4 178]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        80
+     neutral       0.80      0.23      0.36       139
+    positive       0.49      0.98      0.66       182
+
+    accuracy                           0.52       401
+   macro avg       0.43      0.40      0.34       401
+weighted avg       0.50      0.52      0.42       401
+
+
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.5963817841547099
+
+Test Set Accuracy
+0.6184538653366584
+
+Confusion matrix
+[[  0   2  70]
+ [  0  68  79]
+ [  0   2 180]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        72
+     neutral       0.94      0.46      0.62       147
+    positive       0.55      0.99      0.70       182
+
+    accuracy                           0.62       401
+   macro avg       0.50      0.48      0.44       401
+weighted avg       0.59      0.62      0.55       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.5539613225202745
+
+Test Set Accuracy
+0.5386533665835411
+
+Confusion matrix
+[[  0   1  70]
+ [  0  29 114]
+ [  0   0 187]]
+
+Classification report
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        71
+     neutral       0.97      0.20      0.34       143
+    positive       0.50      1.00      0.67       187
+
+    accuracy                           0.54       401
+   macro avg       0.49      0.40      0.34       401
+weighted avg       0.58      0.54      0.43       401
+
+
+
+5-fold cross-validated Accuracy: 0.5605985037406483
+
+5-fold cross-validated F1 score: 0.5605985037406483
+
+Pipeline(memory=None,
+         steps=[('scaler', MinMaxScaler(copy=True, feature_range=(0, 1))),
+                ('clf',
+                 OneVsRestClassifier(estimator=LinearSVC(C=1000,
+                                                         class_weight='balanced',
+                                                         dual=True,
+                                                         fit_intercept=True,
+                                                         intercept_scaling=1,
+                                                         loss='squared_hinge',
+                                                         max_iter=5000,
+                                                         multi_class='ovr',
+                                                         penalty='l2',
+                                                         random_state=42,
+                                                         tol=0.0001,
+                                                         verbose=0),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.6475358702432938
+
+Test Set Accuracy
+0.6633416458852868
+
+Confusion matrix
+[[  0  16  54]
+ [  0 116  27]
+ [  0  38 150]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        70
+     neutral       0.68      0.81      0.74       143
+    positive       0.65      0.80      0.72       188
+
+    accuracy                           0.66       401
+   macro avg       0.44      0.54      0.49       401
+weighted avg       0.55      0.66      0.60       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.6051154086088584
+
+Test Set Accuracy
+0.5860349127182045
+
+Confusion matrix
+[[ 18  16  44]
+ [  9  97  35]
+ [ 42  20 120]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.26      0.23      0.24        78
+     neutral       0.73      0.69      0.71       141
+    positive       0.60      0.66      0.63       182
+
+    accuracy                           0.59       401
+   macro avg       0.53      0.53      0.53       401
+weighted avg       0.58      0.59      0.58       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.5720524017467249
+
+Test Set Accuracy
+0.5361596009975063
+
+Confusion matrix
+[[ 14  23  43]
+ [ 14  92  33]
+ [ 39  34 109]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.21      0.17      0.19        80
+     neutral       0.62      0.66      0.64       139
+    positive       0.59      0.60      0.59       182
+
+    accuracy                           0.54       401
+   macro avg       0.47      0.48      0.47       401
+weighted avg       0.52      0.54      0.53       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+Training Set Accuracy
+0.6257018091079226
+
+Test Set Accuracy
+0.6483790523690773
+
+Confusion matrix
+[[  0  17  55]
+ [  0 110  37]
+ [  3  29 150]]
+
+Classification report
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        72
+     neutral       0.71      0.75      0.73       147
+    positive       0.62      0.82      0.71       182
+
+    accuracy                           0.65       401
+   macro avg       0.44      0.52      0.48       401
+weighted avg       0.54      0.65      0.59       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\svm\_base.py:947: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning)
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training Set Accuracy
+0.6718652526512788
+
+Test Set Accuracy
+0.6683291770573566
+
+Confusion matrix
+[[  0  11  60]
+ [  0  93  50]
+ [  0  12 175]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        71
+     neutral       0.80      0.65      0.72       143
+    positive       0.61      0.94      0.74       187
+
+    accuracy                           0.67       401
+   macro avg       0.47      0.53      0.49       401
+weighted avg       0.57      0.67      0.60       401
+
+
+
+5-fold cross-validated Accuracy: 0.6204488778054864
+
+5-fold cross-validated F1 score: 0.6204488778054864
+
+Pipeline(memory=None,
+         steps=[('scaler', MinMaxScaler(copy=True, feature_range=(0, 1))),
+                ('clf',
+                 OneVsRestClassifier(estimator=RandomForestClassifier(bootstrap=True,
+                                                                      ccp_alpha=0.0,
+                                                                      class_weight='balanced',
+                                                                      criterion='gini',
+                                                                      max_depth=3,
+                                                                      max_features='auto',
+                                                                      max_leaf_nodes=None,
+                                                                      max_samples=None,
+                                                                      min_impurity_decrease=0.0,
+                                                                      min_impurity_split=None,
+                                                                      min_samples_leaf=1,
+                                                                      min_samples_split=2,
+                                                                      min_weight_fraction_leaf=0.0,
+                                                                      n_estimators=100,
+                                                                      n_jobs=4,
+                                                                      oob_score=False,
+                                                                      random_state=42,
+                                                                      verbose=0,
+                                                                      warm_start=False),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.6812227074235808
+
+Test Set Accuracy
+0.6683291770573566
+
+Confusion matrix
+[[  5  10  55]
+ [  9 102  32]
+ [ 16  11 161]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.17      0.07      0.10        70
+     neutral       0.83      0.71      0.77       143
+    positive       0.65      0.86      0.74       188
+
+    accuracy                           0.67       401
+   macro avg       0.55      0.55      0.54       401
+weighted avg       0.63      0.67      0.64       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.6793512164691204
+
+Test Set Accuracy
+0.6259351620947631
+
+Confusion matrix
+[[  3  12  63]
+ [  7  87  47]
+ [ 17   4 161]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.11      0.04      0.06        78
+     neutral       0.84      0.62      0.71       141
+    positive       0.59      0.88      0.71       182
+
+    accuracy                           0.63       401
+   macro avg       0.52      0.51      0.49       401
+weighted avg       0.59      0.63      0.58       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.6731129132875858
+
+Test Set Accuracy
+0.6059850374064838
+
+Confusion matrix
+[[ 17   9  54]
+ [ 13  77  49]
+ [ 24   9 149]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.31      0.21      0.25        80
+     neutral       0.81      0.55      0.66       139
+    positive       0.59      0.82      0.69       182
+
+    accuracy                           0.61       401
+   macro avg       0.57      0.53      0.53       401
+weighted avg       0.61      0.61      0.59       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.6762320648783531
+
+Test Set Accuracy
+0.6608478802992519
+
+Confusion matrix
+[[  8   3  61]
+ [  9  95  43]
+ [ 17   3 162]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.24      0.11      0.15        72
+     neutral       0.94      0.65      0.77       147
+    positive       0.61      0.89      0.72       182
+
+    accuracy                           0.66       401
+   macro avg       0.59      0.55      0.55       401
+weighted avg       0.66      0.66      0.64       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.6712414223331253
+
+Test Set Accuracy
+0.5910224438902744
+
+Confusion matrix
+[[ 14   6  51]
+ [ 18  79  46]
+ [ 40   3 144]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.19      0.20      0.20        71
+     neutral       0.90      0.55      0.68       143
+    positive       0.60      0.77      0.67       187
+
+    accuracy                           0.59       401
+   macro avg       0.56      0.51      0.52       401
+weighted avg       0.63      0.59      0.59       401
+
+
+
+5-fold cross-validated Accuracy: 0.6304239401496259
+
+5-fold cross-validated F1 score: 0.6304239401496259
+
+Pipeline(memory=None,
+         steps=[('scaler', MinMaxScaler(copy=True, feature_range=(0, 1))),
+                ('clf',
+                 OneVsRestClassifier(estimator=XGBClassifier(base_score=0.5,
+                                                             booster='gbtree',
+                                                             colsample_bylevel=1,
+                                                             colsample_bynode=1,
+                                                             colsample_bytree=1,
+                                                             gamma=0,
+                                                             learning_rate=0.1,
+                                                             max_delta_step=0,
+                                                             max_depth=3,
+                                                             min_child_weight=1,
+                                                             missing=None,
+                                                             n_estimators=100,
+                                                             n_jobs=4,
+                                                             nthread=None,
+                                                             objective='binary:logistic',
+                                                             random_state=42,
+                                                             reg_alpha=0,
+                                                             reg_lambda=1,
+                                                             scale_pos_weight=1,
+                                                             seed=None,
+                                                             silent=None,
+                                                             subsample=1,
+                                                             verbosity=1),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.7205240174672489
+
+Test Set Accuracy
+0.6957605985037406
+
+Confusion matrix
+[[  0   9  61]
+ [  4 108  31]
+ [  4  13 171]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.00      0.00      0.00        70
+     neutral       0.83      0.76      0.79       143
+    positive       0.65      0.91      0.76       188
+
+    accuracy                           0.70       401
+   macro avg       0.49      0.55      0.52       401
+weighted avg       0.60      0.70      0.64       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.7161572052401747
+
+Test Set Accuracy
+0.6508728179551122
+
+Confusion matrix
+[[  1  13  64]
+ [  1  87  53]
+ [  2   7 173]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.25      0.01      0.02        78
+     neutral       0.81      0.62      0.70       141
+    positive       0.60      0.95      0.73       182
+
+    accuracy                           0.65       401
+   macro avg       0.55      0.53      0.49       401
+weighted avg       0.61      0.65      0.58       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.7186525265127885
+
+Test Set Accuracy
+0.6259351620947631
+
+Confusion matrix
+[[  4   9  67]
+ [  1  79  59]
+ [  3  11 168]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.50      0.05      0.09        80
+     neutral       0.80      0.57      0.66       139
+    positive       0.57      0.92      0.71       182
+
+    accuracy                           0.63       401
+   macro avg       0.62      0.51      0.49       401
+weighted avg       0.64      0.63      0.57       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.7074235807860262
+
+Test Set Accuracy
+0.6807980049875312
+
+Confusion matrix
+[[  2   6  64]
+ [  1 100  46]
+ [  3   8 171]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.33      0.03      0.05        72
+     neutral       0.88      0.68      0.77       147
+    positive       0.61      0.94      0.74       182
+
+    accuracy                           0.68       401
+   macro avg       0.61      0.55      0.52       401
+weighted avg       0.66      0.68      0.63       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.7311291328758578
+
+Test Set Accuracy
+0.6483790523690773
+
+Confusion matrix
+[[  2  10  59]
+ [  5  86  52]
+ [  4  11 172]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.18      0.03      0.05        71
+     neutral       0.80      0.60      0.69       143
+    positive       0.61      0.92      0.73       187
+
+    accuracy                           0.65       401
+   macro avg       0.53      0.52      0.49       401
+weighted avg       0.60      0.65      0.60       401
+
+
+
+5-fold cross-validated Accuracy: 0.6603491271820449
+
+5-fold cross-validated F1 score: 0.6603491271820449
+
+Pipeline(memory=None,
+         steps=[('scaler', MinMaxScaler(copy=True, feature_range=(0, 1))),
+                ('clf',
+                 OneVsRestClassifier(estimator=LogisticRegression(C=100,
+                                                                  class_weight='balanced',
+                                                                  dual=False,
+                                                                  fit_intercept=True,
+                                                                  intercept_scaling=1,
+                                                                  l1_ratio=None,
+                                                                  max_iter=5000,
+                                                                  multi_class='auto',
+                                                                  n_jobs=None,
+                                                                  penalty='l2',
+                                                                  random_state=42,
+                                                                  solver='liblinear',
+                                                                  tol=0.0001,
+                                                                  verbose=0,
+                                                                  warm_start=False),
+                                     n_jobs=None))],
+         verbose=False)
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.587024329382408
+
+Test Set Accuracy
+0.6134663341645885
+
+Confusion matrix
+[[ 10  19  41]
+ [  5 120  18]
+ [ 27  45 116]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.24      0.14      0.18        70
+     neutral       0.65      0.84      0.73       143
+    positive       0.66      0.62      0.64       188
+
+    accuracy                           0.61       401
+   macro avg       0.52      0.53      0.52       401
+weighted avg       0.58      0.61      0.59       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.6051154086088584
+
+Test Set Accuracy
+0.600997506234414
+
+Confusion matrix
+[[ 10  26  42]
+ [  4 106  31]
+ [ 17  40 125]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.32      0.13      0.18        78
+     neutral       0.62      0.75      0.68       141
+    positive       0.63      0.69      0.66       182
+
+    accuracy                           0.60       401
+   macro avg       0.52      0.52      0.51       401
+weighted avg       0.57      0.60      0.57       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.5745477230193388
+
+Test Set Accuracy
+0.5511221945137157
+
+Confusion matrix
+[[ 10  29  41]
+ [ 11  97  31]
+ [ 23  45 114]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.23      0.12      0.16        80
+     neutral       0.57      0.70      0.63       139
+    positive       0.61      0.63      0.62       182
+
+    accuracy                           0.55       401
+   macro avg       0.47      0.48      0.47       401
+weighted avg       0.52      0.55      0.53       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.5957579538365565
+
+Test Set Accuracy
+0.6159600997506235
+
+Confusion matrix
+[[  3  23  46]
+ [  3 118  26]
+ [ 15  41 126]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.14      0.04      0.06        72
+     neutral       0.65      0.80      0.72       147
+    positive       0.64      0.69      0.66       182
+
+    accuracy                           0.62       401
+   macro avg       0.48      0.51      0.48       401
+weighted avg       0.55      0.62      0.58       401
+
+
+
+Training set shape: (1603, 8)
+
+Test set shape: (401, 8)
+
+Training Set Accuracy
+0.5988771054273238
+
+Test Set Accuracy
+0.5511221945137157
+
+Confusion matrix
+[[  8  20  43]
+ [ 10 106  27]
+ [ 28  52 107]]
+
+Classification report
+              precision    recall  f1-score   support
+
+    negative       0.17      0.11      0.14        71
+     neutral       0.60      0.74      0.66       143
+    positive       0.60      0.57      0.59       187
+
+    accuracy                           0.55       401
+   macro avg       0.46      0.48      0.46       401
+weighted avg       0.53      0.55      0.53       401
+
+
+
+5-fold cross-validated Accuracy: 0.5865336658354114
+
+5-fold cross-validated F1 score: 0.5865336658354114
+
+Fitting 5 folds for each of 25 candidates, totalling 125 fits
+[Parallel(n_jobs=6)]: Using backend LokyBackend with 6 concurrent workers.
+[Parallel(n_jobs=6)]: Done  38 tasks      | elapsed:   35.1s
+[Parallel(n_jobs=6)]: Done 125 out of 125 | elapsed:  3.1min finished
+Best random Parameters:  {'vectorizer__ngram_range': (2, 3), 'dim_red__k': 100, 'clf__estimator__n_estimators': 200, 'clf__estimator__min_samples_leaf': 48, 'clf__estimator__max_depth': 10, 'clf__estimator__learning_rate': 1.1583892617449665, 'clf__estimator__colsample_bytree': 0.7, 'clf__estimator__booster': 'gblinear'}
+
+Best random Score:  0.4590278255271783
+
+{'mean_fit_time': 0      2.081835
+21     2.247393
+15     2.537816
+13     3.022122
+9      2.451847
+8      2.531234
+7      3.140406
+24     3.262080
+5      2.461421
+3      2.254175
+6      2.755634
+19    22.170143
+2      3.356628
+10     4.035413
+17     3.078770
+14     2.592670
+11     3.119063
+20     4.570783
+4     10.324405
+22     3.014143
+16     4.633016
+1      3.414872
+18    48.181818
+23    32.217487
+12     3.220193
+Name: mean_fit_time, dtype: float64, 'std_fit_time': 0      0.033105
+21     0.065793
+15     0.132878
+13     0.086089
+9      0.033033
+8      0.019575
+7      0.034792
+24     0.078081
+5      0.054583
+3      0.082762
+6      0.039235
+19     0.672782
+2      0.108032
+10     0.434081
+17     0.141508
+14     0.074840
+11     0.115541
+20     0.387693
+4      0.912408
+22     0.061206
+16     0.137996
+1      0.225357
+18    12.901671
+23     5.058073
+12     0.178350
+Name: std_fit_time, dtype: float64, 'mean_score_time': 0     0.156781
+21    0.234174
+15    0.260105
+13    0.207446
+9     0.250132
+8     0.200664
+7     0.249134
+24    0.257711
+5     0.203256
+3     0.193881
+6     0.253523
+19    0.249334
+2     0.232778
+10    0.218616
+17    0.231182
+14    0.234971
+11    0.224002
+20    0.247737
+4     0.224001
+22    0.285637
+16    0.323735
+1     0.287033
+18    0.331514
+23    0.229387
+12    0.243549
+Name: mean_score_time, dtype: float64, 'std_score_time': 0     0.016295
+21    0.019820
+15    0.024204
+13    0.015895
+9     0.013564
+8     0.009881
+7     0.021790
+24    0.016564
+5     0.018545
+3     0.006451
+6     0.012964
+19    0.028370
+2     0.019843
+10    0.016356
+17    0.011757
+14    0.024734
+11    0.005662
+20    0.016408
+4     0.012672
+22    0.017544
+16    0.006037
+1     0.032504
+18    0.020639
+23    0.053310
+12    0.006414
+Name: std_score_time, dtype: float64, 'param_vectorizer__ngram_range': 0     (2, 3)
+21    (2, 3)
+15    (1, 3)
+13    (2, 3)
+9     (1, 3)
+8     (2, 3)
+7     (1, 3)
+24    (1, 3)
+5     (2, 3)
+3     (2, 3)
+6     (1, 3)
+19    (2, 3)
+2     (2, 3)
+10    (2, 3)
+17    (2, 3)
+14    (2, 3)
+11    (2, 3)
+20    (2, 3)
+4     (2, 3)
+22    (1, 3)
+16    (1, 3)
+1     (1, 3)
+18    (1, 3)
+23    (1, 3)
+12    (2, 3)
+Name: param_vectorizer__ngram_range, dtype: object, 'param_dim_red__k': 0     100
+21    100
+15    200
+13    300
+9     300
+8     200
+7     200
+24    200
+5     300
+3     200
+6     100
+19    100
+2     100
+10    100
+17    100
+14    100
+11    200
+20    200
+4     300
+22    100
+16    100
+1     100
+18    200
+23    200
+12    300
+Name: param_dim_red__k, dtype: object, 'param_clf__estimator__n_estimators': 0     200
+21    100
+15    100
+13    300
+9     100
+8     200
+7     300
+24    300
+5     200
+3     100
+6     200
+19    300
+2     300
+10    100
+17    200
+14    100
+11    200
+20    100
+4     200
+22    100
+16    300
+1     200
+18    300
+23    300
+12    200
+Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 0     48
+21    45
+15    43
+13    22
+9     24
+8     52
+7     21
+24    62
+5     54
+3     42
+6     29
+19    48
+2     43
+10    47
+17    30
+14    39
+11    50
+20    31
+4     58
+22    62
+16    42
+1     28
+18    20
+23    54
+12    43
+Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 0     10
+21     6
+15    20
+13    20
+9      3
+8      6
+7     20
+24     3
+5      3
+3      3
+6     20
+19     3
+2     20
+10    20
+17    20
+14    10
+11    20
+20    20
+4      6
+22     6
+16     6
+1     10
+18    20
+23    20
+12     3
+Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 0      1.15839
+21     1.94899
+15     1.00537
+13    0.877852
+9      1.87248
+8     0.724832
+7      1.51544
+24    0.597315
+5     0.750336
+3      1.71946
+6     0.163758
+19    0.265772
+2      1.29866
+10    0.941611
+17     0.48255
+14         0.1
+11    0.992617
+20    0.941611
+4      1.40067
+22     1.00537
+16     1.75772
+1     0.393289
+18     1.79597
+23     1.91074
+12     1.89799
+Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 0     0.7
+21    0.7
+15    0.3
+13    0.7
+9     0.3
+8     0.7
+7     0.3
+24    0.7
+5     0.7
+3     0.3
+6     0.7
+19    0.7
+2     0.3
+10    0.3
+17    0.3
+14    0.3
+11    0.3
+20    0.3
+4     0.3
+22    0.3
+16    0.7
+1     0.3
+18    0.3
+23    0.3
+12    0.7
+Name: param_clf__estimator__colsample_bytree, dtype: object, 'param_clf__estimator__booster': 0     gblinear
+21    gblinear
+15    gblinear
+13    gblinear
+9     gblinear
+8     gblinear
+7     gblinear
+24    gblinear
+5     gblinear
+3     gblinear
+6     gblinear
+19        dart
+2       gbtree
+10        dart
+17      gbtree
+14      gbtree
+11      gbtree
+20        dart
+4         dart
+22      gbtree
+16      gbtree
+1       gbtree
+18        dart
+23        dart
+12      gbtree
+Name: param_clf__estimator__booster, dtype: object, 'params': 0     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+21    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+15    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+13    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+9     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+8     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+7     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+24    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+5     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+3     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+6     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+19    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+2     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+10    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+17    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+14    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+11    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+20    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+4     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+22    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+16    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+1     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+18    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+23    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+12    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+Name: params, dtype: object, 'split0_test_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+19    0.459082
+2     0.458583
+10    0.458583
+17    0.459082
+14    0.459581
+11    0.457086
+20    0.457086
+4     0.457585
+22    0.453593
+16    0.453094
+1     0.452595
+18    0.450100
+23    0.459581
+12    0.457585
+Name: split0_test_score, dtype: float64, 'split1_test_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+19    0.452595
+2     0.452595
+10    0.452096
+17    0.452595
+14    0.452096
+11    0.452595
+20    0.453094
+4     0.453094
+22    0.450599
+16    0.451098
+1     0.450599
+18    0.449601
+23    0.185629
+12    0.456088
+Name: split1_test_score, dtype: float64, 'split2_test_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+19    0.456088
+2     0.456088
+10    0.456088
+17    0.456088
+14    0.455589
+11    0.453593
+20    0.453094
+4     0.453094
+22    0.457086
+16    0.457086
+1     0.455090
+18    0.458084
+23    0.459581
+12    0.454591
+Name: split2_test_score, dtype: float64, 'split3_test_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+19    0.455589
+2     0.455090
+10    0.455090
+17    0.455090
+14    0.455589
+11    0.455589
+20    0.455589
+4     0.452595
+22    0.452595
+16    0.451597
+1     0.453593
+18    0.453593
+23    0.455090
+12    0.186128
+Name: split3_test_score, dtype: float64, 'split4_test_score': 0     0.458812
+21    0.458812
+15    0.458812
+13    0.458812
+9     0.458812
+8     0.458812
+7     0.458812
+24    0.458812
+5     0.458812
+3     0.458812
+6     0.458812
+19    0.452821
+2     0.453320
+10    0.453320
+17    0.452322
+14    0.452322
+11    0.450824
+20    0.450824
+4     0.450824
+22    0.452322
+16    0.452322
+1     0.450824
+18    0.450824
+23    0.460809
+12    0.457813
+Name: split4_test_score, dtype: float64, 'mean_test_score': 0     0.459028
+21    0.459028
+15    0.459028
+13    0.459028
+9     0.459028
+8     0.459028
+7     0.459028
+24    0.459028
+5     0.459028
+3     0.459028
+6     0.459028
+19    0.455235
+2     0.455135
+10    0.455035
+17    0.455035
+14    0.455035
+11    0.453937
+20    0.453937
+4     0.453438
+22    0.453239
+16    0.453039
+1     0.452540
+18    0.452440
+23    0.404138
+12    0.402441
+Name: mean_test_score, dtype: float64, 'std_test_score': 0     0.000108
+21    0.000108
+15    0.000108
+13    0.000108
+9     0.000108
+8     0.000108
+7     0.000108
+24    0.000108
+5     0.000108
+3     0.000108
+6     0.000108
+19    0.002385
+2     0.002123
+10    0.002248
+17    0.002482
+14    0.002731
+11    0.002203
+20    0.002180
+4     0.002235
+22    0.002152
+16    0.002133
+1     0.001693
+18    0.003141
+23    0.109272
+12    0.108163
+Name: std_test_score, dtype: float64, 'rank_test_score': 0      1
+21     1
+15     1
+13     1
+9      1
+8      1
+7      1
+24     1
+5      1
+3      1
+6      1
+19    12
+2     13
+10    14
+17    15
+14    16
+11    17
+20    18
+4     19
+22    20
+16    21
+1     22
+18    23
+23    24
+12    25
+Name: rank_test_score, dtype: int32, 'split0_train_score': 0     0.459014
+21    0.459014
+15    0.459014
+13    0.459014
+9     0.459014
+8     0.459014
+7     0.459014
+24    0.459014
+5     0.459014
+3     0.459014
+6     0.459014
+19    0.469245
+2     0.471366
+10    0.471241
+17    0.471241
+14    0.465876
+11    0.477979
+20    0.477480
+4     0.480599
+22    0.503930
+16    0.510667
+1     0.503306
+18    0.523518
+23    0.494947
+12    0.469619
+Name: split0_train_score, dtype: float64, 'split1_train_score': 0     0.459014
+21    0.459014
+15    0.459014
+13    0.459014
+9     0.459014
+8     0.459014
+7     0.459014
+24    0.459014
+5     0.459014
+3     0.459014
+6     0.459014
+19    0.471366
+2     0.471990
+10    0.471740
+17    0.470992
+14    0.468996
+11    0.471616
+20    0.470992
+4     0.473238
+22    0.490206
+16    0.494074
+1     0.491828
+18    0.504928
+23    0.185901
+12    0.466251
+Name: split1_train_score, dtype: float64, 'split2_train_score': 0     0.459014
+21    0.459014
+15    0.459014
+13    0.459014
+9     0.459014
+8     0.459014
+7     0.459014
+24    0.459014
+5     0.459014
+3     0.459014
+6     0.459014
+19    0.468621
+2     0.467623
+10    0.467873
+17    0.467998
+14    0.466625
+11    0.471117
+20    0.469994
+4     0.472988
+22    0.492077
+16    0.494074
+1     0.492701
+18    0.496195
+23    0.480349
+12    0.466251
+Name: split2_train_score, dtype: float64, 'split3_train_score': 0     0.459014
+21    0.459014
+15    0.459014
+13    0.459014
+9     0.459014
+8     0.459014
+7     0.459014
+24    0.459014
+5     0.459014
+3     0.459014
+6     0.459014
+19    0.467124
+2     0.466625
+10    0.466376
+17    0.466625
+14    0.466376
+11    0.472489
+20    0.471990
+4     0.473862
+22    0.484966
+16    0.482969
+1     0.484841
+18    0.493450
+23    0.478603
+12    0.185777
+Name: split3_train_score, dtype: float64, 'split4_train_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+19    0.467066
+2     0.466442
+10    0.466317
+17    0.467440
+14    0.466567
+11    0.471432
+20    0.470684
+4     0.471682
+22    0.488523
+16    0.491018
+1     0.491267
+18    0.494386
+23    0.479167
+12    0.464321
+Name: split4_train_score, dtype: float64, 'mean_train_score': 0     0.459028
+21    0.459028
+15    0.459028
+13    0.459028
+9     0.459028
+8     0.459028
+7     0.459028
+24    0.459028
+5     0.459028
+3     0.459028
+6     0.459028
+19    0.468685
+2     0.468809
+10    0.468710
+17    0.468859
+14    0.466888
+11    0.472926
+20    0.472228
+4     0.474474
+22    0.491940
+16    0.494560
+1     0.492789
+18    0.502495
+23    0.423793
+12    0.410444
+Name: mean_train_score, dtype: float64, 'std_train_score': 0     0.000027
+21    0.000027
+15    0.000027
+13    0.000027
+9     0.000027
+8     0.000027
+7     0.000027
+24    0.000027
+5     0.000027
+3     0.000027
+6     0.000027
+19    0.001585
+2     0.002385
+10    0.002344
+17    0.001896
+14    0.001086
+11    0.002567
+20    0.002703
+4     0.003144
+22    0.006436
+16    0.009020
+1     0.005950
+18    0.011271
+23    0.119100
+12    0.112347
+Name: std_train_score, dtype: float64}
+
+{'params': 0     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+21    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+15    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+13    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+9     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+8     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+7     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+24    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+5     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+3     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+6     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+19    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+2     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+10    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+17    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+14    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+11    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+20    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+4     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+22    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+16    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+1     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+18    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+23    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+12    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+Name: params, dtype: object}
+
+{'mean_fit_time': 0     2.081835
+21    2.247393
+15    2.537816
+13    3.022122
+9     2.451847
+8     2.531234
+7     3.140406
+24    3.262080
+5     2.461421
+3     2.254175
+6     2.755634
+Name: mean_fit_time, dtype: float64, 'std_fit_time': 0     0.033105
+21    0.065793
+15    0.132878
+13    0.086089
+9     0.033033
+8     0.019575
+7     0.034792
+24    0.078081
+5     0.054583
+3     0.082762
+6     0.039235
+Name: std_fit_time, dtype: float64, 'mean_score_time': 0     0.156781
+21    0.234174
+15    0.260105
+13    0.207446
+9     0.250132
+8     0.200664
+7     0.249134
+24    0.257711
+5     0.203256
+3     0.193881
+6     0.253523
+Name: mean_score_time, dtype: float64, 'std_score_time': 0     0.016295
+21    0.019820
+15    0.024204
+13    0.015895
+9     0.013564
+8     0.009881
+7     0.021790
+24    0.016564
+5     0.018545
+3     0.006451
+6     0.012964
+Name: std_score_time, dtype: float64, 'param_vectorizer__ngram_range': 0     (2, 3)
+21    (2, 3)
+15    (1, 3)
+13    (2, 3)
+9     (1, 3)
+8     (2, 3)
+7     (1, 3)
+24    (1, 3)
+5     (2, 3)
+3     (2, 3)
+6     (1, 3)
+Name: param_vectorizer__ngram_range, dtype: object, 'param_dim_red__k': 0     100
+21    100
+15    200
+13    300
+9     300
+8     200
+7     200
+24    200
+5     300
+3     200
+6     100
+Name: param_dim_red__k, dtype: object, 'param_clf__estimator__n_estimators': 0     200
+21    100
+15    100
+13    300
+9     100
+8     200
+7     300
+24    300
+5     200
+3     100
+6     200
+Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 0     48
+21    45
+15    43
+13    22
+9     24
+8     52
+7     21
+24    62
+5     54
+3     42
+6     29
+Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 0     10
+21     6
+15    20
+13    20
+9      3
+8      6
+7     20
+24     3
+5      3
+3      3
+6     20
+Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 0      1.15839
+21     1.94899
+15     1.00537
+13    0.877852
+9      1.87248
+8     0.724832
+7      1.51544
+24    0.597315
+5     0.750336
+3      1.71946
+6     0.163758
+Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 0     0.7
+21    0.7
+15    0.3
+13    0.7
+9     0.3
+8     0.7
+7     0.3
+24    0.7
+5     0.7
+3     0.3
+6     0.7
+Name: param_clf__estimator__colsample_bytree, dtype: object, 'param_clf__estimator__booster': 0     gblinear
+21    gblinear
+15    gblinear
+13    gblinear
+9     gblinear
+8     gblinear
+7     gblinear
+24    gblinear
+5     gblinear
+3     gblinear
+6     gblinear
+Name: param_clf__estimator__booster, dtype: object, 'params': 0     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+21    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+15    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+13    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+9     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+8     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+7     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+24    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+5     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+3     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+6     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+Name: params, dtype: object, 'split0_test_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+Name: split0_test_score, dtype: float64, 'split1_test_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+Name: split1_test_score, dtype: float64, 'split2_test_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+Name: split2_test_score, dtype: float64, 'split3_test_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+Name: split3_test_score, dtype: float64, 'split4_test_score': 0     0.458812
+21    0.458812
+15    0.458812
+13    0.458812
+9     0.458812
+8     0.458812
+7     0.458812
+24    0.458812
+5     0.458812
+3     0.458812
+6     0.458812
+Name: split4_test_score, dtype: float64, 'mean_test_score': 0     0.459028
+21    0.459028
+15    0.459028
+13    0.459028
+9     0.459028
+8     0.459028
+7     0.459028
+24    0.459028
+5     0.459028
+3     0.459028
+6     0.459028
+Name: mean_test_score, dtype: float64, 'std_test_score': 0     0.000108
+21    0.000108
+15    0.000108
+13    0.000108
+9     0.000108
+8     0.000108
+7     0.000108
+24    0.000108
+5     0.000108
+3     0.000108
+6     0.000108
+Name: std_test_score, dtype: float64, 'rank_test_score': 0     1
+21    1
+15    1
+13    1
+9     1
+8     1
+7     1
+24    1
+5     1
+3     1
+6     1
+Name: rank_test_score, dtype: int32, 'split0_train_score': 0     0.459014
+21    0.459014
+15    0.459014
+13    0.459014
+9     0.459014
+8     0.459014
+7     0.459014
+24    0.459014
+5     0.459014
+3     0.459014
+6     0.459014
+Name: split0_train_score, dtype: float64, 'split1_train_score': 0     0.459014
+21    0.459014
+15    0.459014
+13    0.459014
+9     0.459014
+8     0.459014
+7     0.459014
+24    0.459014
+5     0.459014
+3     0.459014
+6     0.459014
+Name: split1_train_score, dtype: float64, 'split2_train_score': 0     0.459014
+21    0.459014
+15    0.459014
+13    0.459014
+9     0.459014
+8     0.459014
+7     0.459014
+24    0.459014
+5     0.459014
+3     0.459014
+6     0.459014
+Name: split2_train_score, dtype: float64, 'split3_train_score': 0     0.459014
+21    0.459014
+15    0.459014
+13    0.459014
+9     0.459014
+8     0.459014
+7     0.459014
+24    0.459014
+5     0.459014
+3     0.459014
+6     0.459014
+Name: split3_train_score, dtype: float64, 'split4_train_score': 0     0.459082
+21    0.459082
+15    0.459082
+13    0.459082
+9     0.459082
+8     0.459082
+7     0.459082
+24    0.459082
+5     0.459082
+3     0.459082
+6     0.459082
+Name: split4_train_score, dtype: float64, 'mean_train_score': 0     0.459028
+21    0.459028
+15    0.459028
+13    0.459028
+9     0.459028
+8     0.459028
+7     0.459028
+24    0.459028
+5     0.459028
+3     0.459028
+6     0.459028
+Name: mean_train_score, dtype: float64, 'std_train_score': 0     0.000027
+21    0.000027
+15    0.000027
+13    0.000027
+9     0.000027
+8     0.000027
+7     0.000027
+24    0.000027
+5     0.000027
+3     0.000027
+6     0.000027
+Name: std_train_score, dtype: float64}
+
+                   feature     tfidf
+0                need know  0.006899
+1       briefing need know  0.006344
+2            briefing need  0.006344
+3             donald trump  0.006317
+4          president trump  0.005761
+5         president donald  0.004892
+6   president donald trump  0.004892
+7        impeachment trial  0.003683
+8         elizabeth warren  0.003441
+9                joe biden  0.003311
+10             white house  0.003307
+11                new york  0.002966
+12       trump impeachment  0.002709
+13           united states  0.002688
+14          bernie sanders  0.002655
+15                 end day  0.002461
+16                know end  0.002433
+17            know end day  0.002433
+18           need know end  0.002433
+19   evening briefing need  0.002433
+Fitting 5 folds for each of 25 candidates, totalling 125 fits
+[Parallel(n_jobs=6)]: Using backend LokyBackend with 6 concurrent workers.
+[Parallel(n_jobs=6)]: Done  38 tasks      | elapsed:   40.4s
+[Parallel(n_jobs=6)]: Done 125 out of 125 | elapsed:  1.8min finished
+Best random Parameters:  {'clf__estimator__n_estimators': 200, 'clf__estimator__min_samples_leaf': 33, 'clf__estimator__max_depth': 3, 'clf__estimator__learning_rate': 0.17755102040816328, 'clf__estimator__colsample_bytree': 0.7}
+
+Best random Score:  0.6477713071111896
+
+{'mean_fit_time': 16     2.386621
+0      1.644404
+6      1.295139
+10     1.727383
+17     0.913758
+7     10.533446
+4      7.414382
+23     7.432534
+22     9.498213
+9      2.571726
+12     4.016863
+13     3.358423
+1      3.871651
+3      9.266232
+14     6.006745
+8      7.450885
+18     2.574718
+2      1.998059
+5      5.923368
+15     2.639146
+20     3.087747
+19     5.317986
+24     4.528894
+21     2.187154
+11     1.503381
+Name: mean_fit_time, dtype: float64, 'std_fit_time': 16    0.018368
+0     0.011114
+6     0.030698
+10    0.008345
+17    0.008862
+7     0.083003
+4     0.050938
+23    0.073331
+22    0.038917
+9     0.026452
+12    0.029374
+13    0.019407
+1     0.055349
+3     0.047119
+14    0.021169
+8     0.048428
+18    0.019893
+2     0.036414
+5     0.271793
+15    0.040475
+20    0.707005
+19    0.139572
+24    0.634768
+21    0.092418
+11    0.042574
+Name: std_fit_time, dtype: float64, 'mean_score_time': 16    0.048471
+0     0.045279
+6     0.027127
+10    0.049867
+17    0.027726
+7     0.232578
+4     0.174933
+23    0.174334
+22    0.265491
+9     0.073803
+12    0.114095
+13    0.088763
+1     0.156981
+3     0.226993
+14    0.174334
+8     0.289626
+18    0.109308
+2     0.088763
+5     0.247738
+15    0.115491
+20    0.073204
+19    0.133045
+24    0.107114
+21    0.085372
+11    0.061237
+Name: mean_score_time, dtype: float64, 'std_score_time': 16    0.001353
+0     0.001493
+6     0.002035
+10    0.002443
+17    0.001466
+7     0.003362
+4     0.010716
+23    0.005656
+22    0.004779
+9     0.002749
+12    0.004019
+13    0.003940
+1     0.005870
+3     0.004575
+14    0.004433
+8     0.005903
+18    0.003764
+2     0.005677
+5     0.013434
+15    0.005620
+20    0.025125
+19    0.004117
+24    0.024181
+21    0.005663
+11    0.002410
+Name: std_score_time, dtype: float64, 'param_clf__estimator__n_estimators': 16    200
+0     200
+6     100
+10    200
+17    100
+7     200
+4     200
+23    200
+22    300
+9     300
+12    200
+13    100
+1     300
+3     300
+14    300
+8     300
+18    200
+2     100
+5     300
+15    200
+20    200
+19    200
+24    200
+21    200
+11    100
+Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 16    33
+0     26
+6     45
+10    27
+17    20
+7     54
+4     24
+23    29
+22    24
+9     20
+12    41
+13    49
+1     30
+3     33
+14    56
+8     25
+18    56
+2     23
+5     29
+15    27
+20    22
+19    48
+24    36
+21    41
+11    44
+Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 16     3
+0      3
+6      3
+10     3
+17     3
+7     20
+4     20
+23    20
+22    10
+9      3
+12     6
+13    10
+1      6
+3     20
+14     6
+8     20
+18     6
+2     10
+5     10
+15     6
+20     6
+19    10
+24    10
+21     6
+11    10
+Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 16    0.177551
+0     0.604082
+6     0.914286
+10     1.06939
+17     1.34082
+7     0.526531
+4      1.22449
+23     1.18571
+22    0.720408
+9      1.18571
+12     1.14694
+13     1.18571
+1     0.720408
+3      1.45714
+14     1.18571
+8      1.18571
+18     1.06939
+2      1.65102
+5      1.72857
+15     1.45714
+20     1.96122
+19     1.96122
+24     1.96122
+21      1.8449
+11     1.88367
+Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 16    0.7
+0     0.3
+6     0.7
+10    0.3
+17    0.3
+7     0.7
+4     0.7
+23    0.7
+22    0.7
+9     0.3
+12    0.7
+13    0.7
+1     0.3
+3     0.7
+14    0.7
+8     0.3
+18    0.3
+2     0.3
+5     0.3
+15    0.3
+20    0.7
+19    0.7
+24    0.7
+21    0.3
+11    0.3
+Name: param_clf__estimator__colsample_bytree, dtype: object, 'params': 16    {'clf__estimator__n_estimators': 200, 'clf__es...
+0     {'clf__estimator__n_estimators': 200, 'clf__es...
+6     {'clf__estimator__n_estimators': 100, 'clf__es...
+10    {'clf__estimator__n_estimators': 200, 'clf__es...
+17    {'clf__estimator__n_estimators': 100, 'clf__es...
+7     {'clf__estimator__n_estimators': 200, 'clf__es...
+4     {'clf__estimator__n_estimators': 200, 'clf__es...
+23    {'clf__estimator__n_estimators': 200, 'clf__es...
+22    {'clf__estimator__n_estimators': 300, 'clf__es...
+9     {'clf__estimator__n_estimators': 300, 'clf__es...
+12    {'clf__estimator__n_estimators': 200, 'clf__es...
+13    {'clf__estimator__n_estimators': 100, 'clf__es...
+1     {'clf__estimator__n_estimators': 300, 'clf__es...
+3     {'clf__estimator__n_estimators': 300, 'clf__es...
+14    {'clf__estimator__n_estimators': 300, 'clf__es...
+8     {'clf__estimator__n_estimators': 300, 'clf__es...
+18    {'clf__estimator__n_estimators': 200, 'clf__es...
+2     {'clf__estimator__n_estimators': 100, 'clf__es...
+5     {'clf__estimator__n_estimators': 300, 'clf__es...
+15    {'clf__estimator__n_estimators': 200, 'clf__es...
+20    {'clf__estimator__n_estimators': 200, 'clf__es...
+19    {'clf__estimator__n_estimators': 200, 'clf__es...
+24    {'clf__estimator__n_estimators': 200, 'clf__es...
+21    {'clf__estimator__n_estimators': 200, 'clf__es...
+11    {'clf__estimator__n_estimators': 100, 'clf__es...
+Name: params, dtype: object, 'split0_test_score': 16    0.664172
+0     0.634731
+6     0.638723
+10    0.620758
+17    0.625749
+7     0.615269
+4     0.612275
+23    0.596806
+22    0.605788
+9     0.607784
+12    0.605289
+13    0.603293
+1     0.593812
+3     0.592814
+14    0.596806
+8     0.587325
+18    0.594311
+2     0.582834
+5     0.578842
+15    0.582834
+20    0.581836
+19    0.551896
+24    0.551896
+21    0.546906
+11    0.225549
+Name: split0_test_score, dtype: float64, 'split1_test_score': 16    0.648204
+0     0.630739
+6     0.625250
+10    0.616766
+17    0.612275
+7     0.622255
+4     0.598802
+23    0.605788
+22    0.601796
+9     0.595309
+12    0.600299
+13    0.594311
+1     0.594311
+3     0.584830
+14    0.596307
+8     0.597305
+18    0.591816
+2     0.577345
+5     0.590319
+15    0.583333
+20    0.558882
+19    0.549900
+24    0.549900
+21    0.532934
+11    0.217066
+Name: split1_test_score, dtype: float64, 'split2_test_score': 16    0.646707
+0     0.622754
+6     0.614770
+10    0.601297
+17    0.604291
+7     0.596307
+4     0.577844
+23    0.587325
+22    0.590319
+9     0.582834
+12    0.580838
+13    0.582335
+1     0.570359
+3     0.584830
+14    0.571856
+8     0.562375
+18    0.569361
+2     0.559381
+5     0.554391
+15    0.562874
+20    0.594810
+19    0.551896
+24    0.551896
+21    0.583333
+11    0.519461
+Name: split2_test_score, dtype: float64, 'split3_test_score': 16    0.611277
+0     0.587325
+6     0.569361
+10    0.560878
+17    0.566866
+7     0.559381
+4     0.575848
+23    0.555888
+22    0.545908
+9     0.559880
+12    0.549900
+13    0.554391
+1     0.556886
+3     0.556387
+14    0.554890
+8     0.555389
+18    0.547904
+2     0.538423
+5     0.543912
+15    0.539421
+20    0.531437
+19    0.518962
+24    0.518962
+21    0.512974
+11    0.542415
+Name: split3_test_score, dtype: float64, 'split4_test_score': 16    0.668497
+0     0.651523
+6     0.651023
+10    0.637544
+17    0.627059
+7     0.619071
+4     0.614578
+23    0.617574
+22    0.618572
+9     0.611583
+12    0.609086
+13    0.610584
+1     0.625062
+3     0.615077
+14    0.607089
+8     0.624064
+18    0.614079
+2     0.625562
+5     0.615077
+15    0.598602
+20    0.538193
+19    0.571143
+24    0.571143
+21    0.551173
+11    0.630554
+Name: split4_test_score, dtype: float64, 'mean_test_score': 16    0.647771
+0     0.625414
+6     0.619825
+10    0.607449
+17    0.607248
+7     0.602457
+4     0.595870
+23    0.592676
+22    0.592477
+9     0.591478
+12    0.589083
+13    0.588983
+1     0.588086
+3     0.586788
+14    0.585390
+8     0.585292
+18    0.583494
+2     0.576709
+5     0.576508
+15    0.573413
+20    0.561032
+19    0.548760
+24    0.548760
+21    0.545464
+11    0.427009
+Name: mean_test_score, dtype: float64, 'std_test_score': 16    0.020158
+0     0.021235
+6     0.028043
+10    0.025986
+17    0.021906
+7     0.023347
+4     0.016453
+23    0.020933
+22    0.024973
+9     0.018751
+12    0.021872
+13    0.019701
+1     0.023352
+3     0.018807
+14    0.019151
+8     0.024783
+18    0.022751
+2     0.028950
+5     0.025438
+15    0.020436
+20    0.024396
+19    0.016792
+24    0.016792
+21    0.023158
+11    0.172023
+Name: std_test_score, dtype: float64, 'rank_test_score': 16     1
+0      2
+6      3
+10     4
+17     5
+7      6
+4      7
+23     8
+22     9
+9     10
+12    11
+13    12
+1     13
+3     14
+14    15
+8     16
+18    17
+2     18
+5     19
+15    20
+20    21
+19    22
+24    22
+21    24
+11    25
+Name: rank_test_score, dtype: int32, 'split0_train_score': 16    0.714410
+0     0.759825
+6     0.782658
+10    0.802495
+17    0.753462
+7     1.000000
+4     1.000000
+23    1.000000
+22    1.000000
+9     0.851029
+12    1.000000
+13    1.000000
+1     0.991017
+3     1.000000
+14    1.000000
+8     1.000000
+18    0.992265
+2     1.000000
+5     1.000000
+15    0.999750
+20    0.685714
+19    0.954211
+24    0.954211
+21    0.743481
+11    0.221959
+Name: split0_train_score, dtype: float64, 'split1_train_score': 16    0.716407
+0     0.766687
+6     0.789894
+10    0.801372
+17    0.768060
+7     1.000000
+4     1.000000
+23    1.000000
+22    1.000000
+9     0.855770
+12    1.000000
+13    1.000000
+1     0.988896
+3     1.000000
+14    1.000000
+8     1.000000
+18    0.990268
+2     0.999875
+5     1.000000
+15    0.999127
+20    0.860761
+19    1.000000
+24    1.000000
+21    0.711167
+11    0.218465
+Name: split1_train_score, dtype: float64, 'split2_train_score': 16    0.718029
+0     0.766812
+6     0.791017
+10    0.811354
+17    0.758827
+7     1.000000
+4     1.000000
+23    1.000000
+22    1.000000
+9     0.852651
+12    1.000000
+13    1.000000
+1     0.992140
+3     1.000000
+14    1.000000
+8     1.000000
+18    0.992015
+2     1.000000
+5     1.000000
+15    0.999376
+20    0.632314
+19    1.000000
+24    1.000000
+21    0.814223
+11    0.713662
+Name: split2_train_score, dtype: float64, 'split3_train_score': 16    0.724641
+0     0.771553
+6     0.794261
+10    0.812851
+17    0.768684
+7     1.000000
+4     1.000000
+23    1.000000
+22    1.000000
+9     0.859513
+12    1.000000
+13    1.000000
+1     0.991142
+3     1.000000
+14    1.000000
+8     1.000000
+18    0.989769
+2     1.000000
+5     1.000000
+15    0.999376
+20    0.683968
+19    0.999750
+24    0.999750
+21    0.734997
+11    0.762944
+Name: split3_train_score, dtype: float64, 'split4_train_score': 16    0.712949
+0     0.756238
+6     0.781562
+10    0.798653
+17    0.754616
+7     1.000000
+4     1.000000
+23    1.000000
+22    1.000000
+9     0.848678
+12    1.000000
+13    1.000000
+1     0.985778
+3     1.000000
+14    1.000000
+8     1.000000
+18    0.988149
+2     1.000000
+5     1.000000
+15    0.998752
+20    0.706587
+19    0.999875
+24    0.999875
+21    0.708209
+11    0.814122
+Name: split4_train_score, dtype: float64, 'mean_train_score': 16    0.717287
+0     0.764223
+6     0.787878
+10    0.805345
+17    0.760730
+7     1.000000
+4     1.000000
+23    1.000000
+22    1.000000
+9     0.853528
+12    1.000000
+13    1.000000
+1     0.989794
+3     1.000000
+14    1.000000
+8     1.000000
+18    0.990493
+2     0.999975
+5     1.000000
+15    0.999276
+20    0.713869
+19    0.990767
+24    0.990767
+21    0.742415
+11    0.546230
+Name: mean_train_score, dtype: float64, 'std_train_score': 16    0.004062
+0     0.005470
+6     0.004936
+10    0.005677
+17    0.006493
+7     0.000000
+4     0.000000
+23    0.000000
+22    0.000000
+9     0.003779
+12    0.000000
+13    0.000000
+1     0.002269
+3     0.000000
+14    0.000000
+8     0.000000
+18    0.001518
+2     0.000050
+5     0.000000
+15    0.000329
+20    0.077419
+19    0.018278
+24    0.018278
+21    0.038364
+11    0.268084
+Name: std_train_score, dtype: float64}
+
+{'params': 16    {'clf__estimator__n_estimators': 200, 'clf__es...
+0     {'clf__estimator__n_estimators': 200, 'clf__es...
+6     {'clf__estimator__n_estimators': 100, 'clf__es...
+10    {'clf__estimator__n_estimators': 200, 'clf__es...
+17    {'clf__estimator__n_estimators': 100, 'clf__es...
+7     {'clf__estimator__n_estimators': 200, 'clf__es...
+4     {'clf__estimator__n_estimators': 200, 'clf__es...
+23    {'clf__estimator__n_estimators': 200, 'clf__es...
+22    {'clf__estimator__n_estimators': 300, 'clf__es...
+9     {'clf__estimator__n_estimators': 300, 'clf__es...
+12    {'clf__estimator__n_estimators': 200, 'clf__es...
+13    {'clf__estimator__n_estimators': 100, 'clf__es...
+1     {'clf__estimator__n_estimators': 300, 'clf__es...
+3     {'clf__estimator__n_estimators': 300, 'clf__es...
+14    {'clf__estimator__n_estimators': 300, 'clf__es...
+8     {'clf__estimator__n_estimators': 300, 'clf__es...
+18    {'clf__estimator__n_estimators': 200, 'clf__es...
+2     {'clf__estimator__n_estimators': 100, 'clf__es...
+5     {'clf__estimator__n_estimators': 300, 'clf__es...
+15    {'clf__estimator__n_estimators': 200, 'clf__es...
+20    {'clf__estimator__n_estimators': 200, 'clf__es...
+19    {'clf__estimator__n_estimators': 200, 'clf__es...
+24    {'clf__estimator__n_estimators': 200, 'clf__es...
+21    {'clf__estimator__n_estimators': 200, 'clf__es...
+11    {'clf__estimator__n_estimators': 100, 'clf__es...
+Name: params, dtype: object}
+
+{'mean_fit_time': 16    2.386621
+Name: mean_fit_time, dtype: float64, 'std_fit_time': 16    0.018368
+Name: std_fit_time, dtype: float64, 'mean_score_time': 16    0.048471
+Name: mean_score_time, dtype: float64, 'std_score_time': 16    0.001353
+Name: std_score_time, dtype: float64, 'param_clf__estimator__n_estimators': 16    200
+Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 16    33
+Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 16    3
+Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 16    0.177551
+Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 16    0.7
+Name: param_clf__estimator__colsample_bytree, dtype: object, 'params': 16    {'clf__estimator__n_estimators': 200, 'clf__es...
+Name: params, dtype: object, 'split0_test_score': 16    0.664172
+Name: split0_test_score, dtype: float64, 'split1_test_score': 16    0.648204
+Name: split1_test_score, dtype: float64, 'split2_test_score': 16    0.646707
+Name: split2_test_score, dtype: float64, 'split3_test_score': 16    0.611277
+Name: split3_test_score, dtype: float64, 'split4_test_score': 16    0.668497
+Name: split4_test_score, dtype: float64, 'mean_test_score': 16    0.647771
+Name: mean_test_score, dtype: float64, 'std_test_score': 16    0.020158
+Name: std_test_score, dtype: float64, 'rank_test_score': 16    1
+Name: rank_test_score, dtype: int32, 'split0_train_score': 16    0.71441
+Name: split0_train_score, dtype: float64, 'split1_train_score': 16    0.716407
+Name: split1_train_score, dtype: float64, 'split2_train_score': 16    0.718029
+Name: split2_train_score, dtype: float64, 'split3_train_score': 16    0.724641
+Name: split3_train_score, dtype: float64, 'split4_train_score': 16    0.712949
+Name: split4_train_score, dtype: float64, 'mean_train_score': 16    0.717287
+Name: mean_train_score, dtype: float64, 'std_train_score': 16    0.004062
+Name: std_train_score, dtype: float64}
+
+{'importance': subjectivity    0.347242
+month           0.103582
+word_count      0.099700
+day             0.097126
+char_count      0.093316
+dayofweek       0.087593
+hour            0.086937
+year            0.084504
+Name: importance, dtype: float32}
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                               text_feat  ...  sentiment_label
+7809  Lisa Page Ex Lawyer Whose Texts Criticized Tru...  ...          neutral
+5590  This Mexican Chef Is Having a Very Good Year G...  ...          neutral
+3329  Why be Democrats Talking About Impeachment Bec...  ...         positive
+1728  Democratic Presidential Hopeful Klobuchar Sets...  ...          neutral
+9926  Jeffrey Epstein Gun Control Simone Biles Your ...  ...          neutral
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    937
+neutral     717
+negative    350
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                                text_feat  ...  sentiment_label
+1922   Elizabeth Warren Wants to Cancel Student Loans...  ...          neutral
+10223  Trump Presses His Argument of a Border Crisis ...  ...          neutral
+8313   Big Business Says It Will Tackle Climate Chang...  ...          neutral
+2055   Unable to Post Bail You Will Pay for That for ...  ...         negative
+1951   Eliminating Child Poverty With a Government Ch...  ...         positive
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    908
+neutral     703
+negative    393
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                                text_feat  ...  sentiment_label
+10432  The Impeachment Questions We Were Afraid to As...  ...         positive
+1304   Who Won the Debate Experts Weigh In There be l...  ...         positive
+9176   Years Later Native American Tribe in Montana G...  ...          neutral
+2669   In a Collection of Tributes the Gang Is All He...  ...         positive
+8691   Trial date be set for Lev Parnas Parnas have s...  ...         positive
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    907
+neutral     697
+negative    400
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                               text_feat  ...  sentiment_label
+5266  How Can You Put Life of Onstage With Puppets I...  ...          neutral
+1432  Momentum for Harris Big Haul for Buttigieg Thi...  ...         negative
+1515  Should College Be Free The Democratic Party be...  ...          neutral
+7793  Trump Possible Policy Shift on the Taliban A r...  ...         positive
+5133  You Oughta The Road to Making a Anthem a Broad...  ...          neutral
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    910
+neutral     733
+negative    361
+Name: sentiment_label, dtype: int64
+
+DataFrame shape: (2004, 10)
+
+DataFrame head:                                                text_feat  ...  sentiment_label
+7242   Impeachment Briefing What Happened Today Anoth...  ...         positive
+10153  Wartime Secrets and Intrigue From the Hotel Ri...  ...         positive
+4061   Joe Biden and the Apologies That be Politician...  ...         negative
+6344   Elizabeth Warren Has a Poet on Her Team Here W...  ...          neutral
+10739  Trump Wants a Fight Pelosi Can Hit Back With r...  ...         positive
+
+[5 rows x 10 columns]
+
+DataFrame labels; positive    935
+neutral     715
+negative    354
+Name: sentiment_label, dtype: int64
+
+Split DataFrames into 5-Fold datasets!
+
+Stacked Model Training!
+
+Text Model!
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 TfidfVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.float64'>,
+                                 encoding='utf-8', input='content',
+                                 lowercase=True, max_df=1.0, max_features=None,
+                                 min_df=1, ngram_range=(2, 3), norm='l2',
+                                 preprocessor=None, smooth_idf=True,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be...
+                                                             colsample_bynode=1,
+                                                             colsample_bytree=0.7,
+                                                             gamma=0,
+                                                             learning_rate=1.1583892617449665,
+                                                             max_delta_step=0,
+                                                             max_depth=10,
+                                                             min_child_weight=1,
+                                                             min_samples_leaf=48,
+                                                             missing=None,
+                                                             n_estimators=200,
+                                                             n_jobs=1,
+                                                             nthread=None,
+                                                             objective='binary:logistic',
+                                                             random_state=42,
+                                                             reg_alpha=0,
+                                                             reg_lambda=1,
+                                                             scale_pos_weight=1,
+                                                             seed=None,
+                                                             silent=None,
+                                                             subsample=1,
+                                                             verbosity=1),
+                                     n_jobs=None))],
+         verbose=False)
+
+Numeric Model!
+Pipeline(memory=None,
+         steps=[('scaler', MinMaxScaler(copy=True, feature_range=(0, 1))),
+                ('clf',
+                 OneVsRestClassifier(estimator=XGBClassifier(base_score=0.5,
+                                                             booster='gbtree',
+                                                             colsample_bylevel=1,
+                                                             colsample_bynode=1,
+                                                             colsample_bytree=0.7,
+                                                             gamma=0,
+                                                             learning_rate=0.17755102040816328,
+                                                             max_delta_step=0,
+                                                             max_depth=3,
+                                                             min_child_weight=1,
+                                                             min_samples_leaf=33,
+                                                             missing=None,
+                                                             n_estimators=200,
+                                                             n_jobs=1,
+                                                             nthread=None,
+                                                             objective='binary:logistic',
+                                                             random_state=42,
+                                                             reg_alpha=0,
+                                                             reg_lambda=1,
+                                                             scale_pos_weight=1,
+                                                             seed=None,
+                                                             silent=None,
+                                                             subsample=1,
+                                                             verbosity=1),
+                                     n_jobs=None))],
+         verbose=False)
+
+Test set shape: (401, 9)
+
+Training set 1 shape: (801, 10)
+
+Training set 2 shape: (802, 10)
+
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:342: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
+Stacked Model!
+OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
+                                                 dual=False, fit_intercept=True,
+                                                 intercept_scaling=1,
+                                                 l1_ratio=None, max_iter=5000,
+                                                 multi_class='auto',
+                                                 n_jobs=None, penalty='l2',
+                                                 random_state=42,
+                                                 solver='liblinear', tol=0.0001,
+                                                 verbose=0, warm_start=False),
+                    n_jobs=None)
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:349: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:359: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
+LogisticRegression Coefs: [[-0.05984946  0.24265377]
+ [ 0.22521644 -1.08615806]
+ [-0.19119624  0.80230381]]
+
+Training Set Accuracy
+0.6359102244389028
+
+Test Set Accuracy
+0.628428927680798
+
+Confusion matrix
+[[  0  21  46]
+ [  0  96  44]
+ [  0  38 156]]
+
+Classification report
+              precision    recall  f1-score   support
+
+          -1       0.00      0.00      0.00        67
+           0       0.62      0.69      0.65       140
+           1       0.63      0.80      0.71       194
+
+    accuracy                           0.63       401
+   macro avg       0.42      0.50      0.45       401
+weighted avg       0.52      0.63      0.57       401
+
+
+
+Test set shape: (401, 9)
+
+Training set 1 shape: (801, 10)
+
+Training set 2 shape: (802, 10)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:342: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:349: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:359: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
+Stacked Model!
+OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
+                                                 dual=False, fit_intercept=True,
+                                                 intercept_scaling=1,
+                                                 l1_ratio=None, max_iter=5000,
+                                                 multi_class='auto',
+                                                 n_jobs=None, penalty='l2',
+                                                 random_state=42,
+                                                 solver='liblinear', tol=0.0001,
+                                                 verbose=0, warm_start=False),
+                    n_jobs=None)
+LogisticRegression Coefs: [[-0.06826682  0.26051545]
+ [ 0.22763306 -1.03503642]
+ [-0.17743162  0.69129114]]
+
+Training Set Accuracy
+0.5972568578553616
+
+Test Set Accuracy
+0.6184538653366584
+
+Confusion matrix
+[[  0  26  42]
+ [  0 109  36]
+ [  0  49 139]]
+
+Classification report
+              precision    recall  f1-score   support
+
+          -1       0.00      0.00      0.00        68
+           0       0.59      0.75      0.66       145
+           1       0.64      0.74      0.69       188
+
+    accuracy                           0.62       401
+   macro avg       0.41      0.50      0.45       401
+weighted avg       0.51      0.62      0.56       401
+
+
+
+Test set shape: (401, 9)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training set 1 shape: (801, 10)
+
+Training set 2 shape: (802, 10)
+
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:342: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
+Stacked Model!
+OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
+                                                 dual=False, fit_intercept=True,
+                                                 intercept_scaling=1,
+                                                 l1_ratio=None, max_iter=5000,
+                                                 multi_class='auto',
+                                                 n_jobs=None, penalty='l2',
+                                                 random_state=42,
+                                                 solver='liblinear', tol=0.0001,
+                                                 verbose=0, warm_start=False),
+                    n_jobs=None)
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:349: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:359: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+LogisticRegression Coefs: [[-0.00632189  0.02686466]
+ [ 0.1702288  -0.80669482]
+ [-0.16215253  0.66147239]]
+
+Training Set Accuracy
+0.5910224438902744
+
+Test Set Accuracy
+0.5785536159600998
+
+Confusion matrix
+[[  0  29  58]
+ [  0  84  45]
+ [  0  37 148]]
+
+Classification report
+              precision    recall  f1-score   support
+
+          -1       0.00      0.00      0.00        87
+           0       0.56      0.65      0.60       129
+           1       0.59      0.80      0.68       185
+
+    accuracy                           0.58       401
+   macro avg       0.38      0.48      0.43       401
+weighted avg       0.45      0.58      0.51       401
+
+
+
+Test set shape: (401, 9)
+
+Training set 1 shape: (801, 10)
+
+Training set 2 shape: (802, 10)
+
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:342: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:349: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:359: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
+Stacked Model!
+OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
+                                                 dual=False, fit_intercept=True,
+                                                 intercept_scaling=1,
+                                                 l1_ratio=None, max_iter=5000,
+                                                 multi_class='auto',
+                                                 n_jobs=None, penalty='l2',
+                                                 random_state=42,
+                                                 solver='liblinear', tol=0.0001,
+                                                 verbose=0, warm_start=False),
+                    n_jobs=None)
+LogisticRegression Coefs: [[-0.18762323  0.61331193]
+ [ 0.39161268 -1.62579995]
+ [-0.26935902  0.94196878]]
+
+Training Set Accuracy
+0.6097256857855362
+
+Test Set Accuracy
+0.5835411471321695
+
+Confusion matrix
+[[  0  20  49]
+ [  0 105  41]
+ [  0  57 129]]
+
+Classification report
+              precision    recall  f1-score   support
+
+          -1       0.00      0.00      0.00        69
+           0       0.58      0.72      0.64       146
+           1       0.59      0.69      0.64       186
+
+    accuracy                           0.58       401
+   macro avg       0.39      0.47      0.43       401
+weighted avg       0.48      0.58      0.53       401
+
+
+
+Test set shape: (401, 9)
+
+Training set 1 shape: (801, 10)
+
+Training set 2 shape: (802, 10)
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:342: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
+Stacked Model!
+OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
+                                                 dual=False, fit_intercept=True,
+                                                 intercept_scaling=1,
+                                                 l1_ratio=None, max_iter=5000,
+                                                 multi_class='auto',
+                                                 n_jobs=None, penalty='l2',
+                                                 random_state=42,
+                                                 solver='liblinear', tol=0.0001,
+                                                 verbose=0, warm_start=False),
+                    n_jobs=None)
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:349: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
+C:\Users\bscard\Documents\Pycharm Projects\nyt_sentiment_analyzer\model_utils\model_eval.py:359: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
+LogisticRegression Coefs: [[-0.14434065  0.51492111]
+ [ 0.2009129  -0.91050497]
+ [-0.11605197  0.47108642]]
+
+Training Set Accuracy
+0.5860349127182045
+
+Test Set Accuracy
+0.6159600997506235
+
+Confusion matrix
+[[  0  22  46]
+ [  0  94  43]
+ [  0  43 153]]
+
+Classification report
+              precision    recall  f1-score   support
+
+          -1       0.00      0.00      0.00        68
+           0       0.59      0.69      0.64       137
+           1       0.63      0.78      0.70       196
+
+    accuracy                           0.62       401
+   macro avg       0.41      0.49      0.44       401
+weighted avg       0.51      0.62      0.56       401
+
+
+
+5-fold cross-validated Accuracy: 0.6049875311720698
+
+5-fold cross-validated F1 score: 0.6049875311720698
+
+C:\Users\bscard\miniconda3\lib\site-packages\sklearn\metrics\_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Loaded Text model!
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 TfidfVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.float64'>,
+                                 encoding='utf-8', input='content',
+                                 lowercase=True, max_df=1.0, max_features=None,
+                                 min_df=1, ngram_range=(2, 3), norm='l2',
+                                 preprocessor=None, smooth_idf=True,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be...
+                                                             colsample_bynode=1,
+                                                             colsample_bytree=0.7,
+                                                             gamma=0,
+                                                             learning_rate=1.1583892617449665,
+                                                             max_delta_step=0,
+                                                             max_depth=10,
+                                                             min_child_weight=1,
+                                                             min_samples_leaf=48,
+                                                             missing=nan,
+                                                             n_estimators=200,
+                                                             n_jobs=1,
+                                                             nthread=None,
+                                                             objective='binary:logistic',
+                                                             random_state=42,
+                                                             reg_alpha=0,
+                                                             reg_lambda=1,
+                                                             scale_pos_weight=1,
+                                                             seed=None,
+                                                             silent=None,
+                                                             subsample=1,
+                                                             verbosity=1),
+                                     n_jobs=None))],
+         verbose=False)
+
+Loaded Text model!
+Pipeline(memory=None,
+         steps=[('scaler', MinMaxScaler(copy=True, feature_range=(0, 1))),
+                ('clf',
+                 OneVsRestClassifier(estimator=XGBClassifier(base_score=0.5,
+                                                             booster='gbtree',
+                                                             colsample_bylevel=1,
+                                                             colsample_bynode=1,
+                                                             colsample_bytree=0.7,
+                                                             gamma=0,
+                                                             learning_rate=0.17755102040816328,
+                                                             max_delta_step=0,
+                                                             max_depth=3,
+                                                             min_child_weight=1,
+                                                             min_samples_leaf=33,
+                                                             missing=nan,
+                                                             n_estimators=200,
+                                                             n_jobs=1,
+                                                             nthread=None,
+                                                             objective='binary:logistic',
+                                                             random_state=42,
+                                                             reg_alpha=0,
+                                                             reg_lambda=1,
+                                                             scale_pos_weight=1,
+                                                             seed=None,
+                                                             silent=None,
+                                                             subsample=1,
+                                                             verbosity=1),
+                                     n_jobs=None))],
+         verbose=False)
+
+Loaded Stacked model!
+OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
+                                                 dual=False, fit_intercept=True,
+                                                 intercept_scaling=1,
+                                                 l1_ratio=None, max_iter=5000,
+                                                 multi_class='auto',
+                                                 n_jobs=None, penalty='l2',
+                                                 random_state=42,
+                                                 solver='liblinear', tol=0.0001,
+                                                 verbose=0, warm_start=False),
+                    n_jobs=None)
+
+(10019, 26)
+
+Index(['headline_main', 'web_url', 'text', 'word_count_SOURCE', 'pub_date',
+       'year_SOURCE', 'month_SOURCE', 'day_SOURCE', 'dayofweek_SOURCE',
+       'hour_SOURCE', 'polarity', 'subjectivity_SOURCE',
+       'sentiment_label_SOURCE', 'char_count_SOURCE', 'text_feat_SOURCE',
+       'predictions', 'text_feat_FEAT', 'year_FEAT', 'month_FEAT', 'day_FEAT',
+       'dayofweek_FEAT', 'hour_FEAT', 'word_count_FEAT', 'subjectivity_FEAT',
+       'char_count_FEAT', 'sentiment_label_FEAT'],
+      dtype='object')
+
+
+Process finished with exit code 0

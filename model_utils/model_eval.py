@@ -2,16 +2,16 @@
 *******************************************************************************************************************
 model_utils.model_eval
 
-This module contains customized utilities for training Sentiment Analysis models:
+This module contains customized utilities for training & evaluating Sentiment Analysis models:
     - split_df (splits DataFrame into KFold DataFrames)
     - model_training_metrics (iterate over a list of models, fitting them and getting evaluation metrics)
     - random_hyper_tune (performs hyper-parameter tuning)
-    - num_feature_importance (Print a DataFrame with most important features for tree-based models with numeric features)
     - text_feature_importance (Print a DataFrame with the Top N most important n_grams from the text model)
+    - num_feature_importance (Print a DataFrame with most important features for tree-based models with numeric features)
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
 created: 12/31/19
-last updated: 2/14/20
+last updated: 2/15/20
 *******************************************************************************************************************
 """
 import numpy as np
@@ -153,7 +153,8 @@ def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_f
     @param n_iters: nubmer of iterations to specify before training is ceased
     @param n_folds: number of cross-validation folds to partition pandas DataFrame
     @param model_file_path: path to export the model as a pickle file
-    @return: return a tuple of the best performant model and a pandas DataFrame with all of the parameters and training/holdout results
+    @return: return a tuple of the best performing model and a pandas DataFrame with all of the parameters and training/
+        holdout results
     """
 
     # define feature set: X
@@ -198,7 +199,7 @@ def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_f
     print(dict(best_row))
     print()
 
-    # save text model for later
+    # save model for later
     with open(model_file_path, 'wb') as model_file:
         pickle.dump(random_model.best_estimator_, model_file)
 
@@ -209,7 +210,6 @@ def text_feature_importance(df, text_feature, vectorizer, top_n=20):
     """
     Print a pandas DataFrame with the Top N most important n_grams by the TfIdf Vectorizer weights,
     used as input features for the text model
-
     @param df: pandas DataFrame containing the text feature
     @param text_feature: pandas Series containing the text feature
     @param vectorizer: TfIdf Vectorizer that was used for feature engineering for text model

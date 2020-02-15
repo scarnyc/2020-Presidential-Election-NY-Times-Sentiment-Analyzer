@@ -1,37 +1,46 @@
-# nyt_sentiment_analyzer
+# nyt_sentiment_analyzer .py package
 Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Democratic Presidential Candidates
 
-This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Democratic Candidates,
-    using N.Y. Times article data via the following functions:
+This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Democratic Candidates, 
+using the N.Y. Times Article Search API. Ths is a multi-class classification problem, predicting positive, neutral and negative sentiment.
+At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
+    1) Read in data from multiple N.Y.Times .csv files from a specified directory into a single DataFrame.
+        Files contain data about N.Y. Times Articles about U.S. Presidential Democratic Candidates scraped from the Article Search API 
+    2) Then it will pre-process the data, engineer additional features, as well as label the data using TextBlob sentiment analysis scores.
+    3) Next, the function will generate a series of graphs to assist with EDA in the Data Science workflow.
+    4) After that, it will train user-selected Sci-kit Learn Models and print out F1 and Accuracy score metrics, performing 5-Fold cross-validation.
+        This allows the user to compare models with numeric & text-based features and see how they perform, and see if the model is overfitting to the training data.
+    5) Then the function will both tune the hyper-parameters of both models (numeric & text-based features) and print the most important features for each model type, respectively.
+    6) Next, the function will train and evaluate a stacked model pipeline: 
+        Using the aforementioned predictions from the text-based model and the numeric model as features, it will train a second-layered Logistic Regression model.
+    7) Finally, the pipeline will make predictions on the data and produce one last graph showing the average sentiment of the N.Y. Times Articles 
+        about a particular candidate over time.
 
-    - union_csv (reads .csv files containing Article abstract descriptions of N.Y. Times articles into a single pandas DataFrame.
-        Please note that the .csv files were created by calling the nyt_api.main module)
-    - preprocess_df (pre-processes aforementioned DataFrame by dropping null values and duplicates,
-        and also concatenating columns for text feature engineering)
-    - date_feats (generates year, month, day and hour date features from existing date feature)
-    - filter_dataframe (filters out articles prior to a user-defined year)
-    - sentiment_analyzer (generates TextBlob Sentiment scores to be used as labels row by row over the entire pandas DataFrame)
-    - sentiment_label (groups raw TextBlob Sentiment scores into 3 labels: ['positive','negative','neutral'])
-    - char_count (counts length of text feature)
-    - apply_func (applies the lemma_nopunc function row by row over the pandas DataFrame, effectively lemmatizing the text feature)
-    - corr_heatmap (plots a HeatMap of feature correlations for EDA)
-    - drop_high_corr (automatically drops highly-correlated features from a pandas DataFrame)
-    - plot_word_freq (plots the top N features from a BOW model, for EDA)
-    - two_dim_tf_viz (plots a 2D scatter plot of TfIdf scores of text features, colored by sentiment label for EDA)
-    - time_series_line_viz (plots a line plot of Sentiment over time for a given pandas DataFrame for EDA)
-    - model_training_metrics (print model evaluation metrics, iterating over a list of models that are passed into a list,
-        allowing for the comparison of different models and their results to guide choice for stacking purposes)
-    - model_random_hyper_tune (perform hyper-parameter tuning on any given model that is chosen from evaluation,
-        by utilizing a Random Search)
-    - text_feature_importance (print the top 25 features from the text model by their TfIdf weights
-    - num_feature_importance (print the most important feautres for tree-based models with numeric features)
-    - stacked_model_metrics (finally, fit both the numeric & text models that were previously tuned performing cross-validation,
-        and adding a second-layer LogisticRegression stacked model that will use the predictions from the other two models as features,
-        for the final predictions)
-        
- The stacked model achieves about 58% accuracy and F1, which is better than a random guess. 
+Models Trained & Evaluated for both Text & Numeric Models:
+- Logistic Regression
+- XGBoost Classifier
+- Random Forest Classifier
+- Linear SVM Classifier
+- Multi-nomial Naiive Bayes Classifier
+
+Methods for training models:
+- All text models that were trained were evaluated using Bi-Gram Bag of Words (BOW) Frequencies and TfIdf Scores as features for text-based models. 
+    Standardization was only performed on the TfIdf scores and dimensionality reduction using Chi-Square test was performed on both text-based feature types.
+- All numeric models that were trained were evaluated using Min-Max Scaling as features prior to model fitting. 
+    The numeric models used date features, article abstract character counts, article word counts, and TextBlob subjectivity. 
+
+Initial Findings:
+- For multi-class classification Micro F1 Score was used to evaluate data with imbalanced classes   
+- XGBoost Classifier outperformed the other models for the text-based model with 45.7% F1 score using Bi-gram TfIdf weights as features.   
+- XGBoost Classifier also outperformed the other models using numeric features, touting 66% F1 Score.       
+- The stacked Logistic Regression model achieves 60% F1 Score, which is 10 percentage points better than a random guess. 
+    However, while the numeric features involved in the model stacking significantly improve F1 Score (by approximately 15 percentage points), 
+    F1 Score is ill-defined for negative predictions, with no prediction samples. 
+    This finding is conclusive with the results for the XGBoost Classifier text model. 
  
- Next Step - 
-    RNN & LSTM 
+Next Steps:
+ - Add rolling window averages for Time Series Plot
+ - Add RNN & LSTM to model training pipeline
+ - Add logging functionality
     
  More to come...

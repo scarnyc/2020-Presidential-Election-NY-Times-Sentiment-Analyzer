@@ -6,7 +6,7 @@ This module contains common utilities for importing & handling data in pandas Da
     - union_csv (unions similar csv files into a single DataFrame)
 
 created: 1/5/20
-last updated: 2/13/20
+last updated: 2/15/20
 ********************************************************************************************
 """
 import pandas as pd
@@ -28,7 +28,7 @@ def union_csv(csv_path: object, glob_pattern: object) -> object:
     csv_path = csv_path
 
     # assert that a raw string type was passed to csv_path parameter
-    assert type(csv_path) == str, "You need to pass a raw string to csv_path!"
+    assert isinstance(csv_path, str), "You need to pass a raw string to csv_path!"
 
     # append all files with the glob pattern naming convention in the file path to a list: all_files
     all_files = glob(path.join(csv_path, glob_pattern))
@@ -45,6 +45,9 @@ def union_csv(csv_path: object, glob_pattern: object) -> object:
     print(combined_df.head())
     print()
     print('DataFrame Shape: {}'.format(combined_df.shape))
+    print()
+    print('DataFrame Metadata')
+    print(combined_df.info())
     print()
 
     # return pandas DataFrame utilizing a generator expression for the objs argument of pd.concat
