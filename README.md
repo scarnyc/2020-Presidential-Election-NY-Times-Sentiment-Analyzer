@@ -45,5 +45,7 @@ Next Steps:
  - Try using LabelBinarizer() for one-hot encoding of Labels: https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelBinarizer.html
     or from keras.utils.np_utils import to_categorical
  - Change f1_score(y_test, y_pred, average='micro') to average=None
+ - Update the model metrics to output probabilities for predicted classes and look at their tradeoffs.
+    Only accept a prediction if it meets a defined threshold, otherwise assign the prediction to a default class.
     
  More to come...
