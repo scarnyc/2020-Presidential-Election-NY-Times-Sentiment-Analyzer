@@ -42,5 +42,6 @@ Next Steps:
  - Add rolling window averages for Time Series Plot
  - Add RNN & LSTM to model training pipeline
  - Add logging functionality
+ - Try using LabelBinarizer() for one-hot encoding of Labels: https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelBinarizer.html
     
  More to come...
