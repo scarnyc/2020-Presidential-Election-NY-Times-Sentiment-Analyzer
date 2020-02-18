@@ -43,5 +43,7 @@ Next Steps:
  - Add RNN & LSTM to model training pipeline
  - Add logging functionality
  - Try using LabelBinarizer() for one-hot encoding of Labels: https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelBinarizer.html
+    or from keras.utils.np_utils import to_categorical
+ - Change f1_score(y_test, y_pred, average='micro') to average=None
     
  More to come...
