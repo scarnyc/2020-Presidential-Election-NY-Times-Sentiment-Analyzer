@@ -3,6 +3,9 @@ Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidate
 
 This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Candidates, 
 using the N.Y. Times Article Search API. Ths is a multi-class classification problem, predicting positive, neutral and negative sentiment.
+The model achieves a 61% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction,
+while Donald Trump has the lowest. Please refer to the "Findings & Results" section below for more info.
+
 At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
     1) Read in data from multiple N.Y.Times .csv files from a specified directory into a single DataFrame.
         Files contain data about N.Y. Times Articles about U.S. Presidential Candidates scraped from the Article Search API 
@@ -23,21 +26,44 @@ Models Trained & Evaluated for both Text & Numeric Models:
 - Linear SVM Classifier
 - Multi-nomial Naiive Bayes Classifier
 
-Methods for training models:
+Model Training Methodology:
 - All text models that were trained were evaluated using Bi-Gram Bag of Words (BOW) Frequencies and TfIdf Scores as features for text-based models. 
     Standardization was only performed on the TfIdf scores and dimensionality reduction using Chi-Square test was performed on both text-based feature types.
 - All numeric models that were trained were evaluated using Min-Max Scaling as features prior to model fitting. 
     The numeric models used date features, article abstract character counts, article word counts, and TextBlob subjectivity. 
 
-Initial Findings:
-- For multi-class classification Micro F1 Score was used to evaluate data with imbalanced classes   
+Findings & Results:
+Quantitative:
+- For multi-class classification F1 Score was used to evaluate data with imbalanced classes   
 - XGBoost Classifier outperformed the other models for the text-based model with 45.7% F1 score using Bi-gram TfIdf weights as features.   
 - XGBoost Classifier also outperformed the other models using numeric features, touting 66% F1 Score.       
-- The stacked Logistic Regression model achieves 60% F1 Score, which is 10 percentage points better than a random guess. 
-    However, while the numeric features involved in the model stacking significantly improve F1 Score (by approximately 15 percentage points), 
+- The stacked Logistic Regression model achieves 61% F1 Score, which is 11 percentage points better than a random guess. 
+    However, while the numeric features involved in the model stacking significantly improve F1 Score (by approximately 16 percentage points), 
     F1 Score is ill-defined for negative predictions, with no prediction samples. 
-    This finding is conclusive with the results for the XGBoost Classifier text model. 
+    This finding is conclusive with the results for the XGBoost Classifier text model.
+     
+Qualitative:
+While quantitative results suggest that the model has a 61% harmonic mean of precision & recall, the qualitative results are interesting!
+
+Consider the table below of candidates and their average sentiment predictions from the model:  
+
+candidate           sentiment_prediction
+Bernie Sanders      0.730813
+Andrew Yang         0.725824
+Amy Klobuchar       0.699352
+Joe Biden           0.686747
+Cory Booker         0.680730
+Elizabeth Warren    0.648789
+Donald Trump        0.615361
  
+The model is predicting that Bernie Sanders has the highest average sentiment prediction while Donald Trump has the lowest.
+This prediction of Senator Sanders is in line with current polls and Caucus results from Iowa & New Hampshire. 
+On the other hand, it's interesting that President Trump has the lowest sentiment, out of any Presidential Candidate.
+The N.Y. Times is considered one of the most politically left-leaning news organizations in the United States, 
+and while President Trump's average sentiment is technically positive (see: https://github.com/cjhutto/vaderSentiment#about-the-scoring), 
+it's still interesting that compared to the rest of the candidates Trump's average sentiment is the lowest (especially given the context of 
+his impeachment trial that was going on during the time these articles were collected).  
+
 Next Steps:
  - Add rolling window averages for Time Series Plot
  - Add RNN & LSTM to model training pipeline

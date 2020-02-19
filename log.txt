@@ -5309,8 +5309,8 @@ Index(['headline_main', 'web_url', 'text', 'word_count_SOURCE', 'pub_date',
       dtype='object')
 
 candidate
-Andrew Yang         0.725824
 Bernie Sanders      0.730813
+Andrew Yang         0.725824
 Amy Klobuchar       0.699352
 Joe Biden           0.686747
 Cory Booker         0.680730
