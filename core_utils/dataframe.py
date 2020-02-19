@@ -35,12 +35,17 @@ def union_csv(csv_path: object, glob_pattern: object) -> object:
 
     # read in each .csv file with pd.read_csv inside the generator expression
     # ignore index of all DataFrames in memory and set sort parameter to False
-    combined_df = pd.concat(
-        objs=(pd.read_csv(f) for f in all_files),
-        ignore_index=True,
-        sort=False
-    )
+    dfs = []
 
+    for f in all_files:
+        df = pd.read_csv(f)
+        df['candidate'] = f.replace('./data/').split('_')[0]
+        dfs.append(df)
+
+    combined_df = pd.concat(dfs, ignore_index=True, sort=False)
+
+    # print DataFrame first 5 rows, metadata & shape
+    print()
     print('DataFrame Sample')
     print(combined_df.head())
     print()

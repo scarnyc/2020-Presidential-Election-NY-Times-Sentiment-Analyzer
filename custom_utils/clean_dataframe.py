@@ -8,7 +8,7 @@ This module contains customized utilities for cleaning data in pandas DataFrames
     - filter_dataframe (Filters pandas DataFrame according to contains expressions in a list)
 
 created: 12/31/19
-last updated: 2/14/20
+last updated: 2/19/20
 ***************************************************************************************************
 """
 def preprocess_df(df, new_col, con_col1, con_col2, subset_list, filter_col_list):
@@ -67,3 +67,4 @@ def filter_dataframe(df, col_to_filter, value_to_filter):
     print()
 
     return df
+

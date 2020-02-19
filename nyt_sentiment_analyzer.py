@@ -4,7 +4,7 @@
 ***************************************************
 N.Y. Times Articles Sentiment Analysis (.py script)
 Created on 12/31/19 by bscard
-Last updated: 2/15/19
+Last updated: 2/19/19
 ***************************************************
 """
 # Import custom packages
@@ -30,14 +30,14 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from xgboost import XGBClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 
 
 def sentiment_analysis_pipe(directory):
     """
-    This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Democratic Candidates,
+    This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of 2020 U.S. Presidential Candidates,
     using the N.Y. Times Article Search API.
 
      Please note the following functions that are used in the Sentiment Analysis Model Pipeline:
@@ -84,13 +84,13 @@ def sentiment_analysis_pipe(directory):
         con_col1='headline_main',
         con_col2='abstract',
         subset_list=['abstract'],
-        filter_col_list=['headline_main', 'web_url', 'text', 'word_count', 'pub_date']
+        filter_col_list=['headline_main', 'web_url', 'text', 'word_count', 'pub_date', 'candidate']
     )
 
     # generate date_features for article_df
     article_df = date_feats(df=article_df, date_col='pub_date')
 
-    # filter out articles written prior to Democratic election campaigns (ie. 2019)
+    # filter out articles written prior to U.S. Presidential election campaigns (ie. 2019)
     article_df = filter_dataframe(df=article_df, col_to_filter='year', value_to_filter=2019)
 
     # generate TextBlob sentiment and subjectivity scores for each row of 'text' in article_df: tb_sent_scores
@@ -171,12 +171,12 @@ def sentiment_analysis_pipe(directory):
                   ]),
         Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
                   ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(LinearSVC(C=1000, max_iter=5000, random_state=42, class_weight='balanced')))
+                  ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
                   ]),
         Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
                   ('scaler', StandardScaler(with_mean=False)),
                   ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(LinearSVC(C=1000, max_iter=5000, random_state=42, class_weight='balanced')))
+                  ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
                   ]),
         Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
                   ('dim_red', SelectKBest(chi2, k=300)),
@@ -200,13 +200,13 @@ def sentiment_analysis_pipe(directory):
                    ]),
         Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
                   ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf',OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+                  ('clf',OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
                                                                 random_state=42, class_weight='balanced')))
                    ]),
         Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
                   ('scaler', StandardScaler(with_mean=False)),
                   ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+                  ('clf', OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
                                                                  random_state=42, class_weight='balanced')))
                    ])
             ]
@@ -229,7 +229,7 @@ def sentiment_analysis_pipe(directory):
                  ]),
         Pipeline([
             ('scaler', MinMaxScaler()),
-            ('clf', OneVsRestClassifier(LinearSVC(C=1000, max_iter=5000, random_state=42, class_weight='balanced')))
+            ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
         ]),
         Pipeline([
             ('scaler', MinMaxScaler()),
@@ -315,7 +315,6 @@ def sentiment_analysis_pipe(directory):
                                      'subjectivity']
                            )
 
-
     # print out stacked model metrics
     stacked_model_metrics(
         df=model_df,
@@ -355,7 +354,7 @@ def sentiment_analysis_pipe(directory):
     )
 
     # write final pandas DataFrame containing predictions to .csv file
-    predictions_df.to_csv('NYT_dem_president_sentiment_predictions_{date:%Y.%m.%d}.csv'.format(date=dt.datetime.now()),
+    predictions_df.to_csv('NYT_president_sentiment_predictions_{date:%Y.%m.%d}.csv'.format(date=dt.datetime.now()),
                           index=False)
 
 

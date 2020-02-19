@@ -6,7 +6,7 @@ This module contains customized utilities for making Sentiment Analysis predicti
     - predict_sentiment (make sentiment predictions using stacked model pipeline
 
 created: 2/15/19
-last updated: 2/15/20
+last updated: 2/19/20
 *******************************************************************************************************************
 """
 import pickle
@@ -91,6 +91,10 @@ def predict_sentiment(
 
     # print columns of new pandas DataFrame
     print(predictions_df.columns)
+    print()
+
+    # group average sentiment by candidate
+    print(predictions_df.groupby('candidate')['predictions'].mean())
     print()
 
     return predictions_df

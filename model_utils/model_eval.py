@@ -11,12 +11,13 @@ This module contains customized utilities for training & evaluating Sentiment An
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
 created: 12/31/19
-last updated: 2/15/20
+last updated: 2/19/20
 *******************************************************************************************************************
 """
 import numpy as np
 import pandas as pd
-from sklearn.metrics import confusion_matrix, classification_report, f1_score
+from sklearn.metrics import (confusion_matrix, classification_report,
+                             f1_score)
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
 import pickle
 
@@ -96,6 +97,7 @@ def model_training_metrics(models, df, features, label):
             X = fold[features]
             # define label: y
             y = fold[label]
+
             # split each fold into training & test set:
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, stratify=y, random_state=42)
             print('Training set shape: {}'.format(X_train.shape))
@@ -121,7 +123,7 @@ def model_training_metrics(models, df, features, label):
             acc.append(model.score(X_test, y_test))
 
             # append accuracy score to list: f1
-            f1.append(f1_score(y_test, y_pred, average='micro'))
+            f1.append(f1_score(y_test, y_pred, average=None))
 
             # Compute and print the confusion matrix and classification report
             print('Confusion matrix')
@@ -130,8 +132,8 @@ def model_training_metrics(models, df, features, label):
             print('Classification report')
             print(classification_report(y_test, y_pred))
             print()
-            print()
 
+        # print 5-fold cross-validated Accuracy & F1 score
         print('5-fold cross-validated Accuracy: {}'.format(np.mean(acc)))
         print()
         print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))

@@ -1,5 +1,5 @@
 """
-*****************************************************************************************************
+**************************************************************************************************************
 model_utils.feature_eng
 
 This module contains customized utilities for engineering features for Sentiment Analysis models:
@@ -8,13 +8,14 @@ This module contains customized utilities for engineering features for Sentiment
     - tb_sentiment (generates sentiment and subjectivity scores for labeling)
     - sentiment_analyzer (applies sentiment labels row-wise using a text-based column feature)
     - sentiment_label (generates the labels for sentiment analysis: ['positive','neutral','negative']
+    - custom_label(change labels for negative sentiment if a user-selected column contains user-defined terms)
     - char_count (counts the number of characters in a text string)
     - apply_func (apply a function to a pandas series (row-wise) and return the resulting DataFrame)
     - drop_high_corr (Drop highly correlated features from a DataFrame)
 
 created: 12/31/19
-last updated: 2/13/20
-*****************************************************************************************************
+last updated: 2/19/20
+**************************************************************************************************************
 """
 import pandas as pd
 import numpy as np
@@ -295,7 +296,7 @@ def sentiment_label(df, col_for_label, label_col):
     """
     This function generates the labels for sentiment analysis: ['positive','neutral','negative']
     by utilizing a np.where function.
-    It returns a DataFrame containing the the new label column
+    It returns a DataFrame containing the new label column
 
     @param df: pandas DataFrame that contains Series to be used to generate labels
     @param col_for_label: pandas Series to be used to generate labels
@@ -329,6 +330,7 @@ def sentiment_label(df, col_for_label, label_col):
     print()
     print(df[label_col].value_counts())
     print()
+
     return df
 
 

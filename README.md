@@ -1,11 +1,11 @@
 # nyt_sentiment_analyzer .py package
-Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Democratic Presidential Candidates
+Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidates
 
-This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Democratic Candidates, 
+This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Candidates, 
 using the N.Y. Times Article Search API. Ths is a multi-class classification problem, predicting positive, neutral and negative sentiment.
 At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
     1) Read in data from multiple N.Y.Times .csv files from a specified directory into a single DataFrame.
-        Files contain data about N.Y. Times Articles about U.S. Presidential Democratic Candidates scraped from the Article Search API 
+        Files contain data about N.Y. Times Articles about U.S. Presidential Candidates scraped from the Article Search API 
     2) Then it will pre-process the data, engineer additional features, as well as label the data using TextBlob sentiment analysis scores.
     3) Next, the function will generate a series of graphs to assist with EDA in the Data Science workflow.
     4) After that, it will train user-selected Sci-kit Learn Models and print out F1 and Accuracy score metrics, performing 5-Fold cross-validation.
@@ -44,7 +44,6 @@ Next Steps:
  - Add logging functionality
  - Try using LabelBinarizer() for one-hot encoding of Labels: https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelBinarizer.html
     or from keras.utils.np_utils import to_categorical
- - Change f1_score(y_test, y_pred, average='micro') to average=None
  - Update the model metrics to output probabilities for predicted classes and look at their tradeoffs.
     Only accept a prediction if it meets a defined threshold, otherwise assign the prediction to a default class.
     
