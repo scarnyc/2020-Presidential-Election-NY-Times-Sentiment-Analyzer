@@ -12,6 +12,7 @@ This module contains customized utilities for engineering features for Sentiment
     - char_count (counts the number of characters in a text string)
     - apply_func (apply a function to a pandas series (row-wise) and return the resulting DataFrame)
     - drop_high_corr (Drop highly correlated features from a DataFrame)
+    - get_vocab_size (retreive a count of unique words in a vocabulary)
 
 created: 12/31/19
 last updated: 2/19/20
@@ -23,9 +24,7 @@ from spacy.lang.en import English
 import re
 from textblob import TextBlob
 
-
-# load spacy NLP model: nlp
-# nlp = spacy.load('en_core_web_md')
+# load spacy English model: nlp
 nlp = English()
 
 
@@ -73,6 +72,7 @@ my_stopwords = lemma_nopunc([
     'below',
     'between',
     'both',
+    'briefing',
     'but',
     'by',
     'can',
@@ -86,6 +86,7 @@ my_stopwords = lemma_nopunc([
     'during',
     'each',
     'else',
+    'evening',
     'ever',
     'few',
     'film',
@@ -132,11 +133,14 @@ my_stopwords = lemma_nopunc([
     'like',
     'me',
     'more',
+    'morning',
     'most',
     'movie',
     'movies',
     'my',
     'myself',
+    'need',
+    'know',
     'of',
     'off',
     'on',
@@ -292,6 +296,29 @@ def sentiment_analyzer(df, text_feature):
     return df
 
 
+def negative_labels(df, text_feature, contains_term):
+    """"""
+    #
+    negative_indices = np.where(
+        df[df[text_feature].str.contains(
+            contains_term,
+            case=False
+        )]
+    )
+
+    print('Computed labels for Modeling')
+    print()
+    print(negative_indices)
+    print()
+
+    for i, elem in df[text_feature]:
+        if i in negative_indices:
+            print(elem)
+            print()
+
+    return negative_indices
+
+
 def sentiment_label(df, col_for_label, label_col):
     """
     This function generates the labels for sentiment analysis: ['positive','neutral','negative']
@@ -400,3 +427,32 @@ def drop_high_corr(df):
     print()
 
     return reduced_df
+
+
+def get_vocab_size(text_list):
+    """
+    This function will accept a list of text feature as input and return a count of unique words in the vocabulary.
+
+    @param text_list: list of text feature
+    @return: count of unique words in the vocabulary list
+    """
+    # Transform the list of sentences into a list of words
+    all_words = ' '.join(text_list).split(' ')
+
+    # Get number of unique words
+    unique_words = list(set(all_words))
+
+    # # Dictionary of indexes as keys and words as values
+    # index_to_word = {i: wd for i, wd in enumerate(sorted(unique_words))}
+
+    # # Dictionary of words as keys and indexes as values
+    # word_to_index = {wd: i for i, wd in enumerate(sorted(unique_words))}
+
+    # # print dictionaries
+    # print(word_to_index)
+    # print()
+    # print(index_to_word)
+    # print()
+
+    # return length of unique words in vocabulary
+    return len(unique_words)

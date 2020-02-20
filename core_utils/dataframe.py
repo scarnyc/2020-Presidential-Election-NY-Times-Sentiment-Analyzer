@@ -39,12 +39,12 @@ def union_csv(csv_path: object, glob_pattern: object) -> object:
 
     for f in all_files:
         df = pd.read_csv(f)
-        df['candidate'] = f.replace('./data/').split('_')[0]
+        df['candidate'] = f.replace('./data/', '').split('_')[0]
         dfs.append(df)
 
     combined_df = pd.concat(dfs, ignore_index=True, sort=False)
 
-    # print DataFrame first 5 rows, metadata & shape
+    # print DataFrame first 5 rows, metadata, shape & number of rows per candidate
     print()
     print('DataFrame Sample')
     print(combined_df.head())
@@ -53,6 +53,8 @@ def union_csv(csv_path: object, glob_pattern: object) -> object:
     print()
     print('DataFrame Metadata')
     print(combined_df.info())
+    print()
+    print(df['candidate'].value_counts())
     print()
 
     # return pandas DataFrame utilizing a generator expression for the objs argument of pd.concat

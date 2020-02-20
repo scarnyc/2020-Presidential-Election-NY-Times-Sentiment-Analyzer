@@ -1,10 +1,11 @@
 """
-*******************************************************************************************************************
+***************************************************************************************************************************
 model_utils.model_eval
 
 This module contains customized utilities for training & evaluating Sentiment Analysis models:
     - split_df (splits DataFrame into KFold DataFrames)
     - model_training_metrics (iterate over a list of models, fitting them and getting evaluation metrics)
+    - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
     - random_hyper_tune (performs hyper-parameter tuning)
     - text_feature_importance (Print a DataFrame with the Top N most important n_grams from the text model)
     - num_feature_importance (Print a DataFrame with most important features for tree-based models with numeric features)
@@ -12,13 +13,19 @@ This module contains customized utilities for training & evaluating Sentiment An
 
 created: 12/31/19
 last updated: 2/19/20
-*******************************************************************************************************************
+***************************************************************************************************************************
 """
 import numpy as np
 import pandas as pd
-from sklearn.metrics import (confusion_matrix, classification_report,
-                             f1_score)
+from sklearn.metrics import (confusion_matrix, classification_report, accuracy_score,
+                             f1_score, precision_score, recall_score)
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+from keras.utils.np_utils import to_categorical
+from keras.models import Sequential
+from keras.layers import Dense, Embedding
+from keras.layers.recurrent import LSTM
 import pickle
 
 
@@ -108,19 +115,19 @@ def model_training_metrics(models, df, features, label):
             # Fit the classifier
             model.fit(X_train, y_train)
 
-            # Predict test set labels & probabilities
+            # Predict test set labels
             y_pred = model.predict(X_test)
 
             # see if model is overfitting
             print('Training Set Accuracy')
-            print(model.score(X_train, y_train))
+            print(accuracy_score(X_train, y_train))
             print()
             print('Test Set Accuracy')
-            print(model.score(X_test, y_test))
+            print(accuracy_score(X_test, y_test))
             print()
 
             # append accuracy score to list: acc
-            acc.append(model.score(X_test, y_test))
+            acc.append(accuracy_score(X_test, y_test))
 
             # append accuracy score to list: f1
             f1.append(f1_score(y_test, y_pred, average=None))
@@ -138,6 +145,90 @@ def model_training_metrics(models, df, features, label):
         print()
         print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
         print()
+
+
+def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_size, num_classes, epochs):
+    """
+    This function builds and compiles a Recurrent Neural Network with Embedding and LSTM layers for increasing accuracy
+    and combatting against the exploding gradient problem. It uses a softmax activation function for multi-class classification.
+    The actual training process is similar to the model_training_metrics() function above.
+
+    @param df:
+    @param text_feature:
+    @param max_length:
+    @param label:
+    @param vocabulary_size:
+    @param num_classes:
+    @param epochs:
+    """
+    # build the model
+    model = Sequential()
+    model.add(Embedding(input_dim=vocabulary_size+1, output_dim=128)) # add GLOVE embedding
+    model.add(LSTM(128, dropout=.2))
+
+    # output layer has 'num_classes' units & uses 'softmax' activation
+    model.add(Dense(num_classes, activation='softmax'))
+
+    # compile the model
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    # split DataFrame into 5-Folds
+    kfold_list = split_df(
+        df=df,
+        label_col=label
+    )
+    print('Split DataFrames into 5-Fold datasets!')
+    print()
+
+    # Start Text model training
+    print('Starting Model Training!')
+    print()
+
+    # print neural network model
+    print(model)
+    print()
+
+    # iterate over list of KFold DataFrames
+    for fold in kfold_list:
+        # define feature set: X
+        X = fold[text_feature]
+        # define label: y
+        y = fold[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
+
+        # Create and fit tokenizer
+        tokenizer = Tokenizer()
+        tokenizer.fit_on_texts(X)
+
+        # Prepare the data
+        prep_data = tokenizer.texts_to_sequences(X)
+        prep_data = pad_sequences(prep_data, maxlen=max_length)
+
+        # Prepare the labels
+        prep_labels = to_categorical(y)
+
+        # Print the shapes
+        print(prep_data.shape)
+        print()
+        print(prep_labels.shape)
+        print()
+
+        # split each fold into training & test set:
+        X_train, X_test, y_train, y_test = train_test_split(prep_data, prep_labels, test_size=.2, stratify=y,
+                                                            random_state=42)
+        print('Training set shape: {}'.format(X_train.shape))
+        print()
+        print('Test set shape: {}'.format(X_test.shape))
+        print()
+
+        # Fit the classifier
+        model.fit(X_train, y_train, batch_size=100, epochs=epochs)
+
+        # evaluate on text data
+        print("Loss: %0.04f\nAccuracy: %0.04f" % tuple(model.evaluate(X_test, y_test, verbose=0)))
+        print()
+
+    # PLACEHOLDER: save model & weights
+    # https: // machinelearningmastery.com / save - load - keras - deep - learning - models /
 
 
 def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_folds, model_file_path):
@@ -366,17 +457,17 @@ def stacked_model_metrics(
 
         # see if model is overfitting
         print('Training Set Accuracy')
-        print(stacked_model.score(train2[['text_pred', 'num_pred']], train2[label]))
+        print(stacked_model.accuracy_score(train2[['text_pred', 'num_pred']], train2[label]))
         print()
         print('Test Set Accuracy')
-        print(stacked_model.score(X_test[['text_pred', 'num_pred']], y_test))
+        print(stacked_model.accuracy_score(X_test[['text_pred', 'num_pred']], y_test))
         print()
 
         # append accuracy score to list: acc
-        acc.append(stacked_model.score(X_test[['text_pred', 'num_pred']], y_test))
+        acc.append(stacked_model.accuracy_score(X_test[['text_pred', 'num_pred']], y_test))
 
         # append accuracy score to list: f1
-        f1.append(f1_score(y_test, X_test['stacking'], average='micro'))
+        f1.append(f1_score(y_test, X_test['stacking'], average=None))
 
         # Compute and print the confusion matrix and classification report
         print('Confusion matrix')

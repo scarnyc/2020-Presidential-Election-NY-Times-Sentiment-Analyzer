@@ -66,11 +66,10 @@ his impeachment trial that was going on during the time these articles were coll
 
 Next Steps:
  - Add rolling window averages for Time Series Plot
- - Add RNN & LSTM to model training pipeline
- - Add logging functionality
- - Try using LabelBinarizer() for one-hot encoding of Labels: https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelBinarizer.html
-    or from keras.utils.np_utils import to_categorical
+ - Add RNN & LSTM to model training pipeline --> Update 2/20: Add GLOVE embedding
+ - Add custom label function --> Update 2/20: negative_labels() currently being worked on..
  - Update the model metrics to output probabilities for predicted classes and look at their tradeoffs.
     Only accept a prediction if it meets a defined threshold, otherwise assign the prediction to a default class.
+ - Add logging functionality
     
  More to come...

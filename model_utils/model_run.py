@@ -6,10 +6,11 @@ This module contains customized utilities for making Sentiment Analysis predicti
     - predict_sentiment (make sentiment predictions using stacked model pipeline
 
 created: 2/15/19
-last updated: 2/19/20
+last updated: 2/20/20
 *******************************************************************************************************************
 """
 import pickle
+import datetime as dt
 
 
 def predict_sentiment(
@@ -18,6 +19,7 @@ def predict_sentiment(
         text_feature,
         num_features,
         label,
+        candidate_list,
         text_model_pkl,
         num_model_pkl,
         stack_model_pkl):
@@ -31,6 +33,7 @@ def predict_sentiment(
     @param num_features: numeric features used for modeling
     @param label: target variable used for validating predictions
     @param text_model_pkl: path of Text Model pickle file
+    @param candidate_list: list of candidates to filter for results
     @param num_model_pkl: path of Numeric Model pickle file
     @param stack_model_pkl: path of Stacked Model pickle file
     @return: pandas DataFrame containing the original source data, model features, labels and predictions
@@ -86,15 +89,29 @@ def predict_sentiment(
     predictions_df = source_df.join(X['predictions']).join(model_df, lsuffix='_SOURCE', rsuffix='_FEAT')
 
     # print shape of new pandas DataFrame
-    print(predictions_df.shape)
+    print('Predictions DataFrame Shape: {}'.format(predictions_df.shape))
     print()
 
     # print columns of new pandas DataFrame
-    print(predictions_df.columns)
+    print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
+    filtered_df = predictions_df[predictions_df['predictions'].str.contains(
+        '|'.join([word for word in candidate_list]),
+        case=False
+    )]
+
     # group average sentiment by candidate
-    print(predictions_df.groupby('candidate')['predictions'].mean())
+    grouped_df = filtered_df.groupby('candidate')['predictions'].mean()\
+        .reset_index()\
+        .sort_values(by='predictions')
+
+    # print candidate average sentiment
+    print(grouped_df)
     print()
+
+    # write final pandas DataFrame containing predictions to .csv file
+    predictions_df.to_csv('NYT_president_sentiment_predictions_{date:%Y.%m.%d}.csv'.format(date=dt.datetime.now()),
+                          index=False)
 
     return predictions_df
