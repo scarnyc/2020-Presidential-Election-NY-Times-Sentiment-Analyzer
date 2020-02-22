@@ -5,11 +5,12 @@ model_utils.model_eval
 This module contains customized utilities for training & evaluating Sentiment Analysis models:
     - split_df (splits DataFrame into KFold DataFrames)
     - model_training_metrics (iterate over a list of models, fitting them and getting evaluation metrics)
-    - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
-    - random_hyper_tune (performs hyper-parameter tuning)
+    - random_hyper_tune (performs hyper-parameter tuning on both text & numeric machine learning models)
     - text_feature_importance (Print a DataFrame with the Top N most important n_grams from the text model)
     - num_feature_importance (Print a DataFrame with most important features for tree-based models with numeric features)
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
+    - stacked_random_hyper_tune (performs hyper-parameter tuning on stacked machine learning model)
+    - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
 
 Created on 12/31/19 by William Scardino
 Last updated: 2/21/20
@@ -148,7 +149,7 @@ def model_training_metrics(models, df, features, label):
         print()
 
 
-def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_folds, model_file_path):
+def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_folds, n_jobs, model_file_path):
     """
     Performs hyper-parameter tuning for a model using Randomized Search.
     In addition to specifying the pandas DataFrame, features, labels and model to cross-validate,
@@ -163,6 +164,7 @@ def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_f
     @param n_iters: nubmer of iterations to specify before training is ceased
     @param n_folds: number of cross-validation folds to partition pandas DataFrame
     @param model_file_path: path to export the model as a pickle file
+    @param n_jobs: number of cpu cores to use for training
     @return: return a tuple of the best performing model and a pandas DataFrame with all of the parameters and training/
         holdout results
     """
@@ -176,7 +178,7 @@ def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_f
         estimator=model,
         param_distributions=param_grid,
         scoring='accuracy',
-        n_jobs=4,
+        n_jobs=n_jobs,
         n_iter=n_iters,
         cv=n_folds,
         refit=True,
@@ -212,7 +214,7 @@ def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_f
     with open(model_file_path, 'wb') as model_file:
         pickle.dump(random_model.best_estimator_, model_file)
 
-    return random_model.best_estimator_, cv_results_df
+    return random_model.best_estimator_
 
 
 def text_feature_importance(df, text_feature, vectorizer, top_n=20):
@@ -400,13 +402,105 @@ def stacked_model_metrics(
     print('5-fold cross-validated F1 score: {}'.format(np.mean(f1)))
     print()
 
-    # save stacked model for later
-    with open("./models/lr_stack.pkl", 'wb') as model_file:
-        pickle.dump(stacked_model, model_file)
+
+def stacked_random_hyper_tune(
+        model_df,
+        text_feature,
+        num_features,
+        label,
+        text_model_pkl,
+        num_model_pkl,
+        stacked_model,
+        param_grid,
+        n_iters,
+        n_folds,
+        n_jobs,
+        model_file_path):
+    """
+    Performs hyper-parameter tuning for a stacked model using Randomized Search.
+    In addition to specifying the pandas DataFrame, features, labels and model to cross-validate,
+    specify the number of iterations and number of cross-validation folds.
+    Finally specify the path to export the pickle file, which can be used for later.
+    """
+    # define feature set: X
+    X = model_df.drop(label, axis=1)
+    # define label: y
+    y = model_df[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
+
+    # load Text Model
+    with open(text_model_pkl, 'rb') as model_file:
+        text_model = pickle.load(model_file)
+
+    print('Loaded Text model!')
+    print(text_model)
+    print()
+
+    # fit model to text data
+    text_model.fit(X[text_feature], y)
+
+    # make model predictions on text data
+    X['text_pred'] = text_model.predict(X[text_feature])
+
+    # load Model with Numeric features
+    with open(num_model_pkl, 'rb') as model_file:
+        num_model = pickle.load(model_file)
+
+    print('Loaded Text model!')
+    print(num_model)
+    print()
+
+    # fit model to numeric data
+    num_model.fit(X[num_features], y)
+
+    # make predictions using numeric features
+    X['num_pred'] = num_model.predict(X[num_features])
+
+    # Create a random search object
+    random_model = RandomizedSearchCV(
+        estimator=stacked_model,
+        param_distributions=param_grid,
+        scoring='accuracy',
+        n_jobs=n_jobs,
+        n_iter=n_iters,
+        cv=n_folds,
+        refit=True,
+        return_train_score=True,
+        verbose=1
+    )
+
+    # Fit to the training data
+    random_model.fit(X[['text_pred', 'num_pred']], y)
+
+    # Print the values used for both Parameters & Score
+    print("Best random Parameters: ", random_model.best_params_)
+    print()
+    print("Best random Score: ", random_model.best_score_)
+    print()
+
+    # Read the cv_results property into a dataframe & print it out
+    cv_results_df = pd.DataFrame(random_model.cv_results_).sort_values(by=["rank_test_score"])
+    print(dict(cv_results_df))
+    print()
+
+    # Extract and print the column with a dictionary of hyperparameters used
+    column = cv_results_df.loc[:, ["params"]]
+    print(dict(column))
+    print()
+
+    # Extract and print the row that had the best mean test score
+    best_row = cv_results_df[cv_results_df["rank_test_score"] == 1]
+    print(dict(best_row))
+    print()
+
+    # save model for later
+    with open(model_file_path, 'wb') as model_file:
+        pickle.dump(random_model.best_estimator_, model_file)
+
+    return random_model.best_estimator_
 
 
 def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_size, num_classes, epochs, batch_size,
-                             word2vec_dim, vocabulary_dict, glove_file_name):
+                             word2vec_dim, vocabulary_dict, glove_file_name, model_file_name):
     """
     This function builds and compiles a Recurrent Neural Network with Embedding and LSTM layers for increasing accuracy
     and combatting against the exploding gradient problem. It uses pre-trained GLOVE embeddings
@@ -505,5 +599,9 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
         print("Loss: %0.04f\nAccuracy: %0.04f" % tuple(model.evaluate(X_test, y_test, verbose=0)))
         print()
 
-    # PLACEHOLDER: save model & weights
+    # save model & weights
     # https: // machinelearningmastery.com / save - load - keras - deep - learning - models /
+    # save model and architecture to single file
+    model.save(model_file_name)
+    print("Saved model to disk")
+    print()

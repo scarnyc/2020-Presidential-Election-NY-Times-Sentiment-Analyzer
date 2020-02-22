@@ -18,12 +18,12 @@ from viz_utils.viz import (corr_heatmap, plot_word_freq, two_dim_tf_viz,
                            time_series_line_viz)
 from model_utils.model_eval import (model_training_metrics, num_feature_importance,
                                     text_feature_importance, neural_net_train_metrics,
-                                    model_random_hyper_tune, stacked_model_metrics)
+                                    model_random_hyper_tune, stacked_model_metrics, stacked_random_hyper_tune)
 from model_utils.model_run import predict_sentiment
 
 # Import data science packages
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
@@ -65,6 +65,7 @@ def sentiment_analysis_pipe(directory):
     - stacked_model_metrics (finally, fit both the numeric & text models that were previously tuned performing cross-validation,
         and adding a second-layer LogisticRegression stacked model that will use the predictions from the other two models as features,
         for the final predictions)
+    - stacked_random_hyper_tune (performs hyper-parameter tuning on stacked machine learning model)
     - predict_sentiment (make predictions on N.Y. Times article data using stacked model)
     - get_vocab_size (retreive a count of unique words in a vocabulary)
     - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
@@ -257,7 +258,7 @@ def sentiment_analysis_pipe(directory):
     )
 
     # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
-    text_pipe, text_cv_results_df = model_random_hyper_tune(
+    text_pipe = model_random_hyper_tune(
         df=model_df,
         model=Pipeline([('vectorizer', CountVectorizer(stop_words=my_stopwords)),
                         ('scaler', StandardScaler(with_mean=False)),
@@ -289,7 +290,7 @@ def sentiment_analysis_pipe(directory):
     )
 
     # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
-    num_pipe, num_cv_results_df = model_random_hyper_tune(
+    num_pipe = model_random_hyper_tune(
         df=model_df,
         model=Pipeline([('scaler', StandardScaler()),
                         ('clf', OneVsRestClassifier(XGBClassifier(booster='gbtree', random_state=42)))
@@ -327,6 +328,25 @@ def sentiment_analysis_pipe(directory):
                                                              random_state=42, class_weight='balanced'))
     )
 
+    # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
+    stacked_model = stacked_random_hyper_tune(
+        model_df=model_df,
+        stacked_model=OneVsRestClassifier(LogisticRegression(solver='liblinear', random_state=42, class_weight='balanced')),
+        param_grid={
+            'clf__estimator__C': [.001, .001, .01, .1, 1, 10, 100, 1000],
+            'clf__estimator__penalty': ['l1', 'l2', 'elasticnet', 'none']
+        },
+        text_feature='text_feat',
+        num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        label='sentiment_label',
+        text_model_pkl="./models/text_pipe_xgb.pkl",
+        num_model_pkl="./models/num_pipe_xgb.pkl",
+        n_jobs=4,
+        n_iters=25,
+        n_folds=5,
+        model_file_path="./models/lr_stack.pkl"
+    )
+
     # Make predictions using Stacked Model
     predict_sentiment(
         source_df=article_df,
@@ -355,7 +375,8 @@ def sentiment_analysis_pipe(directory):
         batch_size=64,
         word2vec_dim=300,
         vocabulary_dict=vocab_dict,
-        glove_file_name=r'.\glove_6B\glove.6B.300d.txt'
+        glove_file_name=r'./glove_6B/glove.6B.300d.txt',
+        model_file_name=r"./models/model.h5"
     )
 
 
