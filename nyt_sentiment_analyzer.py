@@ -5,7 +5,7 @@
 Sentiment Analysis on 2020 U.S. Presidential Candidates N.Y. Times Articles (.py script)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/21/20
+Last updated: 2/22/20
 **********************************************************************************************
 """
 # Import custom packages
@@ -19,7 +19,7 @@ from viz_utils.viz import (corr_heatmap, plot_word_freq, two_dim_tf_viz,
 from model_utils.model_eval import (model_training_metrics, num_feature_importance,
                                     text_feature_importance, neural_net_train_metrics,
                                     model_random_hyper_tune, stacked_model_metrics, stacked_random_hyper_tune)
-from model_utils.model_run import predict_sentiment
+from model_utils.model_run import ml_predict_sentiment, nn_predict_sentiment
 
 # Import data science packages
 import numpy as np
@@ -66,7 +66,7 @@ def sentiment_analysis_pipe(directory):
         and adding a second-layer LogisticRegression stacked model that will use the predictions from the other two models as features,
         for the final predictions)
     - stacked_random_hyper_tune (performs hyper-parameter tuning on stacked machine learning model)
-    - predict_sentiment (make predictions on N.Y. Times article data using stacked model)
+    - ml_predict_sentiment (make predictions on N.Y. Times article data using stacked model)
     - get_vocab_size (retreive a count of unique words in a vocabulary)
     - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
 
@@ -329,9 +329,10 @@ def sentiment_analysis_pipe(directory):
     )
 
     # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
-    stacked_model = stacked_random_hyper_tune(
+    stacked_random_hyper_tune(
         model_df=model_df,
-        stacked_model=OneVsRestClassifier(LogisticRegression(solver='liblinear', random_state=42, class_weight='balanced')),
+        stacked_model=OneVsRestClassifier(LogisticRegression(solver='liblinear', random_state=42,
+                                                             class_weight='balanced')),
         param_grid={
             'clf__estimator__C': [.001, .001, .01, .1, 1, 10, 100, 1000],
             'clf__estimator__penalty': ['l1', 'l2', 'elasticnet', 'none']
@@ -348,7 +349,7 @@ def sentiment_analysis_pipe(directory):
     )
 
     # Make predictions using Stacked Model
-    predict_sentiment(
+    ml_predict_sentiment(
         source_df=article_df,
         model_df=model_df,
         text_feature='text_feat',
@@ -377,6 +378,19 @@ def sentiment_analysis_pipe(directory):
         vocabulary_dict=vocab_dict,
         glove_file_name=r'./glove_6B/glove.6B.300d.txt',
         model_file_name=r"./models/model.h5"
+    )
+
+    # make predictions with neural network
+    nn_predict_sentiment(
+        source_df=article_df,
+        model_df=model_df,
+        text_feature='text_feat',
+        max_length=model_df['char_count'].max(),
+        label='sentiment_label',
+        batch_size=64,
+        epochs=100,
+        candidate_list=['Sanders', 'Trump', 'Warren', 'Harris', 'Biden', 'Buttigieg', 'Bloomberg',
+                        'Klobuchar']
     )
 
 

@@ -13,7 +13,7 @@ This module contains customized utilities for training & evaluating Sentiment An
     - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/21/20
+Last updated: 2/22/20
 ***************************************************************************************************************************
 """
 import numpy as np
@@ -496,8 +496,6 @@ def stacked_random_hyper_tune(
     with open(model_file_path, 'wb') as model_file:
         pickle.dump(random_model.best_estimator_, model_file)
 
-    return random_model.best_estimator_
-
 
 def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_size, num_classes, epochs, batch_size,
                              word2vec_dim, vocabulary_dict, glove_file_name, model_file_name):
@@ -533,12 +531,17 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
             embedding_matrix[i] = embedding_vector
 
     # build the model
+    # instantiate the model
     model = Sequential()
+
+    # add an embedding layer with pre-trained GLOVE embeddings
     model.add(Embedding(input_dim=vocabulary_size + 1, output_dim=word2vec_dim,
                         embeddings_initializer=Constant(embedding_matrix), input_length=max_length, trainable=False))
+
+    # add a LSTM cell with dropout to resolve exploding gradient issue
     model.add(LSTM(128, dropout=.2))
 
-    # output layer has 'num_classes' units & uses 'softmax' activation
+    # output layer has 'num_classes' units & uses 'softmax' activation for probabilities
     model.add(Dense(num_classes, activation='softmax'))
 
     # compile the model

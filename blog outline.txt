@@ -1,0 +1,38 @@
+Recurrent Neural Networks
+This capability is made possible with a deep learning architecture known as Recurrent Neural Networks.
+What is different about RNN architecture and why do we use it?
+The main advantage for using RNN on text data is it reduces the number of parameters of the model,
+by avoiding one-hot encoding and it shares weights between different positions of the text.
+When the RNN architecture have many outputs, they also share weights, 
+but in this example we have only one output.
+In this example, the model uses information from all the words to predict whether the article abstract
+reflected positive, neutral, or negative sentiment for it's subjects: the Presidential Candidates.
+
+RNN's model uses sequence data and can have different lines of inputs and outputs,
+such as: many inputs to one output is commonly used for classification tasks, 
+where the final output is a probability distribution. 
+This is used on sentiment analysis and multi-class classification.
+
+Sentiment analysis models represent the probability of a sentence reflecting positive sentiment for a particular subject. 
+For example, what is the probability of a sentence "I loved this movie." 
+What is the probability that this sentence reflects positive sentiment?
+What is the probability that the words will appear in the same order?
+The way this probability is computed changes from one model to another.
+Unigram models use the probability of each word inside the document or corpus, and assume the probabilities are independent.
+N-gram models use the probability of each word conditional to the previous n-1 words. 
+When N is equal to 2, this is called a bi-gram. 
+When N is equal to 3, this is called a tri-gram. 
+The probability of the sentence is given by a softmax function on the output layer of the network,
+(with units equal to the size of the vocabulary) are also language models.
+
+Recurrent Neural Networks are themselves language models, when trained on text data, 
+because they predict the probability of the next token given the probability of the previous K tokens.
+Also, an embedding layer can be used to create vector representations of the tokens as the first layer.
+
+The High-level API known as Keras, was used to build, train, evaluate and make predictions using RNN models.
+Keras is a high-level API with deep learning frameworks; 
+It is possible to configure Keras with a Tensorflow backend, which is the implementation framework that was followed here.
+After installation, we can use its classes for fast experimentation and research.
+Next we will 
+
+

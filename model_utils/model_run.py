@@ -3,17 +3,24 @@
 model_utils.model_run
 
 This module contains customized utilities for making Sentiment Analysis predictions:
-    - predict_sentiment (make sentiment predictions using stacked model pipeline
+    - ml_predict_sentiment (make sentiment predictions using stacked model pipeline)
+    - nn_predict_sentiment (make sentiment predictions using recurrent neural network)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/21/20
+Last updated: 2/22/20
 *******************************************************************************************************************
 """
+import numpy as np
+import pandas as pd
 import pickle
 import datetime as dt
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+from keras.utils.np_utils import to_categorical
+from keras.models import load_model
 
 
-def predict_sentiment(
+def ml_predict_sentiment(
         source_df,
         model_df,
         text_feature,
@@ -111,5 +118,73 @@ def predict_sentiment(
     print()
 
     # write final pandas DataFrame containing predictions to .csv file
-    predictions_df.to_csv('ML_nyt_sentiment_predictions_{date:%Y.%m.%d}.csv'.format(date=dt.datetime.now()),
+    predictions_df.to_csv('Stacked_nyt_sentiment_predictions_{date:%Y.%m.%d}.csv'.format(date=dt.datetime.now()),
+                          index=False)
+
+
+def nn_predict_sentiment(model_df, source_df, text_feature, max_length, label, batch_size, epochs, candidate_list):
+    # define feature set: X
+    X = model_df[text_feature]
+    # define label: y
+    y = model_df[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
+
+    # Create and fit tokenizer
+    tokenizer = Tokenizer()
+    tokenizer.fit_on_texts(X)
+
+    # Prepare the data
+    prep_data = tokenizer.texts_to_sequences(X)
+    prep_data = pad_sequences(prep_data, maxlen=max_length)
+
+    # Prepare the labels
+    prep_labels = to_categorical(y)
+
+    # Print the shapes
+    print(prep_data.shape)
+    print()
+    print(prep_labels.shape)
+    print()
+
+    # load model
+    model = load_model('model.h5')
+
+    # summarize model
+    model.summary()
+
+    # Fit the network
+    model.fit(X, y, batch_size=batch_size, epochs=epochs)
+
+    # Use the model to predict on new data
+    predicted = model.predict(X)
+
+    # Choose the class with higher probability
+    y_pred = np.argmax(predicted, axis=1)
+
+    # join predictions to input pandas DataFrame
+    predictions_df = source_df.join(pd.DataFrame(y_pred, columns='predictions')).join(model_df, lsuffix='_SOURCE', rsuffix='_FEAT')
+
+    # print shape of new pandas DataFrame
+    print('Predictions DataFrame Shape: {}'.format(predictions_df.shape))
+    print()
+
+    # print columns of new pandas DataFrame
+    print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
+    print()
+
+    filtered_df = predictions_df[predictions_df['candidate'].str.contains(
+        '|'.join([word for word in candidate_list]),
+        case=False
+    )]
+
+    # group average sentiment by candidate
+    grouped_df = filtered_df.groupby('candidate')['predictions'].mean() \
+        .reset_index() \
+        .sort_values(by='predictions', ascending=False)
+
+    # print candidate average sentiment
+    print(grouped_df)
+    print()
+
+    # write final pandas DataFrame containing predictions to .csv file
+    predictions_df.to_csv('RNN_nyt_sentiment_predictions_{date:%Y.%m.%d}.csv'.format(date=dt.datetime.now()),
                           index=False)
