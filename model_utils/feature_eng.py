@@ -420,6 +420,22 @@ def drop_high_corr(df):
     return reduced_df
 
 
+def get_dummy_cats(df, feat):
+    # convert feature to dummy columns using pandas get_dummies()
+    dummy_df = pd.get_dummies(df[feat])
+
+    # print new columns
+    print(dummy_df.columns)
+    print()
+
+    # join to original pandas DataFrame
+    df = df.join(dummy_df)
+
+    # drop one column to avoid the dummy trap
+    df = df.drop('Cory Booker', axis=1)
+
+    return df
+
 def get_vocab_size(text_list):
     """
     This function will accept a list of text feature as input and return a count of unique words in the vocabulary.

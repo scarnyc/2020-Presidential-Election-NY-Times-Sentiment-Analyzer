@@ -38,7 +38,7 @@ def union_csv(csv_path: object, glob_pattern: object) -> object:
 
     for f in all_files:
         df = pd.read_csv(f)
-        df['candidate'] = f.replace('data', '').replace('.', '').replace('//', '').split('_')[0]
+        df['candidate'] = f.replace('data', '').replace('.', '').replace('\\', '').split('_')[0]
         dfs.append(df)
 
     # ignore index of all DataFrames in memory and set sort parameter to False

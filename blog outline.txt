@@ -33,6 +33,34 @@ The High-level API known as Keras, was used to build, train, evaluate and make p
 Keras is a high-level API with deep learning frameworks; 
 It is possible to configure Keras with a Tensorflow backend, which is the implementation framework that was followed here.
 After installation, we can use its classes for fast experimentation and research.
-Next we will 
+Next we will introduce the modules of Keras that will be useful for language modeling;
+"keras.models" contains 2 classes of language models:
+1) The "Sequential" class has a structure where each layer is implemented one after the other, meaning that the output of one layer is the input of the next one.
+2) The "Model" class is a generic definition of a model that is more flexible and allows multiple inputs and outputs.
 
+"keras.layers" contains the different types of layers including the LSTM cells, Embedding, and Dropout.
+"keras.preprocessing" contains useful functions for preprocessing the data such as the ".pad_sequences()" method that transforms text data into fixed length vectors.
 
+We learned how to prepare text documents and use RNN models to classify sentiment about a particular subject of the article, but the accuracy was not as expected.
+There are pitfalls of vanilla RNN cells which are the vanishing or exploding gradient problem, which I'll help explain so you can understand it better.
+In order to understand the exploding gradient problem we must first understand how the RNN model is trained.
+In other words, how to perform back propagation. In the diagram below you can see the forward and back propagation directions. 
+The important part here is that they follow 2 directions. Vertical between input and output, and horizontal moving through time.
+Because of this horizontal direction, back propagation is referred to as back propagation through time.
+In the forward propagation phase, we compute a hidden state A that will you carry past information by applying the linear combination over the previous step,
+and the current input. 
+
+The output y is computed only in the last hidden state often by applying a sigmoid or softmax activation function.
+The loss function can be the cross-entropy function, and we use it a numeric value of the error. We can see that the past information is carrie out through the forward propagation with an example.
+The second step combines the results from the first step and receives the second word as input. 
+We can also see that the weight matrix "Wa" is used on all steps, which means the weights are shared among all the inputs. 
+
+In the back propagation phase, we have to compute the derivative of the loss function with respect to the parameters.
+Not going into too much detail on the math, when computing the gradients of the loss function, with respect to the weight matrix.
+If the values of the matrix are below 1, the series will converge to 0. If the values are above 1, it will diverge to infinitiy.
+Researchers have found some approaches to those problems. 
+Limiting the size of the gradients or scaling them can easily help us avoid the exploding gradient problem. 
+Better initializing the matrix to make the matrix an ortagonul matrix will make the multiplication always equal to 1. 
+Using regularization always controls the size of the entries.
+Using the ReLU activation function makes the matrix become a constant, and thus doesn't increase. 
+Using LSTM or GRU cells can also resolve the exploding gradient problem. 

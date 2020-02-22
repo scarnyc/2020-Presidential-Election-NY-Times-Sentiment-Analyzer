@@ -137,6 +137,146 @@ neutral     3108
 negative    2833
 Name: sentiment_label, dtype: int64
 
+DataFrame descriptive statistics:
+{'word_count': count    10019.000000
+mean      1045.977044
+std        944.576796
+min          0.000000
+25%        534.000000
+50%        969.000000
+75%       1345.000000
+max      20056.000000
+Name: word_count, dtype: float64, 'year': count    10019.000000
+mean      2019.264997
+std          0.441353
+min       2019.000000
+25%       2019.000000
+50%       2019.000000
+75%       2020.000000
+max       2020.000000
+Name: year, dtype: float64, 'month': count    10019.000000
+mean         6.721429
+std          4.237385
+min          1.000000
+25%          2.000000
+50%          7.000000
+75%         11.000000
+max         12.000000
+Name: month, dtype: float64, 'day': count    10019.000000
+mean        16.294640
+std          9.224536
+min          1.000000
+25%          8.000000
+50%         17.000000
+75%         25.000000
+max         31.000000
+Name: day, dtype: float64, 'dayofweek': count    10019.000000
+mean         2.605549
+std          1.753960
+min          0.000000
+25%          1.000000
+50%          3.000000
+75%          4.000000
+max          6.000000
+Name: dayofweek, dtype: float64, 'hour': count    10019.000000
+mean        13.043717
+std          6.818533
+min          0.000000
+25%          9.000000
+50%         14.000000
+75%         19.000000
+max         23.000000
+Name: hour, dtype: float64, 'polarity': count    10019.000000
+mean         0.071684
+std          0.212364
+min         -1.000000
+25%          0.000000
+50%          0.018182
+75%          0.171429
+max          1.000000
+Name: polarity, dtype: float64, 'subjectivity': count    10019.000000
+mean         0.351452
+std          0.257319
+min          0.000000
+25%          0.125000
+50%          0.360000
+75%          0.500000
+max          1.000000
+Name: subjectivity, dtype: float64, 'char_count': count    10019.000000
+mean       198.683501
+std         69.853475
+min         30.000000
+25%        152.000000
+50%        199.000000
+75%        239.000000
+max        737.000000
+Name: char_count, dtype: float64}
+
+The reduced dataframe has 10 columns.
+
+trump              1230
+is                 1089
+president           846
+as                  660
+new                 606
+democratic          544
+are                 538
+an                  508
+has                 475
+was                 445
+biden               423
+2020                401
+democrats           378
+presidential        368
+will                358
+said                355
+more                338
+not                 333
+candidates          321
+warren              305
+sanders             279
+iowa                266
+state               266
+debate              262
+campaign            258
+one                 247
+mr                  242
+president trump     235
+donald              229
+donald trump        226
+dtype: int64
+
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 10019 entries, 0 to 11186
+Data columns (total 18 columns):
+headline_main      10019 non-null object
+web_url            10016 non-null object
+text               10019 non-null object
+word_count         10019 non-null float64
+pub_date           10019 non-null datetime64[ns, UTC]
+candidate          10019 non-null object
+year               10019 non-null int64
+month              10019 non-null int64
+day                10019 non-null int64
+dayofweek          10019 non-null int64
+hour               10019 non-null int64
+polarity           10019 non-null float64
+subjectivity       10019 non-null float64
+char_count         10019 non-null int64
+text_feat          10019 non-null object
+sentiment_label    10019 non-null object
+PC1                8851 non-null float64
+PC2                8851 non-null float64
+dtypes: datetime64[ns, UTC](1), float64(5), int64(6), object(6)
+memory usage: 1.8+ MB
+None
+
+C:\Users\billy\Anaconda3\envs\nyt_sentiment_analyzer\lib\site-packages\pandas\plotting\_matplotlib\converter.py:103: FutureWarning: Using an implicitly registered datetime converter for a matplotlib plotting method. The converter was registered by pandas on import. Future versions of pandas will require you to explicitly register matplotlib converters.
+
+To register the converters:
+	>>> from pandas.plotting import register_matplotlib_converters
+	>>> register_matplotlib_converters()
+  warnings.warn(msg, FutureWarning)
 Instantiated list of text models!
 
 DataFrame shape: (2004, 10)
@@ -242,7 +382,7 @@ Pipeline(memory=None,
                                  tokenizer=None, vocabulary=None)),
                 ('dim_red',
                  SelectKBest(k=300,
-                             score_func=<function chi2 at 0x000001FB34A6C4C8>)),
+                             score_func=<function chi2 at 0x00000160E3AF1048>)),
                 ('clf',
                  OneVsRestClassifier(estimator=MultinomialNB(alpha=1.0,
                                                              class_prior=None,
@@ -408,7 +548,7 @@ Pipeline(memory=None,
                  StandardScaler(copy=True, with_mean=False, with_std=True)),
                 ('dim_red',
                  SelectKBest(k=300,
-                             score_func=<function chi2 at 0x000001FB34A6C4C8>)),
+                             score_func=<function chi2 at 0x00000160E3AF1048>)),
                 ('clf',
                  OneVsRestClassifier(estimator=MultinomialNB(alpha=1.0,
                                                              class_prior=None,
@@ -567,7 +707,7 @@ Pipeline(memory=None,
                                              'again', 'all', 'also', 'be', 'a',
                                              'and', 'any', 'be', 'a', '...
                  SelectKBest(k=300,
-                             score_func=<function chi2 at 0x000001FB34A6C4C8>)),
+                             score_func=<function chi2 at 0x00000160E3AF1048>)),
                 ('clf',
                  OneVsRestClassifier(estimator=SVC(C=1.0, break_ties=False,
                                                    cache_size=200,
@@ -734,7 +874,7 @@ Pipeline(memory=None,
                                  stop_words=['a', 'about', 'above', 'after',
                                              'again', 'all', 'also', 'be...
                  SelectKBest(k=300,
-                             score_func=<function chi2 at 0x000001FB34A6C4C8>)),
+                             score_func=<function chi2 at 0x00000160E3AF1048>)),
                 ('clf',
                  OneVsRestClassifier(estimator=SVC(C=1.0, break_ties=False,
                                                    cache_size=200,
@@ -1592,7 +1732,7 @@ Pipeline(memory=None,
                                  stop_words=['a', 'about', 'above', 'after',
                                              'again', 'all', 'also', 'be', 'a',
                                              'and', 'any', 'be', 'a', '...
-                             score_func=<function chi2 at 0x000001FB34A6C4C8>)),
+                             score_func=<function chi2 at 0x00000160E3AF1048>)),
                 ('clf',
                  OneVsRestClassifier(estimator=LogisticRegression(C=1.0,
                                                                   class_weight='balanced',
@@ -1762,7 +1902,7 @@ Pipeline(memory=None,
                                  preprocessor=None, smooth_idf=True,
                                  stop_words=['a', 'about', 'above', 'after',
                                              'again', 'all', 'also', 'be...
-                             score_func=<function chi2 at 0x000001FB34A6C4C8>)),
+                             score_func=<function chi2 at 0x00000160E3AF1048>)),
                 ('clf',
                  OneVsRestClassifier(estimator=LogisticRegression(C=1.0,
                                                                   class_weight='balanced',
@@ -2663,772 +2803,772 @@ Fitting 5 folds for each of 25 candidates, totalling 125 fits
 [Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
 C:\Users\billy\Anaconda3\envs\nyt_sentiment_analyzer\lib\site-packages\joblib\externals\loky\process_executor.py:706: UserWarning: A worker stopped while some jobs were given to the executor. This can be caused by a too short worker timeout or by a memory leak.
   "timeout or by a memory leak.", UserWarning
-[Parallel(n_jobs=4)]: Done  42 tasks      | elapsed:  2.3min
-[Parallel(n_jobs=4)]: Done 125 out of 125 | elapsed:  5.4min finished
-Best random Parameters:  {'vectorizer__ngram_range': (1, 3), 'dim_red__k': 200, 'clf__estimator__n_estimators': 200, 'clf__estimator__min_samples_leaf': 52, 'clf__estimator__max_depth': 6, 'clf__estimator__learning_rate': 0.3422818791946309, 'clf__estimator__colsample_bytree': 0.3, 'clf__estimator__booster': 'gbtree'}
+[Parallel(n_jobs=4)]: Done  42 tasks      | elapsed:  4.1min
+[Parallel(n_jobs=4)]: Done 125 out of 125 | elapsed:  6.6min finished
+Best random Parameters:  {'vectorizer__ngram_range': (1, 3), 'dim_red__k': 100, 'clf__estimator__n_estimators': 100, 'clf__estimator__min_samples_leaf': 35, 'clf__estimator__max_depth': 3, 'clf__estimator__learning_rate': 0.1, 'clf__estimator__colsample_bytree': 0.7, 'clf__estimator__booster': 'gbtree'}
 
-Best random Score:  0.5206123449556206
+Best random Score:  0.5272997190840487
 
-{'mean_fit_time': 22     3.141196
-7      3.959226
-18     3.481286
-5      6.121024
-4     13.148042
-13     2.794124
-6      2.513294
-19     2.243996
-17     2.233025
-24     1.880568
-9      2.690601
-21    74.037101
-3      2.128904
-20     2.457226
-0     53.082050
-23    17.677211
-15     4.093647
-1     17.022902
-14     2.331761
-2      1.994174
-8      1.856832
-10     2.236816
-16     1.817337
-12     4.596103
-11     1.988081
-Name: mean_fit_time, dtype: float64, 'std_fit_time': 22     0.161837
-7      0.280409
-18     0.231322
-5      1.029543
-4      1.741089
-13     0.152872
-6      0.138555
-19     0.125113
-17     0.134487
-24     0.067544
-9      0.124148
-21    10.452990
-3      0.057568
-20     0.047631
-0      3.377578
-23     3.316801
-15     0.430035
-1      3.421952
-14     0.086865
-2      0.041602
-8      0.052862
-10     0.052103
-16     0.119030
-12     0.499132
-11     0.077064
-Name: std_fit_time, dtype: float64, 'mean_score_time': 22    0.221009
-7     0.245144
-18    0.207445
-5     0.299407
-4     0.206448
-13    0.221208
-6     0.166156
-19    0.168749
-17    0.159174
-24    0.197472
-9     0.178922
-21    0.235371
-3     0.143815
-20    0.156781
-0     0.211235
-23    0.159972
-15    0.221208
-1     0.164560
-14    0.148203
-2     0.131648
-8     0.130252
-10    0.142419
-16    0.141023
-12    0.170943
-11    0.130850
-Name: mean_score_time, dtype: float64, 'std_score_time': 22    0.032389
-7     0.008885
-18    0.019776
-5     0.035245
-4     0.016736
-13    0.027964
-6     0.024090
-19    0.020560
-17    0.012750
-24    0.058092
-9     0.009066
-21    0.033023
-3     0.006537
-20    0.011005
-0     0.022623
-23    0.015764
-15    0.025178
-1     0.026567
-14    0.022100
-2     0.014048
-8     0.007689
-10    0.017105
-16    0.019345
-12    0.016014
-11    0.011740
-Name: std_score_time, dtype: float64, 'param_vectorizer__ngram_range': 22    (1, 3)
-7     (1, 3)
-18    (1, 3)
-5     (1, 3)
-4     (1, 3)
-13    (1, 3)
-6     (1, 3)
-19    (1, 3)
+{'mean_fit_time': 8       1.980616
+17      3.237723
+7      18.561453
+6       3.492592
+0       7.338435
+16      4.122772
+15      4.702653
+19      4.091392
+2      22.572218
+10      3.860462
+14      2.585294
+9       2.526044
+20      3.798061
+21     54.936665
+3       1.971923
+4     117.385629
+23      3.770248
+13      2.304687
+24      3.495950
+1       2.490059
+5       1.895003
+22      1.509837
+18      1.638011
+12      1.619234
+11      3.258489
+Name: mean_fit_time, dtype: float64, 'std_fit_time': 8      0.080932
+17     0.143460
+7      2.457053
+6      0.120073
+0      0.306958
+16     0.273322
+15     0.416805
+19     0.168683
+2      0.873112
+10     0.316685
+14     0.125698
+9      0.131167
+20     0.082371
+21    11.492385
+3      0.167008
+4     21.455656
+23     0.076102
+13     0.052593
+24     0.328232
+1      0.555499
+5      0.071612
+22     0.054462
+18     0.075648
+12     0.065795
+11     0.408382
+Name: std_fit_time, dtype: float64, 'mean_score_time': 8     0.160570
+17    0.211769
+7     0.193586
+6     0.237573
+0     0.184693
+16    0.229785
+15    0.241953
+19    0.166358
+2     0.215525
+10    0.222522
+14    0.164759
+9     0.162366
+20    0.142148
+21    0.205460
+3     0.144613
+4     0.310477
+23    0.134148
+13    0.149904
+24    0.138033
+1     0.128768
+5     0.152196
+22    0.127363
+18    0.136086
+12    0.129370
+11    0.140580
+Name: mean_score_time, dtype: float64, 'std_score_time': 8     0.016044
+17    0.023058
+7     0.010388
+6     0.035979
+0     0.017642
+16    0.016322
+15    0.023309
+19    0.014333
+2     0.030521
+10    0.015390
+14    0.006289
+9     0.018631
+20    0.010345
+21    0.038665
+3     0.017807
+4     0.045151
+23    0.010191
+13    0.008398
+24    0.011449
+1     0.012725
+5     0.026142
+22    0.009546
+18    0.015310
+12    0.005773
+11    0.010759
+Name: std_score_time, dtype: float64, 'param_vectorizer__ngram_range': 8     (1, 3)
 17    (1, 3)
-24    (1, 3)
+7     (1, 3)
+6     (1, 3)
+0     (1, 3)
+16    (1, 3)
+15    (1, 3)
+19    (1, 3)
+2     (1, 3)
+10    (1, 3)
+14    (1, 3)
 9     (1, 3)
+20    (2, 3)
 21    (2, 3)
 3     (2, 3)
-20    (2, 3)
-0     (2, 3)
+4     (2, 3)
 23    (2, 3)
-15    (2, 3)
+13    (2, 3)
+24    (2, 3)
 1     (2, 3)
-14    (2, 3)
-2     (2, 3)
-8     (2, 3)
-10    (2, 3)
-16    (2, 3)
-12    (1, 3)
+5     (2, 3)
+22    (2, 3)
+18    (2, 3)
+12    (2, 3)
 11    (2, 3)
-Name: param_vectorizer__ngram_range, dtype: object, 'param_dim_red__k': 22    200
-7     200
-18    200
-5     200
-4     300
-13    300
-6     200
-19    200
-17    200
-24    300
-9     300
-21    200
-3     200
-20    300
-0     300
-23    100
-15    300
-1     100
-14    300
-2     200
-8     100
-10    100
-16    100
-12    300
-11    300
-Name: param_dim_red__k, dtype: object, 'param_clf__estimator__n_estimators': 22    200
-7     300
-18    300
-5     200
-4     100
-13    100
+Name: param_vectorizer__ngram_range, dtype: object, 'param_dim_red__k': 8     100
+17    100
+7     100
 6     300
-19    200
-17    200
-24    100
+0     200
+16    300
+15    200
+19    300
+2     300
+10    300
+14    200
 9     300
+20    300
+21    300
+3     200
+4     300
+23    300
+13    200
+24    300
+1     300
+5     200
+22    100
+18    100
+12    100
+11    100
+Name: param_dim_red__k, dtype: object, 'param_clf__estimator__n_estimators': 8     100
+17    200
+7     200
+6     200
+0     100
+16    300
+15    300
+19    100
+2     200
+10    200
+14    300
+9     300
+20    100
 21    300
 3     100
-20    100
-0     300
-23    200
-15    200
+4     300
+23    100
+13    100
+24    100
 1     200
-14    300
-2     300
-8     200
-10    300
-16    100
+5     200
+22    100
+18    100
 12    100
-11    200
-Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 22    52
-7     44
-18    34
-5     61
-4     41
-13    60
-6     24
-19    25
-17    64
-24    54
-9     21
-21    28
-3     64
-20    60
-0     62
-23    62
-15    64
-1     44
-14    31
-2     21
-8     40
-10    52
-16    46
-12    23
-11    29
-Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 22     6
-7      6
-18     3
-5     20
-4     20
-13    10
-6     20
-19    20
+11    100
+Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 8     35
+17    35
+7     29
+6     50
+0     39
+16    23
+15    55
+19    38
+2     41
+10    34
+14    47
+9     62
+20    50
+21    48
+3     31
+4     37
+23    40
+13    21
+24    36
+1     33
+5     59
+22    57
+18    22
+12    24
+11    48
+Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 8      3
 17     6
-24     3
-9      3
-21    20
-3      6
-20     6
+7      6
+6      6
 0      6
-23     6
-15    20
-1      6
-14    10
+16     6
+15     6
+19     3
 2      6
-8     20
-10     3
-16    20
-12     6
-11     3
-Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 22    0.342282
-7     0.520805
-18     1.42617
-5     0.648322
-4     0.622819
-13     0.55906
-6      1.32416
-19    0.163758
-17     1.66846
-24    0.865101
-9     0.214765
-21     1.41342
-3       1.6047
-20     1.54094
-0     0.877852
-23     1.28591
-15     1.51544
-1      1.48993
-14     1.09463
-2     0.520805
-8     0.265772
-10     1.87248
-16     1.93624
-12     1.91074
-11     1.91074
-Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 22    0.3
-7     0.3
-18    0.3
-5     0.7
-4     0.3
-13    0.3
-6     0.3
-19    0.3
+10    10
+14     3
+9      3
+20     3
+21    10
+3      3
+4     20
+23     3
+13     6
+24     3
+1     10
+5     20
+22     6
+18    10
+12    20
+11     6
+Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 8          0.1
+17    0.763087
+7      1.09463
+6      0.17651
+0     0.393289
+16    0.151007
+15     1.10738
+19    0.941611
+2     0.916107
+10     1.37517
+14    0.788591
+9     0.890604
+20    0.278523
+21    0.661074
+3     0.788591
+4     0.151007
+23    0.622819
+13     1.56644
+24     1.54094
+1     0.610067
+5      1.19664
+22     1.68121
+18    0.610067
+12     1.66846
+11     1.87248
+Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 8     0.7
 17    0.7
-24    0.7
-9     0.7
-21    0.7
-3     0.7
-20    0.7
-0     0.7
-23    0.7
+7     0.3
+6     0.3
+0     0.3
+16    0.3
 15    0.7
-1     0.7
-14    0.7
+19    0.7
 2     0.3
-8     0.3
 10    0.3
-16    0.7
-12    0.7
+14    0.3
+9     0.7
+20    0.7
+21    0.3
+3     0.3
+4     0.7
+23    0.3
+13    0.7
+24    0.3
+1     0.3
+5     0.3
+22    0.3
+18    0.3
+12    0.3
 11    0.3
-Name: param_clf__estimator__colsample_bytree, dtype: object, 'param_clf__estimator__booster': 22      gbtree
-7       gbtree
-18      gbtree
-5       gbtree
-4         dart
-13      gbtree
-6     gblinear
-19    gblinear
-17    gblinear
-24    gblinear
+Name: param_clf__estimator__colsample_bytree, dtype: object, 'param_clf__estimator__booster': 8       gbtree
+17      gbtree
+7         dart
+6       gbtree
+0         dart
+16      gbtree
+15      gbtree
+19        dart
+2         dart
+10      gbtree
+14    gblinear
 9     gblinear
+20        dart
 21        dart
 3       gbtree
-20      gbtree
-0         dart
+4         dart
 23        dart
-15      gbtree
-1         dart
-14    gblinear
-2     gblinear
-8     gblinear
-10    gblinear
-16      gbtree
-12        dart
-11    gblinear
-Name: param_clf__estimator__booster, dtype: object, 'params': 22    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-7     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-18    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-5     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-4     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-13    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-6     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-19    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+13      gbtree
+24        dart
+1     gblinear
+5     gblinear
+22    gblinear
+18    gblinear
+12    gblinear
+11        dart
+Name: param_clf__estimator__booster, dtype: object, 'params': 8     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
 17    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-24    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+7     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+6     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+0     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+16    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+15    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+19    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+2     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+10    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+14    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
 9     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+20    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 21    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 3     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-20    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-0     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+4     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 23    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-15    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+13    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+24    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 1     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-14    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-2     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-8     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-10    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-16    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-12    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+5     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+22    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+18    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+12    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 11    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-Name: params, dtype: object, 'split0_test_score': 22    0.465569
-7     0.464072
-18    0.464072
-5     0.464571
-4     0.463573
-13    0.464571
-6     0.446108
-19    0.446108
-17    0.446108
-24    0.443613
+Name: params, dtype: object, 'split0_test_score': 8     0.467565
+17    0.465569
+7     0.466068
+6     0.465569
+0     0.465569
+16    0.465569
+15    0.465070
+19    0.464072
+2     0.464571
+10    0.465569
+14    0.446108
 9     0.443613
-21    0.445609
-3     0.445609
-20    0.446108
-0     0.446108
-23    0.443613
-15    0.443114
-1     0.443613
-14    0.432635
-2     0.431637
-8     0.426647
-10    0.426647
-16    0.267465
-12    0.289421
-11    0.282934
-Name: split0_test_score, dtype: float64, 'split1_test_score': 22    0.453593
-7     0.452595
-18    0.452595
-5     0.452595
-4     0.452595
-13    0.450100
-6     0.444112
-19    0.444112
-17    0.444112
-24    0.444112
+20    0.445609
+21    0.446108
+3     0.445110
+4     0.445609
+23    0.445110
+13    0.445609
+24    0.446108
+1     0.432635
+5     0.431637
+22    0.426647
+18    0.426647
+12    0.426647
+11    0.440619
+Name: split0_test_score, dtype: float64, 'split1_test_score': 8     0.458583
+17    0.456088
+7     0.455589
+6     0.456587
+0     0.453593
+16    0.453593
+15    0.452096
+19    0.452096
+2     0.452096
+10    0.452096
+14    0.444112
 9     0.444112
-21    0.440120
-3     0.438124
-20    0.439621
-0     0.439122
-23    0.437625
-15    0.438124
-1     0.437625
-14    0.432136
-2     0.432136
-8     0.429142
-10    0.429142
-16    0.407186
-12    0.407186
-11    0.282934
-Name: split1_test_score, dtype: float64, 'split2_test_score': 22    0.580339
-7     0.579840
-18    0.577345
-5     0.578343
-4     0.579840
-13    0.578343
-6     0.541417
-19    0.541417
-17    0.541417
-24    0.541417
+20    0.440120
+21    0.439621
+3     0.439122
+4     0.439621
+23    0.439122
+13    0.438623
+24    0.438623
+1     0.432136
+5     0.432136
+22    0.429142
+18    0.429142
+12    0.429142
+11    0.436627
+Name: split1_test_score, dtype: float64, 'split2_test_score': 8     0.575848
+17    0.575349
+7     0.575349
+6     0.580838
+0     0.580339
+16    0.581337
+15    0.578343
+19    0.580838
+2     0.580339
+10    0.577345
+14    0.541417
 9     0.541417
-21    0.517465
-3     0.517465
-20    0.520459
-0     0.519461
-23    0.515968
-15    0.516467
-1     0.514471
-14    0.503493
-2     0.500998
-8     0.494511
-10    0.494511
-16    0.504990
-12    0.282435
-11    0.407186
-Name: split2_test_score, dtype: float64, 'split3_test_score': 22    0.567864
-7     0.566367
-18    0.567365
-5     0.565369
-4     0.558882
-13    0.558383
-6     0.550898
-19    0.550898
-17    0.550898
-24    0.550399
+20    0.521457
+21    0.524950
+3     0.519960
+4     0.519960
+23    0.519461
+13    0.517465
+24    0.519960
+1     0.503493
+5     0.500998
+22    0.494511
+18    0.494511
+12    0.494511
+11    0.516467
+Name: split2_test_score, dtype: float64, 'split3_test_score': 8     0.591317
+17    0.578842
+7     0.579341
+6     0.569361
+0     0.570359
+16    0.567864
+15    0.563872
+19    0.558383
+2     0.560379
+10    0.560379
+14    0.550898
 9     0.550399
-21    0.531936
-3     0.533433
-20    0.528942
-0     0.529441
-23    0.532934
-15    0.527445
-1     0.532934
-14    0.526946
-2     0.530938
-8     0.527944
-10    0.282435
-16    0.280439
-12    0.474052
-11    0.405190
-Name: split3_test_score, dtype: float64, 'split4_test_score': 22    0.535696
-7     0.536196
-18    0.534199
-5     0.531203
-4     0.531702
-13    0.534698
-6     0.499750
-19    0.499750
-17    0.499750
-24    0.501248
+20    0.536427
+21    0.532934
+3     0.532934
+4     0.535429
+23    0.533433
+13    0.532435
+24    0.530439
+1     0.526946
+5     0.530938
+22    0.527944
+18    0.527944
+12    0.527944
+11    0.457086
+Name: split3_test_score, dtype: float64, 'split4_test_score': 8     0.543185
+17    0.543185
+7     0.542686
+6     0.537693
+0     0.539191
+16    0.538692
+15    0.533200
+19    0.536695
+2     0.531203
+10    0.532202
+14    0.499750
 9     0.501248
-21    0.486770
-3     0.484773
-20    0.484274
-0     0.484773
-23    0.480779
-15    0.484773
-1     0.479780
-14    0.468298
-2     0.464803
-8     0.474289
-10    0.474289
-16    0.282576
-12    0.284074
-11    0.282576
-Name: split4_test_score, dtype: float64, 'mean_test_score': 22    0.520612
-7     0.519814
-18    0.519115
-5     0.518416
-4     0.517319
-13    0.517219
-6     0.496457
-19    0.496457
-17    0.496457
-24    0.496158
+20    0.488767
+21    0.485771
+3     0.490764
+4     0.485771
+23    0.486770
+13    0.485272
+24    0.483774
+1     0.468298
+5     0.464803
+22    0.474289
+18    0.474289
+12    0.474289
+11    0.466301
+Name: split4_test_score, dtype: float64, 'mean_test_score': 8     0.527300
+17    0.523807
+7     0.523807
+6     0.522010
+0     0.521810
+16    0.521411
+15    0.518516
+19    0.518417
+2     0.517718
+10    0.517518
+14    0.496457
 9     0.496158
-21    0.484380
-3     0.483881
-20    0.483881
-0     0.483781
-23    0.482184
-15    0.481985
-1     0.481685
-14    0.472701
-2     0.472102
-8     0.470506
-10    0.421405
-16    0.348531
-12    0.347434
-11    0.332164
-Name: mean_test_score, dtype: float64, 'std_test_score': 22    0.052056
-7     0.052277
-18    0.051771
-5     0.051364
-4     0.050835
-13    0.051016
-6     0.045324
-19    0.045324
-17    0.045324
-24    0.045796
+20    0.486476
+21    0.485877
+3     0.485578
+4     0.485278
+23    0.484779
+13    0.483881
+24    0.483781
+1     0.472701
+5     0.472102
+22    0.470506
+18    0.470506
+12    0.470506
+11    0.463420
+Name: mean_test_score, dtype: float64, 'std_test_score': 8     0.054768
+17    0.052988
+7     0.053075
+6     0.051797
+0     0.052728
+16    0.052470
+15    0.051225
+19    0.051341
+2     0.051096
+10    0.050221
+14    0.045324
 9     0.045796
-21    0.036943
-3     0.037796
-20    0.036754
-0     0.036804
-23    0.037927
-15    0.036601
-1     0.037672
-14    0.037844
-2     0.038948
-8     0.038793
-10    0.074217
-16    0.093250
-12    0.079003
-11    0.060444
-Name: std_test_score, dtype: float64, 'rank_test_score': 22     1
-7      2
-18     3
-5      4
-4      5
-13     6
-6      7
-19     7
-17     7
-24    10
-9     10
-21    12
-3     13
-20    14
-0     15
-23    16
-15    17
-1     18
-14    19
-2     20
-8     21
-10    22
-16    23
-12    24
+20    0.038841
+21    0.038632
+3     0.038072
+4     0.038410
+23    0.038032
+13    0.037418
+24    0.037268
+1     0.037844
+5     0.038948
+22    0.038793
+18    0.038793
+12    0.038793
+11    0.028636
+Name: std_test_score, dtype: float64, 'rank_test_score': 8      1
+17     2
+7      3
+6      4
+0      5
+16     6
+15     7
+19     8
+2      9
+10    10
+14    11
+9     12
+20    13
+21    14
+3     15
+4     16
+23    17
+13    18
+24    19
+1     20
+5     21
+22    22
+18    22
+12    22
 11    25
-Name: rank_test_score, dtype: int32, 'split0_train_score': 22    0.564566
-7     0.566563
-18    0.567062
-5     0.569807
-4     0.574548
-13    0.571179
-6     0.515034
-19    0.515034
-17    0.515034
-24    0.518153
+Name: rank_test_score, dtype: int32, 'split0_train_score': 8     0.548846
+17    0.554211
+7     0.553961
+6     0.563693
+0     0.561323
+16    0.565814
+15    0.569432
+19    0.567561
+2     0.573674
+10    0.576918
+14    0.515034
 9     0.518153
-21    0.511790
-3     0.513163
-20    0.515409
-0     0.514535
-23    0.504679
-15    0.515533
-1     0.504679
-14    0.497193
-2     0.491329
-8     0.481098
-10    0.481098
-16    0.232439
-12    0.290455
-11    0.282720
-Name: split0_train_score, dtype: float64, 'split1_train_score': 22    0.569432
-7     0.573051
-18    0.571429
-5     0.576294
-4     0.577168
-13    0.572926
-6     0.516781
-19    0.516781
-17    0.516781
-24    0.520150
+20    0.513787
+21    0.515159
+3     0.511790
+4     0.516781
+23    0.513412
+13    0.512789
+24    0.514535
+1     0.497193
+5     0.491329
+22    0.481098
+18    0.481098
+12    0.481098
+11    0.504180
+Name: split0_train_score, dtype: float64, 'split1_train_score': 8     0.551341
+17    0.556581
+7     0.556581
+6     0.565689
+0     0.565814
+16    0.567436
+15    0.576170
+19    0.569807
+2     0.576419
+10    0.578915
+14    0.516781
 9     0.520150
-21    0.515034
-3     0.513662
-20    0.519526
-0     0.518902
-23    0.504803
-15    0.519775
-1     0.504304
-14    0.498939
-2     0.492202
-8     0.479726
-10    0.479726
-16    0.406987
-12    0.406987
-11    0.282720
-Name: split1_train_score, dtype: float64, 'split2_train_score': 22    0.525140
-7     0.526138
-18    0.526138
-5     0.526762
-4     0.528509
-13    0.528509
-6     0.492951
-19    0.492951
-17    0.492951
-24    0.497068
+20    0.516656
+21    0.520274
+3     0.513911
+4     0.521397
+23    0.518029
+13    0.513537
+24    0.519027
+1     0.498939
+5     0.492202
+22    0.479726
+18    0.479726
+12    0.479726
+11    0.504180
+Name: split1_train_score, dtype: float64, 'split2_train_score': 8     0.519775
+17    0.520898
+7     0.521397
+6     0.527261
+0     0.525639
+16    0.527261
+15    0.526762
+19    0.527636
+2     0.528883
+10    0.528759
+14    0.492951
 9     0.497068
-21    0.483094
-3     0.482720
-20    0.483094
-0     0.484092
-23    0.481597
-15    0.483468
-1     0.481098
-14    0.479850
-2     0.473612
-8     0.469120
-10    0.469120
-16    0.472614
-12    0.282595
-11    0.406987
-Name: split2_train_score, dtype: float64, 'split3_train_score': 22    0.529133
-7     0.530381
-18    0.530381
-5     0.533624
-4     0.537243
-13    0.535745
-6     0.492826
-19    0.492826
-17    0.492826
-24    0.497068
+20    0.483219
+21    0.486089
+3     0.482845
+4     0.484217
+23    0.483718
+13    0.482969
+24    0.482845
+1     0.479850
+5     0.473612
+22    0.469120
+18    0.469120
+12    0.469120
+11    0.481347
+Name: split2_train_score, dtype: float64, 'split3_train_score': 8     0.517280
+17    0.521023
+7     0.520649
+6     0.532751
+0     0.527261
+16    0.533624
+15    0.533624
+19    0.534747
+2     0.538989
+10    0.540362
+14    0.492826
 9     0.497068
-21    0.487461
-3     0.487461
-20    0.492576
-0     0.492826
-23    0.481597
-15    0.494573
-1     0.481098
-14    0.484342
-2     0.475733
-8     0.470992
-10    0.282845
-16    0.277230
-12    0.465752
-11    0.410730
-Name: split3_train_score, dtype: float64, 'split4_train_score': 22    0.544162
-7     0.546906
-18    0.546781
-5     0.551023
-4     0.553268
-13    0.550274
-6     0.501871
-19    0.501871
-17    0.501871
-24    0.506487
+20    0.488833
+21    0.493824
+3     0.486338
+4     0.493075
+23    0.489208
+13    0.486837
+24    0.491204
+1     0.484342
+5     0.475733
+22    0.470992
+18    0.470992
+12    0.470992
+11    0.461884
+Name: split3_train_score, dtype: float64, 'split4_train_score': 8     0.528318
+17    0.534805
+7     0.534805
+6     0.543413
+0     0.541043
+16    0.544785
+15    0.550898
+19    0.547779
+2     0.552395
+10    0.556512
+14    0.501871
 9     0.506487
-21    0.499376
+20    0.498752
+21    0.500374
 3     0.497879
-20    0.500125
-0     0.499376
-23    0.492265
-15    0.500873
-1     0.492016
-14    0.486402
-2     0.483907
-8     0.475549
-10    0.475549
-16    0.282809
-12    0.284556
-11    0.282809
-Name: split4_train_score, dtype: float64, 'mean_train_score': 22    0.546487
-7     0.548608
-18    0.548358
-5     0.551502
-4     0.554147
-13    0.551727
-6     0.503893
-19    0.503893
-17    0.503893
-24    0.507785
+4     0.502246
+23    0.499750
+13    0.498253
+24    0.499501
+1     0.486402
+5     0.483907
+22    0.475549
+18    0.475549
+12    0.475549
+11    0.483658
+Name: split4_train_score, dtype: float64, 'mean_train_score': 8     0.533112
+17    0.537504
+7     0.537479
+6     0.546562
+0     0.544216
+16    0.547784
+15    0.551377
+19    0.549506
+2     0.554072
+10    0.556293
+14    0.503893
 9     0.507785
-21    0.499351
-3     0.498977
-20    0.502146
-0     0.501946
-23    0.492988
-15    0.502845
-1     0.492639
-14    0.489345
-2     0.483357
-8     0.475297
-10    0.437667
-16    0.334416
-12    0.346069
-11    0.333193
-Name: mean_train_score, dtype: float64, 'std_train_score': 22    0.017976
-7     0.018761
-18    0.018447
-5     0.019399
-4     0.019442
-13    0.018024
-6     0.010359
-19    0.010359
-17    0.010359
-24    0.009918
+20    0.500250
+21    0.503144
+3     0.498553
+4     0.503543
+23    0.500823
+13    0.498877
+24    0.501422
+1     0.489345
+5     0.483357
+22    0.475297
+18    0.475297
+12    0.475297
+11    0.487050
+Name: mean_train_score, dtype: float64, 'std_train_score': 8     0.014362
+17    0.015477
+7     0.015399
+6     0.015700
+0     0.016744
+16    0.016383
+15    0.019297
+19    0.016954
+2     0.018700
+10    0.019744
+14    0.010359
 9     0.009918
-21    0.012699
-3     0.012767
-20    0.013686
-0     0.013073
-23    0.010357
-15    0.013382
-1     0.010467
-14    0.007450
-2     0.007683
-8     0.004691
-10    0.077524
-16    0.090220
-12    0.076080
-11    0.061792
+20    0.013229
+21    0.012831
+3     0.012708
+4     0.013991
+23    0.013290
+13    0.012703
+24    0.013676
+1     0.007450
+5     0.007683
+22    0.004691
+18    0.004691
+12    0.004691
+11    0.015901
 Name: std_train_score, dtype: float64}
 
-{'params': 22    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-7     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-18    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-5     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-4     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-13    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-6     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-19    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+{'params': 8     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
 17    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-24    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+7     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+6     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+0     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+16    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+15    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+19    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+2     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+10    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+14    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
 9     {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+20    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 21    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 3     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-20    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-0     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+4     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 23    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-15    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+13    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+24    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 1     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-14    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-2     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-8     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-10    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-16    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
-12    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+5     {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+22    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+18    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
+12    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 11    {'vectorizer__ngram_range': (2, 3), 'dim_red__...
 Name: params, dtype: object}
 
-{'mean_fit_time': 22    3.141196
-Name: mean_fit_time, dtype: float64, 'std_fit_time': 22    0.161837
-Name: std_fit_time, dtype: float64, 'mean_score_time': 22    0.221009
-Name: mean_score_time, dtype: float64, 'std_score_time': 22    0.032389
-Name: std_score_time, dtype: float64, 'param_vectorizer__ngram_range': 22    (1, 3)
-Name: param_vectorizer__ngram_range, dtype: object, 'param_dim_red__k': 22    200
-Name: param_dim_red__k, dtype: object, 'param_clf__estimator__n_estimators': 22    200
-Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 22    52
-Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 22    6
-Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 22    0.342282
-Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 22    0.3
-Name: param_clf__estimator__colsample_bytree, dtype: object, 'param_clf__estimator__booster': 22    gbtree
-Name: param_clf__estimator__booster, dtype: object, 'params': 22    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
-Name: params, dtype: object, 'split0_test_score': 22    0.465569
-Name: split0_test_score, dtype: float64, 'split1_test_score': 22    0.453593
-Name: split1_test_score, dtype: float64, 'split2_test_score': 22    0.580339
-Name: split2_test_score, dtype: float64, 'split3_test_score': 22    0.567864
-Name: split3_test_score, dtype: float64, 'split4_test_score': 22    0.535696
-Name: split4_test_score, dtype: float64, 'mean_test_score': 22    0.520612
-Name: mean_test_score, dtype: float64, 'std_test_score': 22    0.052056
-Name: std_test_score, dtype: float64, 'rank_test_score': 22    1
-Name: rank_test_score, dtype: int32, 'split0_train_score': 22    0.564566
-Name: split0_train_score, dtype: float64, 'split1_train_score': 22    0.569432
-Name: split1_train_score, dtype: float64, 'split2_train_score': 22    0.52514
-Name: split2_train_score, dtype: float64, 'split3_train_score': 22    0.529133
-Name: split3_train_score, dtype: float64, 'split4_train_score': 22    0.544162
-Name: split4_train_score, dtype: float64, 'mean_train_score': 22    0.546487
-Name: mean_train_score, dtype: float64, 'std_train_score': 22    0.017976
+{'mean_fit_time': 8    1.980616
+Name: mean_fit_time, dtype: float64, 'std_fit_time': 8    0.080932
+Name: std_fit_time, dtype: float64, 'mean_score_time': 8    0.16057
+Name: mean_score_time, dtype: float64, 'std_score_time': 8    0.016044
+Name: std_score_time, dtype: float64, 'param_vectorizer__ngram_range': 8    (1, 3)
+Name: param_vectorizer__ngram_range, dtype: object, 'param_dim_red__k': 8    100
+Name: param_dim_red__k, dtype: object, 'param_clf__estimator__n_estimators': 8    100
+Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 8    35
+Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 8    3
+Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 8    0.1
+Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 8    0.7
+Name: param_clf__estimator__colsample_bytree, dtype: object, 'param_clf__estimator__booster': 8    gbtree
+Name: param_clf__estimator__booster, dtype: object, 'params': 8    {'vectorizer__ngram_range': (1, 3), 'dim_red__...
+Name: params, dtype: object, 'split0_test_score': 8    0.467565
+Name: split0_test_score, dtype: float64, 'split1_test_score': 8    0.458583
+Name: split1_test_score, dtype: float64, 'split2_test_score': 8    0.575848
+Name: split2_test_score, dtype: float64, 'split3_test_score': 8    0.591317
+Name: split3_test_score, dtype: float64, 'split4_test_score': 8    0.543185
+Name: split4_test_score, dtype: float64, 'mean_test_score': 8    0.5273
+Name: mean_test_score, dtype: float64, 'std_test_score': 8    0.054768
+Name: std_test_score, dtype: float64, 'rank_test_score': 8    1
+Name: rank_test_score, dtype: int32, 'split0_train_score': 8    0.548846
+Name: split0_train_score, dtype: float64, 'split1_train_score': 8    0.551341
+Name: split1_train_score, dtype: float64, 'split2_train_score': 8    0.519775
+Name: split2_train_score, dtype: float64, 'split3_train_score': 8    0.51728
+Name: split3_train_score, dtype: float64, 'split4_train_score': 8    0.528318
+Name: split4_train_score, dtype: float64, 'mean_train_score': 8    0.533112
+Name: mean_train_score, dtype: float64, 'std_train_score': 8    0.014362
 Name: std_train_score, dtype: float64}
 
-                   feature     tfidf
+                   feature     freqs
 0                    trump  0.615249
 1              impeachment  0.537240
 2                president  0.414755
@@ -3451,701 +3591,701 @@ Name: std_train_score, dtype: float64}
 19       trump impeachment  0.087893
 Fitting 5 folds for each of 25 candidates, totalling 125 fits
 [Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
-[Parallel(n_jobs=4)]: Done  42 tasks      | elapsed:   55.4s
-[Parallel(n_jobs=4)]: Done 125 out of 125 | elapsed:  2.6min finished
-Best random Parameters:  {'clf__estimator__n_estimators': 300, 'clf__estimator__min_samples_leaf': 51, 'clf__estimator__max_depth': 3, 'clf__estimator__learning_rate': 0.4102040816326531, 'clf__estimator__colsample_bytree': 0.3}
+[Parallel(n_jobs=4)]: Done  42 tasks      | elapsed:   48.4s
+[Parallel(n_jobs=4)]: Done 125 out of 125 | elapsed:  2.2min finished
+Best random Parameters:  {'clf__estimator__n_estimators': 100, 'clf__estimator__min_samples_leaf': 37, 'clf__estimator__max_depth': 6, 'clf__estimator__learning_rate': 0.13877551020408163, 'clf__estimator__colsample_bytree': 0.3}
 
-Best random Score:  0.5135272141687668
+Best random Score:  0.5233081515451374
 
-{'mean_fit_time': 15     2.558558
-19     5.601813
-7      3.380156
-2      5.204378
-13     5.076818
-20     5.240407
-14     6.836513
-8     10.757819
-18     5.020967
-16     3.434212
-12     2.429899
-24     3.456353
-6      4.879650
-23     5.078014
-5      5.286560
-3      2.523049
-21     3.569051
-1      5.384895
-17     5.679605
-11     2.950709
-9      2.352904
-4      1.747426
-0      1.318272
-22     1.811753
-10     6.535518
-Name: mean_fit_time, dtype: float64, 'std_fit_time': 15    0.023869
-19    0.071936
-7     0.022920
-2     0.067614
-13    0.033458
-20    0.022607
-14    0.067473
-8     0.118591
-18    0.123254
-16    0.045824
-12    0.038174
-24    0.061306
-6     0.026284
-23    0.015940
-5     0.034517
-3     0.026690
-21    0.026587
-1     0.114943
-17    0.054057
-11    0.014354
-9     0.009040
-4     0.011161
-0     0.046465
-22    0.059649
-10    0.071680
-Name: std_fit_time, dtype: float64, 'mean_score_time': 15    0.050266
-19    0.160371
-7     0.149999
-2     0.109108
-13    0.220011
-20    0.144015
-14    0.142618
-8     0.226395
-18    0.185903
-16    0.069215
-12    0.095943
-24    0.162166
-6     0.182711
-23    0.220011
-5     0.152592
-3     0.098537
-21    0.149201
-1     0.116289
-17    0.165158
-11    0.068617
-9     0.079587
-4     0.070611
-0     0.063032
-22    0.041489
-10    0.148403
-Name: mean_score_time, dtype: float64, 'std_score_time': 15    0.001493
-19    0.003858
-7     0.008867
-2     0.005337
-13    0.007843
-20    0.007585
-14    0.003397
-8     0.005917
-18    0.006231
-16    0.003432
-12    0.005255
-24    0.043457
-6     0.003241
-23    0.009347
-5     0.010870
-3     0.008472
-21    0.007013
-1     0.004745
-17    0.013210
-11    0.001716
-9     0.002918
-4     0.003116
-0     0.006950
-22    0.002326
-10    0.012221
-Name: std_score_time, dtype: float64, 'param_clf__estimator__n_estimators': 15    300
-19    200
-7     200
-2     100
-13    300
-20    300
-14    200
-8     300
-18    200
-16    100
-12    200
-24    200
-6     200
-23    300
-5     300
-3     100
-21    300
-1     200
-17    300
+{'mean_fit_time': 24    1.333820
+11    1.181879
+15    2.268131
+17    1.789430
+16    2.719124
+22    5.600203
+13    3.403803
+7     4.595311
+6     3.757751
+19    3.486681
+1     6.750146
+21    8.650845
+3     3.324504
+4     4.477020
+0     1.180041
+14    3.458864
+18    2.483962
+8     7.682061
+10    5.553073
+5     3.042161
+2     1.909689
+9     7.523710
+23    2.369557
+20    2.315237
+12    2.962226
+Name: mean_fit_time, dtype: float64, 'std_fit_time': 24    0.040122
+11    0.042883
+15    0.020257
+17    0.027874
+16    0.054773
+22    0.042674
+13    0.026662
+7     0.050158
+6     0.038434
+19    0.104483
+1     0.115572
+21    0.243160
+3     0.020396
+4     0.073009
+0     0.073765
+14    0.030900
+18    0.024687
+8     0.041212
+10    0.064772
+5     0.048022
+2     0.014472
+9     0.078178
+23    0.054057
+20    0.045672
+12    0.050376
+Name: std_fit_time, dtype: float64, 'mean_score_time': 24    0.046080
+11    0.020846
+15    0.035704
+17    0.045080
+16    0.112698
+22    0.126265
+13    0.054055
+7     0.091635
+6     0.099368
+19    0.156581
+1     0.141048
+21    0.233118
+3     0.053058
+4     0.086768
+0     0.020745
+14    0.056648
+18    0.094348
+8     0.290325
+10    0.160446
+5     0.072805
+2     0.054853
+9     0.173087
+23    0.038899
+20    0.073803
+12    0.064529
+Name: mean_score_time, dtype: float64, 'std_score_time': 24    0.002650
+11    0.001850
+15    0.003699
+17    0.006257
+16    0.009440
+22    0.009942
+13    0.004566
+7     0.012309
+6     0.013360
+19    0.016712
+1     0.002416
+21    0.017828
+3     0.002130
+4     0.003025
+0     0.001596
+14    0.003645
+18    0.005836
+8     0.016297
+10    0.008355
+5     0.004678
+2     0.007081
+9     0.006915
+23    0.002423
+20    0.002958
+12    0.002882
+Name: std_score_time, dtype: float64, 'param_clf__estimator__n_estimators': 24    100
 11    100
-9     100
+15    200
+17    200
+16    100
+22    100
+13    300
+7     100
+6     200
+19    200
+1     200
+21    300
+3     300
 4     100
 0     100
-22    100
+14    300
+18    200
+8     300
 10    300
-Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 15    51
-19    32
-7     34
-2     59
-13    44
-20    25
-14    32
-8     41
-18    39
-16    56
-12    49
-24    29
-6     26
-23    31
-5     23
-3     42
-21    46
-1     58
-17    49
-11    36
-9     52
-4     57
-0     46
-22    45
-10    25
-Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 15     3
-19    10
-7     10
-2     20
-13    10
-20     6
-14    20
-8     20
-18    20
+5     100
+2     100
+9     300
+23    200
+20    100
+12    100
+Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 24    37
+11    27
+15    40
+17    31
+16    26
+22    49
+13    48
+7     39
+6     48
+19    44
+1     27
+21    37
+3     46
+4     41
+0     53
+14    22
+18    54
+8     22
+10    24
+5     46
+2     33
+9     25
+23    24
+20    47
+12    20
+Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 24     6
+11     3
+15     3
+17     3
 16    20
-12     6
-24    10
-6     20
-23    10
-5      6
-3     20
-21     6
+22    20
+13     3
+7     20
+6      6
+19    10
 1     20
-17     6
-11    10
-9     20
-4     10
-0      6
-22     6
-10    10
-Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 15    0.410204
-19         0.1
-7     0.138776
-2      0.44898
-13    0.255102
-20    0.371429
-14     1.18571
-8     0.759184
-18    0.797959
-16      1.6898
-12    0.759184
-24     1.10816
-6      0.87551
-23    0.526531
-5     0.642857
-3      1.06939
-21    0.914286
-1       1.8449
-17     1.61224
-11     1.45714
+21    10
+3      3
+4     20
+0      3
+14     3
+18     6
+8     20
+10     6
+5     10
+2      6
+9     10
+23     3
+20    20
+12    10
+Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 24    0.138776
+11    0.526531
+15    0.410204
+17     1.26327
+16    0.293878
+22    0.410204
+13     0.87551
+7     0.914286
+6     0.487755
+19    0.371429
+1      1.22449
+21     0.44898
+3      1.14694
+4     0.991837
+0      1.72857
+14     1.30204
+18     1.06939
+8     0.565306
+10    0.681633
+5      1.14694
+2      1.22449
 9       1.6898
-4      1.53469
-0       1.8449
-22     1.92245
-10     1.96122
-Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 15    0.3
-19    0.7
-7     0.3
-2     0.7
-13    0.3
-20    0.7
-14    0.7
-8     0.7
-18    0.3
-16    0.7
-12    0.3
-24    0.3
-6     0.3
-23    0.3
-5     0.7
-3     0.3
-21    0.3
-1     0.7
-17    0.7
+23     1.53469
+20     1.92245
+12     1.92245
+Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 24    0.3
 11    0.7
-9     0.3
-4     0.3
-0     0.3
+15    0.7
+17    0.3
+16    0.3
 22    0.7
+13    0.7
+7     0.7
+6     0.7
+19    0.3
+1     0.7
+21    0.7
+3     0.7
+4     0.7
+0     0.7
+14    0.7
+18    0.3
+8     0.3
 10    0.7
-Name: param_clf__estimator__colsample_bytree, dtype: object, 'params': 15    {'clf__estimator__n_estimators': 300, 'clf__es...
-19    {'clf__estimator__n_estimators': 200, 'clf__es...
-7     {'clf__estimator__n_estimators': 200, 'clf__es...
-2     {'clf__estimator__n_estimators': 100, 'clf__es...
-13    {'clf__estimator__n_estimators': 300, 'clf__es...
-20    {'clf__estimator__n_estimators': 300, 'clf__es...
-14    {'clf__estimator__n_estimators': 200, 'clf__es...
-8     {'clf__estimator__n_estimators': 300, 'clf__es...
-18    {'clf__estimator__n_estimators': 200, 'clf__es...
-16    {'clf__estimator__n_estimators': 100, 'clf__es...
-12    {'clf__estimator__n_estimators': 200, 'clf__es...
-24    {'clf__estimator__n_estimators': 200, 'clf__es...
-6     {'clf__estimator__n_estimators': 200, 'clf__es...
-23    {'clf__estimator__n_estimators': 300, 'clf__es...
-5     {'clf__estimator__n_estimators': 300, 'clf__es...
-3     {'clf__estimator__n_estimators': 100, 'clf__es...
-21    {'clf__estimator__n_estimators': 300, 'clf__es...
-1     {'clf__estimator__n_estimators': 200, 'clf__es...
-17    {'clf__estimator__n_estimators': 300, 'clf__es...
+5     0.7
+2     0.7
+9     0.7
+23    0.7
+20    0.3
+12    0.7
+Name: param_clf__estimator__colsample_bytree, dtype: object, 'params': 24    {'clf__estimator__n_estimators': 100, 'clf__es...
 11    {'clf__estimator__n_estimators': 100, 'clf__es...
-9     {'clf__estimator__n_estimators': 100, 'clf__es...
+15    {'clf__estimator__n_estimators': 200, 'clf__es...
+17    {'clf__estimator__n_estimators': 200, 'clf__es...
+16    {'clf__estimator__n_estimators': 100, 'clf__es...
+22    {'clf__estimator__n_estimators': 100, 'clf__es...
+13    {'clf__estimator__n_estimators': 300, 'clf__es...
+7     {'clf__estimator__n_estimators': 100, 'clf__es...
+6     {'clf__estimator__n_estimators': 200, 'clf__es...
+19    {'clf__estimator__n_estimators': 200, 'clf__es...
+1     {'clf__estimator__n_estimators': 200, 'clf__es...
+21    {'clf__estimator__n_estimators': 300, 'clf__es...
+3     {'clf__estimator__n_estimators': 300, 'clf__es...
 4     {'clf__estimator__n_estimators': 100, 'clf__es...
 0     {'clf__estimator__n_estimators': 100, 'clf__es...
-22    {'clf__estimator__n_estimators': 100, 'clf__es...
+14    {'clf__estimator__n_estimators': 300, 'clf__es...
+18    {'clf__estimator__n_estimators': 200, 'clf__es...
+8     {'clf__estimator__n_estimators': 300, 'clf__es...
 10    {'clf__estimator__n_estimators': 300, 'clf__es...
-Name: params, dtype: object, 'split0_test_score': 15    0.565369
-19    0.556886
-7     0.552894
-2     0.553393
-13    0.535429
-20    0.537425
-14    0.531437
-8     0.531936
-18    0.519960
-16    0.512974
-12    0.519960
-24    0.521956
-6     0.507485
-23    0.522455
-5     0.529441
-3     0.508982
-21    0.525449
-1     0.521457
-17    0.524451
-11    0.521956
-9     0.515968
-4     0.508982
-0     0.513972
-22    0.493513
-10    0.487026
-Name: split0_test_score, dtype: float64, 'split1_test_score': 15    0.567864
-19    0.564371
-7     0.560878
-2     0.543413
-13    0.548902
-20    0.532934
-14    0.537425
-8     0.537425
-18    0.532435
-16    0.523453
-12    0.530938
-24    0.528443
-6     0.533433
-23    0.525449
-5     0.532934
-3     0.526447
-21    0.526447
-1     0.505988
-17    0.521956
-11    0.520459
-9     0.511477
-4     0.511477
-0     0.517465
-22    0.500499
-10    0.479541
-Name: split1_test_score, dtype: float64, 'split2_test_score': 15    0.491517
-19    0.488024
-7     0.473553
-2     0.466068
-13    0.456088
-20    0.459581
+5     {'clf__estimator__n_estimators': 100, 'clf__es...
+2     {'clf__estimator__n_estimators': 100, 'clf__es...
+9     {'clf__estimator__n_estimators': 300, 'clf__es...
+23    {'clf__estimator__n_estimators': 200, 'clf__es...
+20    {'clf__estimator__n_estimators': 100, 'clf__es...
+12    {'clf__estimator__n_estimators': 100, 'clf__es...
+Name: params, dtype: object, 'split0_test_score': 24    0.578343
+11    0.558882
+15    0.555389
+17    0.547904
+16    0.526447
+22    0.542415
+13    0.541417
+7     0.536926
+6     0.532435
+19    0.526447
+1     0.539421
+21    0.535928
+3     0.532435
+4     0.532435
+0     0.542415
+14    0.532435
+18    0.518463
+8     0.511976
+10    0.544411
+5     0.519960
+2     0.527944
+9     0.524451
+23    0.518463
+20    0.509980
+12    0.513473
+Name: split0_test_score, dtype: float64, 'split1_test_score': 24    0.586327
+11    0.572854
+15    0.576846
+17    0.549900
+16    0.549900
+22    0.550898
+13    0.543912
+7     0.544411
+6     0.548902
+19    0.538922
+1     0.525948
+21    0.531936
+3     0.534930
+4     0.538423
+0     0.536926
+14    0.519960
+18    0.533932
+8     0.527445
+10    0.523453
+5     0.536926
+2     0.526946
+9     0.531936
+23    0.530938
+20    0.506487
+12    0.498004
+Name: split1_test_score, dtype: float64, 'split2_test_score': 24    0.518962
+11    0.496507
+15    0.496008
+17    0.463074
+16    0.478543
+22    0.473553
+13    0.469062
+7     0.456587
+6     0.461078
+19    0.462076
+1     0.452096
+21    0.457086
+3     0.462575
+4     0.462575
+0     0.453593
 14    0.454092
-8     0.457585
-18    0.467066
-16    0.458583
-12    0.445110
-24    0.451098
-6     0.459082
-23    0.450599
+18    0.458084
+8     0.463573
+10    0.458583
 5     0.445110
-3     0.451597
-21    0.447106
-1     0.455589
-17    0.443114
-11    0.446108
-9     0.451098
-4     0.449601
-0     0.430639
-22    0.437126
-10    0.411677
-Name: split2_test_score, dtype: float64, 'split3_test_score': 15    0.400200
-19    0.370259
-7     0.379242
-2     0.378743
-13    0.370259
-20    0.374251
-14    0.373253
-8     0.367265
-18    0.377246
-16    0.376248
-12    0.377246
-24    0.371257
-6     0.373752
-23    0.372255
-5     0.359780
-3     0.377246
-21    0.370758
-1     0.388723
-17    0.370758
-11    0.371756
-9     0.383234
-4     0.369261
-0     0.350798
-22    0.365269
-10    0.367764
-Name: split3_test_score, dtype: float64, 'split4_test_score': 15    0.542686
-19    0.536695
-7     0.537194
-2     0.530205
-13    0.524713
-20    0.523714
-14    0.528208
-8     0.526710
-18    0.517224
-16    0.529206
-12    0.525711
-24    0.525212
-6     0.522217
-23    0.520220
-5     0.518722
-3     0.519221
-21    0.510734
-1     0.508238
-17    0.514728
-11    0.512232
-9     0.503245
-4     0.496755
-0     0.511233
-22    0.483275
-10    0.489765
-Name: split4_test_score, dtype: float64, 'mean_test_score': 15    0.513527
-19    0.503247
-7     0.500752
-2     0.494364
-13    0.487078
-20    0.485581
-14    0.484883
-8     0.484184
-18    0.482786
-16    0.480093
-12    0.479793
-24    0.479593
-6     0.479194
-23    0.478196
-5     0.477197
-3     0.476699
-21    0.476099
-1     0.475999
-17    0.475001
-11    0.474502
-9     0.473004
-4     0.467215
-0     0.464821
-22    0.455936
-10    0.447155
-Name: mean_test_score, dtype: float64, 'std_test_score': 15    0.062957
-19    0.071623
-7     0.068068
-2     0.065336
-13    0.066608
-20    0.062377
-14    0.063583
-8     0.065270
-18    0.057304
-16    0.057654
-12    0.060094
-24    0.061336
-6     0.058507
-23    0.059904
-5     0.066898
-3     0.056296
-21    0.060178
-1     0.049069
-17    0.060186
-11    0.058567
-9     0.050555
-4     0.053817
-0     0.065591
-22    0.050437
-10    0.049022
-Name: std_test_score, dtype: float64, 'rank_test_score': 15     1
-19     2
-7      3
-2      4
-13     5
-20     6
-14     7
-8      8
-18     9
-16    10
-12    11
-24    12
-6     13
-23    14
-5     15
-3     16
-21    17
-1     18
-17    19
-11    20
-9     21
-4     22
-0     23
-22    24
-10    25
-Name: rank_test_score, dtype: int32, 'split0_train_score': 15    0.731753
-19    0.988896
-7     0.922021
-2     1.000000
-13    0.992639
-20    0.998378
-14    1.000000
+2     0.452096
+9     0.442615
+23    0.446108
+20    0.445110
+12    0.429641
+Name: split2_test_score, dtype: float64, 'split3_test_score': 24    0.385230
+11    0.388723
+15    0.377246
+17    0.390220
+16    0.384731
+22    0.373752
+13    0.383733
+7     0.384731
+6     0.371756
+19    0.374251
+1     0.383234
+21    0.382236
+3     0.390719
+4     0.371756
+0     0.390220
+14    0.392715
+18    0.374251
+8     0.382735
+10    0.357784
+5     0.370259
+2     0.369261
+9     0.373253
+23    0.365269
+20    0.369261
+12    0.359281
+Name: split3_test_score, dtype: float64, 'split4_test_score': 24    0.547678
+11    0.535696
+15    0.541687
+17    0.526710
+16    0.537693
+22    0.536695
+13    0.523714
+7     0.525711
+6     0.529206
+19    0.531203
+1     0.526211
+21    0.519720
+3     0.506241
+4     0.516226
+0     0.497254
+14    0.511732
+18    0.525711
+8     0.523714
+10    0.523215
+5     0.527209
+2     0.517723
+9     0.515227
+23    0.509735
+20    0.504743
+12    0.482776
+Name: split4_test_score, dtype: float64, 'mean_test_score': 24    0.523308
+11    0.510533
+15    0.509435
+17    0.495562
+16    0.495463
+22    0.495463
+13    0.492368
+7     0.489673
+6     0.488676
+19    0.486580
+1     0.485382
+21    0.485381
+3     0.485380
+4     0.484283
+0     0.484082
+14    0.482187
+18    0.482088
+8     0.481889
+10    0.481489
+5     0.479893
+2     0.478794
+9     0.477497
+23    0.474103
+20    0.467116
+12    0.456635
+Name: mean_test_score, dtype: float64, 'std_test_score': 24    0.073046
+11    0.066165
+15    0.071205
+17    0.061343
+16    0.060423
+22    0.066740
+13    0.060647
+7     0.061050
+6     0.065752
+19    0.062512
+1     0.059624
+21    0.058892
+3     0.054010
+4     0.062295
+0     0.056760
+14    0.052191
+18    0.060198
+8     0.054584
+10    0.068248
+5     0.063759
+2     0.061579
+9     0.061115
+23    0.061800
+20    0.054521
+12    0.056270
+Name: std_test_score, dtype: float64, 'rank_test_score': 24     1
+11     2
+15     3
+17     4
+16     5
+22     6
+13     7
+7      8
+6      9
+19    10
+1     11
+21    12
+3     13
+4     14
+0     15
+14    16
+18    17
+8     18
+10    19
+5     20
+2     21
+9     22
+23    23
+20    24
+12    25
+Name: rank_test_score, dtype: int32, 'split0_train_score': 24    0.707673
+11    0.713038
+15    0.759201
+17    0.780412
+16    0.999251
+22    1.000000
+13    0.883718
+7     1.000000
+6     0.995633
+19    0.993013
+1     1.000000
+21    1.000000
+3     0.907798
+4     1.000000
+0     0.753462
+14    0.917530
+18    0.979414
 8     1.000000
-18    1.000000
-16    1.000000
-12    0.952589
-24    1.000000
-6     1.000000
-23    1.000000
+10    1.000000
 5     1.000000
-3     1.000000
-21    0.994261
-1     1.000000
-17    1.000000
-11    1.000000
+2     0.999501
 9     1.000000
+23    0.869370
+20    1.000000
+12    1.000000
+Name: split0_train_score, dtype: float64, 'split1_train_score': 24    0.703805
+11    0.704679
+15    0.747848
+17    0.772926
+16    0.998628
+22    1.000000
+13    0.876981
+7     1.000000
+6     0.995758
+19    0.991266
+1     1.000000
+21    1.000000
+3     0.904055
 4     1.000000
-0     0.946351
-22    0.656893
-10    1.000000
-Name: split0_train_score, dtype: float64, 'split1_train_score': 15    0.732127
-19    0.987648
-7     0.906176
-2     1.000000
-13    0.991890
-20    0.997754
-14    1.000000
+0     0.747473
+14    0.910667
+18    0.982158
 8     1.000000
-18    1.000000
-16    1.000000
-12    0.950593
-24    1.000000
-6     1.000000
-23    0.999750
+10    1.000000
 5     1.000000
-3     1.000000
-21    0.994136
-1     1.000000
-17    1.000000
-11    1.000000
+2     0.999626
 9     1.000000
+23    0.862133
+20    1.000000
+12    0.999750
+Name: split1_train_score, dtype: float64, 'split2_train_score': 24    0.712040
+11    0.722895
+15    0.763319
+17    0.783905
+16    0.998752
+22    1.000000
+13    0.888459
+7     1.000000
+6     0.996756
+19    0.994261
+1     1.000000
+21    1.000000
+3     0.915409
 4     1.000000
-0     0.952838
-22    0.771429
-10    1.000000
-Name: split1_train_score, dtype: float64, 'split2_train_score': 15    0.740237
-19    0.990268
-7     0.927386
-2     1.000000
-13    0.994885
-20    0.998877
-14    1.000000
+0     0.758578
+14    0.922520
+18    0.986650
 8     1.000000
-18    1.000000
-16    1.000000
-12    0.957330
-24    1.000000
-6     1.000000
-23    0.999875
-5     0.999875
-3     1.000000
-21    0.995508
-1     1.000000
-17    1.000000
-11    1.000000
-9     1.000000
-4     0.999875
-0     0.955833
-22    0.662633
 10    1.000000
-Name: split2_train_score, dtype: float64, 'split3_train_score': 15    0.747973
-19    0.991017
-7     0.923643
-2     1.000000
-13    0.994136
-20    0.998877
-14    1.000000
-8     1.000000
-18    1.000000
-16    1.000000
-12    0.956956
-24    1.000000
-6     1.000000
-23    0.999875
-5     0.999875
-3     1.000000
-21    0.996007
-1     1.000000
-17    1.000000
-11    1.000000
-9     1.000000
-4     1.000000
-0     0.956831
-22    0.686463
-10    1.000000
-Name: split3_train_score, dtype: float64, 'split4_train_score': 15    0.730913
-19    0.985279
-7     0.912425
-2     1.000000
-13    0.991766
-20    0.997131
-14    1.000000
-8     1.000000
-18    1.000000
-16    1.000000
-12    0.951347
-24    1.000000
-6     1.000000
-23    0.999875
 5     1.000000
-3     1.000000
-21    0.995509
-1     1.000000
-17    1.000000
-11    1.000000
+2     0.999626
 9     1.000000
+23    0.870867
+20    1.000000
+12    1.000000
+Name: split2_train_score, dtype: float64, 'split3_train_score': 24    0.718777
+11    0.722895
+15    0.767436
+17    0.793263
+16    0.998378
+22    1.000000
+13    0.892576
+7     1.000000
+6     0.996756
+19    0.994261
+1     1.000000
+21    1.000000
+3     0.914910
 4     1.000000
-0     0.950973
-22    0.663298
-10    1.000000
-Name: split4_train_score, dtype: float64, 'mean_train_score': 15    0.736601
-19    0.988622
-7     0.918330
-2     1.000000
-13    0.993063
-20    0.998203
-14    1.000000
+0     0.630692
+14    0.926014
+18    0.986775
 8     1.000000
-18    1.000000
-16    1.000000
-12    0.953763
-24    1.000000
-6     1.000000
-23    0.999875
-5     0.999950
-3     1.000000
-21    0.995084
-1     1.000000
-17    1.000000
-11    1.000000
-9     1.000000
-4     0.999975
-0     0.952565
-22    0.688143
 10    1.000000
-Name: mean_train_score, dtype: float64, 'std_train_score': 15    0.006609
-19    0.002032
-7     0.007829
-2     0.000000
-13    0.001241
-20    0.000677
-14    0.000000
-8     0.000000
-18    0.000000
-16    0.000000
-12    0.002835
-24    0.000000
-6     0.000000
-23    0.000079
-5     0.000061
-3     0.000000
-21    0.000747
+5     1.000000
+2     0.999750
+9     1.000000
+23    0.881098
+20    1.000000
+12    0.999501
+Name: split3_train_score, dtype: float64, 'split4_train_score': 24    0.700724
+11    0.712575
+15    0.754990
+17    0.781811
+16    0.998628
+22    1.000000
+13    0.878618
+7     1.000000
+6     0.996133
+19    0.991267
+1     1.000000
+21    1.000000
+3     0.904067
+4     1.000000
+0     0.621133
+14    0.911427
+18    0.982036
+8     1.000000
+10    1.000000
+5     1.000000
+2     0.999501
+9     1.000000
+23    0.867265
+20    1.000000
+12    1.000000
+Name: split4_train_score, dtype: float64, 'mean_train_score': 24    0.708604
+11    0.715216
+15    0.758559
+17    0.782463
+16    0.998727
+22    1.000000
+13    0.884070
+7     1.000000
+6     0.996207
+19    0.992814
+1     1.000000
+21    1.000000
+3     0.909248
+4     1.000000
+0     0.702268
+14    0.917632
+18    0.983407
+8     1.000000
+10    1.000000
+5     1.000000
+2     0.999601
+9     1.000000
+23    0.870147
+20    1.000000
+12    0.999850
+Name: mean_train_score, dtype: float64, 'std_train_score': 24    0.006345
+11    0.006938
+15    0.006773
+17    0.006547
+16    0.000289
+22    0.000000
+13    0.005861
+7     0.000000
+6     0.000477
+19    0.001343
 1     0.000000
-17    0.000000
-11    0.000000
-9     0.000000
-4     0.000050
-0     0.003744
-22    0.042858
+21    0.000000
+3     0.005018
+4     0.000000
+0     0.062516
+14    0.006019
+18    0.002872
+8     0.000000
 10    0.000000
+5     0.000000
+2     0.000093
+9     0.000000
+23    0.006222
+20    0.000000
+12    0.000200
 Name: std_train_score, dtype: float64}
 
-{'params': 15    {'clf__estimator__n_estimators': 300, 'clf__es...
-19    {'clf__estimator__n_estimators': 200, 'clf__es...
-7     {'clf__estimator__n_estimators': 200, 'clf__es...
-2     {'clf__estimator__n_estimators': 100, 'clf__es...
-13    {'clf__estimator__n_estimators': 300, 'clf__es...
-20    {'clf__estimator__n_estimators': 300, 'clf__es...
-14    {'clf__estimator__n_estimators': 200, 'clf__es...
-8     {'clf__estimator__n_estimators': 300, 'clf__es...
-18    {'clf__estimator__n_estimators': 200, 'clf__es...
-16    {'clf__estimator__n_estimators': 100, 'clf__es...
-12    {'clf__estimator__n_estimators': 200, 'clf__es...
-24    {'clf__estimator__n_estimators': 200, 'clf__es...
-6     {'clf__estimator__n_estimators': 200, 'clf__es...
-23    {'clf__estimator__n_estimators': 300, 'clf__es...
-5     {'clf__estimator__n_estimators': 300, 'clf__es...
-3     {'clf__estimator__n_estimators': 100, 'clf__es...
-21    {'clf__estimator__n_estimators': 300, 'clf__es...
-1     {'clf__estimator__n_estimators': 200, 'clf__es...
-17    {'clf__estimator__n_estimators': 300, 'clf__es...
+{'params': 24    {'clf__estimator__n_estimators': 100, 'clf__es...
 11    {'clf__estimator__n_estimators': 100, 'clf__es...
-9     {'clf__estimator__n_estimators': 100, 'clf__es...
+15    {'clf__estimator__n_estimators': 200, 'clf__es...
+17    {'clf__estimator__n_estimators': 200, 'clf__es...
+16    {'clf__estimator__n_estimators': 100, 'clf__es...
+22    {'clf__estimator__n_estimators': 100, 'clf__es...
+13    {'clf__estimator__n_estimators': 300, 'clf__es...
+7     {'clf__estimator__n_estimators': 100, 'clf__es...
+6     {'clf__estimator__n_estimators': 200, 'clf__es...
+19    {'clf__estimator__n_estimators': 200, 'clf__es...
+1     {'clf__estimator__n_estimators': 200, 'clf__es...
+21    {'clf__estimator__n_estimators': 300, 'clf__es...
+3     {'clf__estimator__n_estimators': 300, 'clf__es...
 4     {'clf__estimator__n_estimators': 100, 'clf__es...
 0     {'clf__estimator__n_estimators': 100, 'clf__es...
-22    {'clf__estimator__n_estimators': 100, 'clf__es...
+14    {'clf__estimator__n_estimators': 300, 'clf__es...
+18    {'clf__estimator__n_estimators': 200, 'clf__es...
+8     {'clf__estimator__n_estimators': 300, 'clf__es...
 10    {'clf__estimator__n_estimators': 300, 'clf__es...
+5     {'clf__estimator__n_estimators': 100, 'clf__es...
+2     {'clf__estimator__n_estimators': 100, 'clf__es...
+9     {'clf__estimator__n_estimators': 300, 'clf__es...
+23    {'clf__estimator__n_estimators': 200, 'clf__es...
+20    {'clf__estimator__n_estimators': 100, 'clf__es...
+12    {'clf__estimator__n_estimators': 100, 'clf__es...
 Name: params, dtype: object}
 
-{'mean_fit_time': 15    2.558558
-Name: mean_fit_time, dtype: float64, 'std_fit_time': 15    0.023869
-Name: std_fit_time, dtype: float64, 'mean_score_time': 15    0.050266
-Name: mean_score_time, dtype: float64, 'std_score_time': 15    0.001493
-Name: std_score_time, dtype: float64, 'param_clf__estimator__n_estimators': 15    300
-Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 15    51
-Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 15    3
-Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 15    0.410204
-Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 15    0.3
-Name: param_clf__estimator__colsample_bytree, dtype: object, 'params': 15    {'clf__estimator__n_estimators': 300, 'clf__es...
-Name: params, dtype: object, 'split0_test_score': 15    0.565369
-Name: split0_test_score, dtype: float64, 'split1_test_score': 15    0.567864
-Name: split1_test_score, dtype: float64, 'split2_test_score': 15    0.491517
-Name: split2_test_score, dtype: float64, 'split3_test_score': 15    0.4002
-Name: split3_test_score, dtype: float64, 'split4_test_score': 15    0.542686
-Name: split4_test_score, dtype: float64, 'mean_test_score': 15    0.513527
-Name: mean_test_score, dtype: float64, 'std_test_score': 15    0.062957
-Name: std_test_score, dtype: float64, 'rank_test_score': 15    1
-Name: rank_test_score, dtype: int32, 'split0_train_score': 15    0.731753
-Name: split0_train_score, dtype: float64, 'split1_train_score': 15    0.732127
-Name: split1_train_score, dtype: float64, 'split2_train_score': 15    0.740237
-Name: split2_train_score, dtype: float64, 'split3_train_score': 15    0.747973
-Name: split3_train_score, dtype: float64, 'split4_train_score': 15    0.730913
-Name: split4_train_score, dtype: float64, 'mean_train_score': 15    0.736601
-Name: mean_train_score, dtype: float64, 'std_train_score': 15    0.006609
+{'mean_fit_time': 24    1.33382
+Name: mean_fit_time, dtype: float64, 'std_fit_time': 24    0.040122
+Name: std_fit_time, dtype: float64, 'mean_score_time': 24    0.04608
+Name: mean_score_time, dtype: float64, 'std_score_time': 24    0.00265
+Name: std_score_time, dtype: float64, 'param_clf__estimator__n_estimators': 24    100
+Name: param_clf__estimator__n_estimators, dtype: object, 'param_clf__estimator__min_samples_leaf': 24    37
+Name: param_clf__estimator__min_samples_leaf, dtype: object, 'param_clf__estimator__max_depth': 24    6
+Name: param_clf__estimator__max_depth, dtype: object, 'param_clf__estimator__learning_rate': 24    0.138776
+Name: param_clf__estimator__learning_rate, dtype: object, 'param_clf__estimator__colsample_bytree': 24    0.3
+Name: param_clf__estimator__colsample_bytree, dtype: object, 'params': 24    {'clf__estimator__n_estimators': 100, 'clf__es...
+Name: params, dtype: object, 'split0_test_score': 24    0.578343
+Name: split0_test_score, dtype: float64, 'split1_test_score': 24    0.586327
+Name: split1_test_score, dtype: float64, 'split2_test_score': 24    0.518962
+Name: split2_test_score, dtype: float64, 'split3_test_score': 24    0.38523
+Name: split3_test_score, dtype: float64, 'split4_test_score': 24    0.547678
+Name: split4_test_score, dtype: float64, 'mean_test_score': 24    0.523308
+Name: mean_test_score, dtype: float64, 'std_test_score': 24    0.073046
+Name: std_test_score, dtype: float64, 'rank_test_score': 24    1
+Name: rank_test_score, dtype: int32, 'split0_train_score': 24    0.707673
+Name: split0_train_score, dtype: float64, 'split1_train_score': 24    0.703805
+Name: split1_train_score, dtype: float64, 'split2_train_score': 24    0.71204
+Name: split2_train_score, dtype: float64, 'split3_train_score': 24    0.718777
+Name: split3_train_score, dtype: float64, 'split4_train_score': 24    0.700724
+Name: split4_train_score, dtype: float64, 'mean_train_score': 24    0.708604
+Name: mean_train_score, dtype: float64, 'std_train_score': 24    0.006345
 Name: std_train_score, dtype: float64}
 
-{'importance': subjectivity    0.268096
-month           0.172972
-word_count      0.142004
-char_count      0.124497
-day             0.106415
-hour            0.083688
-dayofweek       0.059345
-year            0.042983
+{'importance': subjectivity    0.308285
+month           0.163966
+word_count      0.121145
+year            0.112599
+char_count      0.107490
+day             0.072835
+hour            0.060015
+dayofweek       0.053666
 Name: importance, dtype: float32}
 DataFrame shape: (2004, 10)
 
@@ -4244,15 +4384,15 @@ Pipeline(memory=None,
                                              'again', 'all', 'also', 'be', 'a',
                                              'and', 'any', 'be', 'a', '...
                                                              colsample_bynode=1,
-                                                             colsample_bytree=0.3,
+                                                             colsample_bytree=0.7,
                                                              gamma=0,
-                                                             learning_rate=0.3422818791946309,
+                                                             learning_rate=0.1,
                                                              max_delta_step=0,
-                                                             max_depth=6,
+                                                             max_depth=3,
                                                              min_child_weight=1,
-                                                             min_samples_leaf=52,
+                                                             min_samples_leaf=35,
                                                              missing=None,
-                                                             n_estimators=200,
+                                                             n_estimators=100,
                                                              n_jobs=1,
                                                              nthread=None,
                                                              objective='binary:logistic',
@@ -4278,13 +4418,13 @@ Pipeline(memory=None,
                                                              colsample_bynode=1,
                                                              colsample_bytree=0.3,
                                                              gamma=0,
-                                                             learning_rate=0.4102040816326531,
+                                                             learning_rate=0.13877551020408163,
                                                              max_delta_step=0,
-                                                             max_depth=3,
+                                                             max_depth=6,
                                                              min_child_weight=1,
-                                                             min_samples_leaf=51,
+                                                             min_samples_leaf=37,
                                                              missing=None,
-                                                             n_estimators=300,
+                                                             n_estimators=100,
                                                              n_jobs=1,
                                                              nthread=None,
                                                              objective='binary:logistic',
@@ -4305,18 +4445,18 @@ Training set 1 shape: (801, 10)
 
 Training set 2 shape: (802, 10)
 
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:435: SettingWithCopyWarning:
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:353: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df=df,
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:442: SettingWithCopyWarning:
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:360: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  print('Starting Model Training!')
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
 Stacked Model!
 OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  dual=False, fit_intercept=True,
@@ -4328,37 +4468,37 @@ OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  solver='liblinear', tol=0.0001,
                                                  verbose=0, warm_start=False),
                     n_jobs=None)
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:452: SettingWithCopyWarning:
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:370: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  X = fold[text_feature]
-LogisticRegression Coefs: [[-2.24570404  0.0438635 ]
- [ 1.56301281 -0.46937006]
- [ 1.67146855  0.35052176]]
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
+LogisticRegression Coefs: [[-2.23641446 -0.07015803]
+ [ 1.56740024 -0.49715835]
+ [ 1.67688546  0.44400966]]
 
 Training Set Accuracy
-0.6259351620947631
+0.64214463840399
 
 Test Set Accuracy
-0.5960099750623441
+0.6084788029925187
 
 Confusion matrix
-[[ 48  23  35]
- [  2  88  32]
- [  6  64 103]]
+[[ 48  19  39]
+ [  2  85  35]
+ [  6  56 111]]
 
 Classification report
               precision    recall  f1-score   support
 
           -1       0.86      0.45      0.59       106
-           0       0.50      0.72      0.59       122
-           1       0.61      0.60      0.60       173
+           0       0.53      0.70      0.60       122
+           1       0.60      0.64      0.62       173
 
-    accuracy                           0.60       401
-   macro avg       0.66      0.59      0.60       401
-weighted avg       0.64      0.60      0.60       401
+    accuracy                           0.61       401
+   macro avg       0.66      0.60      0.61       401
+weighted avg       0.65      0.61      0.61       401
 
 
 
@@ -4368,18 +4508,12 @@ Training set 1 shape: (801, 10)
 
 Training set 2 shape: (802, 10)
 
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:435: SettingWithCopyWarning:
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:353: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df=df,
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:442: SettingWithCopyWarning:
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  print('Starting Model Training!')
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
 Stacked Model!
 OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  dual=False, fit_intercept=True,
@@ -4391,37 +4525,37 @@ OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  solver='liblinear', tol=0.0001,
                                                  verbose=0, warm_start=False),
                     n_jobs=None)
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:452: SettingWithCopyWarning:
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:360: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  X = fold[text_feature]
-LogisticRegression Coefs: [[-1.80322166 -0.0837446 ]
- [ 1.44731621 -0.35900623]
- [ 1.30307681  0.3347233 ]]
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
+LogisticRegression Coefs: [[-1.79866105 -0.01045104]
+ [ 1.57219767 -0.718678  ]
+ [ 1.22297942  0.50922659]]
 
 Training Set Accuracy
-0.5885286783042394
+0.6334164588528678
 
 Test Set Accuracy
-0.571072319201995
+0.5810473815461347
 
 Confusion matrix
-[[48 27 37]
- [ 7 90 26]
- [ 8 67 91]]
+[[ 45  29  38]
+ [  5  86  32]
+ [  6  58 102]]
 
 Classification report
               precision    recall  f1-score   support
 
-          -1       0.76      0.43      0.55       112
-           0       0.49      0.73      0.59       123
-           1       0.59      0.55      0.57       166
+          -1       0.80      0.40      0.54       112
+           0       0.50      0.70      0.58       123
+           1       0.59      0.61      0.60       166
 
-    accuracy                           0.57       401
-   macro avg       0.61      0.57      0.57       401
-weighted avg       0.61      0.57      0.57       401
+    accuracy                           0.58       401
+   macro avg       0.63      0.57      0.57       401
+weighted avg       0.62      0.58      0.58       401
 
 
 
@@ -4431,18 +4565,24 @@ Training set 1 shape: (801, 10)
 
 Training set 2 shape: (802, 10)
 
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:435: SettingWithCopyWarning:
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:370: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df=df,
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:442: SettingWithCopyWarning:
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:353: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  print('Starting Model Training!')
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:360: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
 Stacked Model!
 OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  dual=False, fit_intercept=True,
@@ -4454,37 +4594,37 @@ OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  solver='liblinear', tol=0.0001,
                                                  verbose=0, warm_start=False),
                     n_jobs=None)
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:452: SettingWithCopyWarning:
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:370: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  X = fold[text_feature]
-LogisticRegression Coefs: [[-1.33947855 -0.05344333]
- [ 0.66962422 -0.42895412]
- [ 1.00114712  0.39142636]]
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
+LogisticRegression Coefs: [[-1.84261682 -0.00214209]
+ [ 1.13970362 -0.52621541]
+ [ 1.51747519  0.41022213]]
 
 Training Set Accuracy
-0.5822942643391521
+0.6122194513715711
 
 Test Set Accuracy
-0.5236907730673317
+0.5635910224438903
 
 Confusion matrix
-[[51 33 35]
- [15 72 31]
- [17 60 87]]
+[[ 44  32  43]
+ [  9  79  30]
+ [  5  56 103]]
 
 Classification report
               precision    recall  f1-score   support
 
-          -1       0.61      0.43      0.50       119
-           0       0.44      0.61      0.51       118
-           1       0.57      0.53      0.55       164
+          -1       0.76      0.37      0.50       119
+           0       0.47      0.67      0.55       118
+           1       0.59      0.63      0.61       164
 
-    accuracy                           0.52       401
-   macro avg       0.54      0.52      0.52       401
-weighted avg       0.54      0.52      0.52       401
+    accuracy                           0.56       401
+   macro avg       0.61      0.56      0.55       401
+weighted avg       0.60      0.56      0.56       401
 
 
 
@@ -4494,12 +4634,12 @@ Training set 1 shape: (801, 10)
 
 Training set 2 shape: (802, 10)
 
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:435: SettingWithCopyWarning:
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:353: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df=df,
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
 Stacked Model!
 OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  dual=False, fit_intercept=True,
@@ -4511,64 +4651,58 @@ OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  solver='liblinear', tol=0.0001,
                                                  verbose=0, warm_start=False),
                     n_jobs=None)
-LogisticRegression Coefs: [[-1.4511906   0.10239788]
- [ 0.97252092 -0.68101668]
- [ 1.06522744  0.41018246]]
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:360: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
+LogisticRegression Coefs: [[-1.57241438  0.19496013]
+ [ 1.25533545 -0.75216518]
+ [ 1.08087684  0.36182834]]
 
 Training Set Accuracy
-0.5847880299251871
+0.5860349127182045
 
 Test Set Accuracy
-0.600997506234414
+0.6159600997506235
 
 Confusion matrix
-[[66 26 33]
- [11 91 20]
- [ 5 65 84]]
+[[67 22 36]
+ [12 87 23]
+ [ 6 55 93]]
 
 Classification report
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:442: SettingWithCopyWarning:
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  print('Starting Model Training!')
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:452: SettingWithCopyWarning:
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  X = fold[text_feature]
               precision    recall  f1-score   support
 
-          -1       0.80      0.53      0.64       125
-           0       0.50      0.75      0.60       122
-           1       0.61      0.55      0.58       154
+          -1       0.79      0.54      0.64       125
+           0       0.53      0.71      0.61       122
+           1       0.61      0.60      0.61       154
 
-    accuracy                           0.60       401
-   macro avg       0.64      0.61      0.60       401
-weighted avg       0.64      0.60      0.60       401
+    accuracy                           0.62       401
+   macro avg       0.64      0.62      0.62       401
+weighted avg       0.64      0.62      0.62       401
 
 
 
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:370: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
 Test set shape: (401, 9)
 
 Training set 1 shape: (801, 10)
 
 Training set 2 shape: (802, 10)
 
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:435: SettingWithCopyWarning:
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:353: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df=df,
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:442: SettingWithCopyWarning:
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  print('Starting Model Training!')
+  X_test['text_pred'] = text_model.predict(X_test[text_feature])
 Stacked Model!
 OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  dual=False, fit_intercept=True,
@@ -4580,43 +4714,120 @@ OneVsRestClassifier(estimator=LogisticRegression(C=100, class_weight='balanced',
                                                  solver='liblinear', tol=0.0001,
                                                  verbose=0, warm_start=False),
                     n_jobs=None)
-C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:452: SettingWithCopyWarning:
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:360: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  X = fold[text_feature]
-LogisticRegression Coefs: [[-2.65828209  0.09750185]
- [ 2.63364347 -0.56429838]
- [ 1.9157336   0.38330679]]
+  X_test['num_pred'] = num_model.predict(X_test[num_features])
+LogisticRegression Coefs: [[-2.86520507  0.04291764]
+ [ 2.5688204  -0.60166823]
+ [ 2.24266876  0.46810656]]
 
 Training Set Accuracy
-0.6059850374064838
+0.6084788029925187
 
 Test Set Accuracy
-0.6034912718204489
+0.6408977556109726
 
 Confusion matrix
-[[ 43  28  33]
- [  1  93  27]
- [  3  67 106]]
+[[ 43  26  35]
+ [  1  90  30]
+ [  1  51 124]]
 
 Classification report
               precision    recall  f1-score   support
 
-          -1       0.91      0.41      0.57       104
-           0       0.49      0.77      0.60       121
-           1       0.64      0.60      0.62       176
+          -1       0.96      0.41      0.58       104
+           0       0.54      0.74      0.62       121
+           1       0.66      0.70      0.68       176
 
-    accuracy                           0.60       401
-   macro avg       0.68      0.59      0.60       401
-weighted avg       0.67      0.60      0.60       401
+    accuracy                           0.64       401
+   macro avg       0.72      0.62      0.63       401
+weighted avg       0.70      0.64      0.64       401
 
 
 
-5-fold cross-validated Accuracy: 0.5790523690773067
+5-fold cross-validated Accuracy: 0.601995012468828
 
-5-fold cross-validated F1 score: 0.5771423605777534
+5-fold cross-validated F1 score: 0.5952862381472334
+
+C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\model_utils\model_eval.py:370: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X_test['stacking'] = stacked_model.predict(X_test[['text_pred', 'num_pred']])
+Loaded Text model!
+Pipeline(memory=None,
+         steps=[('vectorizer',
+                 CountVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.int64'>, encoding='utf-8',
+                                 input='content', lowercase=True, max_df=1.0,
+                                 max_features=None, min_df=1,
+                                 ngram_range=(1, 3), preprocessor=None,
+                                 stop_words=['a', 'about', 'above', 'after',
+                                             'again', 'all', 'also', 'be', 'a',
+                                             'and', 'any', 'be', 'a', '...
+                                                             colsample_bylevel=1,
+                                                             colsample_bynode=1,
+                                                             colsample_bytree=0.7,
+                                                             gamma=0,
+                                                             learning_rate=0.1,
+                                                             max_delta_step=0,
+                                                             max_depth=3,
+                                                             min_child_weight=1,
+                                                             min_samples_leaf=35,
+                                                             missing=nan,
+                                                             n_estimators=100,
+                                                             n_jobs=1,
+                                                             nthread=None,
+                                                             objective='binary:logistic',
+                                                             random_state=42,
+                                                             reg_alpha=0,
+                                                             reg_lambda=1,
+                                                             scale_pos_weight=1,
+                                                             seed=None,
+                                                             silent=None,
+                                                             subsample=1,
+                                                             verbosity=1),
+                                     n_jobs=None))],
+         verbose=False)
+
+Loaded Text model!
+Pipeline(memory=None,
+         steps=[('scaler',
+                 StandardScaler(copy=True, with_mean=True, with_std=True)),
+                ('clf',
+                 OneVsRestClassifier(estimator=XGBClassifier(base_score=0.5,
+                                                             booster='gbtree',
+                                                             colsample_bylevel=1,
+                                                             colsample_bynode=1,
+                                                             colsample_bytree=0.3,
+                                                             gamma=0,
+                                                             learning_rate=0.13877551020408163,
+                                                             max_delta_step=0,
+                                                             max_depth=6,
+                                                             min_child_weight=1,
+                                                             min_samples_leaf=37,
+                                                             missing=nan,
+                                                             n_estimators=100,
+                                                             n_jobs=1,
+                                                             nthread=None,
+                                                             objective='binary:logistic',
+                                                             random_state=42,
+                                                             reg_alpha=0,
+                                                             reg_lambda=1,
+                                                             scale_pos_weight=1,
+                                                             seed=None,
+                                                             silent=None,
+                                                             subsample=1,
+                                                             verbosity=1),
+                                     n_jobs=None))],
+         verbose=False)
+
+Fitting 5 folds for each of 25 candidates, totalling 125 fits
 
 Loaded Text model!
 Pipeline(memory=None,

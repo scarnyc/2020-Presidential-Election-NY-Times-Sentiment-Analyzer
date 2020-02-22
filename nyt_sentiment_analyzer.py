@@ -13,7 +13,8 @@ from core_utils.dataframe import union_csv
 from custom_utils.clean_dataframe import preprocess_df, filter_dataframe
 from model_utils.feature_eng import (date_feats, my_stopwords, get_vocab_size,
                                      char_count, sentiment_label, lemma_nopunc,
-                                     apply_func, drop_high_corr, sentiment_analyzer)
+                                     apply_func, drop_high_corr, sentiment_analyzer,
+                                     get_dummy_cats)
 from viz_utils.viz import (corr_heatmap, plot_word_freq, two_dim_tf_viz,
                            time_series_line_viz)
 from model_utils.model_eval import (model_training_metrics, num_feature_importance,
@@ -113,6 +114,9 @@ def sentiment_analysis_pipe(directory):
         func=lemma_nopunc
     )
 
+    # get dummy variables for text feature
+    article_df = get_dummy_cats(df=article_df, feat='candidate')
+
     # compute the labels for modelling: article_df['sentiment_label']
     article_df = sentiment_label(
         df=article_df,
@@ -125,12 +129,15 @@ def sentiment_analysis_pipe(directory):
     # return column subsets of article_df for modeling: model_df
     model_df = article_df[
         ['text_feat', 'year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity', 'char_count',
-         'sentiment_label']
+         'sentiment_label', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump', 'Elizabeth Warren',
+         'Joe Biden']
     ]
 
     # plot heatmap of feature correlations
     corr_heatmap(df=article_df,
-                 features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity']
+                 features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+                           'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump', 'Elizabeth Warren',
+                           'Joe Biden']
                  )
 
     # automatically remove highly correlated features
@@ -253,7 +260,9 @@ def sentiment_analysis_pipe(directory):
     model_training_metrics(
         df=model_df,
         models=num_models,
-        features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+                  'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump', 'Elizabeth Warren',
+                  'Joe Biden'],
         label='sentiment_label'
     )
 
@@ -279,6 +288,7 @@ def sentiment_analysis_pipe(directory):
         label='sentiment_label',
         n_iters=25,
         n_folds=5,
+        n_jobs=4,
         model_file_path="./models/text_pipe_xgb.pkl"
     )
 
@@ -302,10 +312,13 @@ def sentiment_analysis_pipe(directory):
                     'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
                     'clf__estimator__min_samples_leaf': list(range(20, 60))
                     },
-        features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+                  'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump', 'Elizabeth Warren',
+                  'Joe Biden'],
         label='sentiment_label',
         n_iters=25,
         n_folds=5,
+        n_jobs=4,
         model_file_path="./models/num_pipe_xgb.pkl"
     )
 
@@ -313,7 +326,8 @@ def sentiment_analysis_pipe(directory):
     num_feature_importance(df=model_df,
                            model=num_pipe[1],
                            features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count',
-                                     'subjectivity']
+                                     'subjectivity', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump',
+                                     'Elizabeth Warren', 'Joe Biden']
                            )
 
     # print out stacked model metrics
@@ -323,7 +337,9 @@ def sentiment_analysis_pipe(directory):
         text_model=text_pipe,
         text_feature='text_feat',
         num_model=num_pipe,
-        num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+                      'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump', 'Elizabeth Warren',
+                      'Joe Biden'],
         stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
                                                              random_state=42, class_weight='balanced'))
     )
@@ -334,11 +350,13 @@ def sentiment_analysis_pipe(directory):
         stacked_model=OneVsRestClassifier(LogisticRegression(solver='liblinear', random_state=42,
                                                              class_weight='balanced')),
         param_grid={
-            'clf__estimator__C': [.001, .001, .01, .1, 1, 10, 100, 1000],
-            'clf__estimator__penalty': ['l1', 'l2', 'elasticnet', 'none']
+            'estimator__C': [.001, .001, .01, .1, 1, 10, 100, 1000],
+            'estimator__penalty': ['l1', 'l2', 'elasticnet', 'none']
         },
         text_feature='text_feat',
-        num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+                      'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump', 'Elizabeth Warren',
+                      'Joe Biden'],
         label='sentiment_label',
         text_model_pkl="./models/text_pipe_xgb.pkl",
         num_model_pkl="./models/num_pipe_xgb.pkl",
@@ -353,7 +371,9 @@ def sentiment_analysis_pipe(directory):
         source_df=article_df,
         model_df=model_df,
         text_feature='text_feat',
-        num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+                      'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump', 'Elizabeth Warren',
+                      'Joe Biden'],
         label='sentiment_label',
         text_model_pkl="./models/text_pipe_xgb.pkl",
         num_model_pkl="./models/num_pipe_xgb.pkl",
