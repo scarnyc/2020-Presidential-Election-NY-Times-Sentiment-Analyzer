@@ -3,7 +3,7 @@ Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidate
 
 This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Candidates, 
 using the N.Y. Times Article Search API. Ths is a multi-class classification problem, predicting positive, neutral and negative sentiment.
-The model achieves a 61% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction,
+The model achieves a 57% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction,
 while Donald Trump has the lowest. Please refer to the "Findings & Results" section below for more info.
 
 At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
@@ -43,33 +43,28 @@ Quantitative:
     This finding is conclusive with the results for the XGBoost Classifier text model.
      
 Qualitative:
-While quantitative results suggest that the model has a 61% harmonic mean of precision & recall, the qualitative results are interesting!
+While quantitative results suggest that the model has a 57% harmonic mean of precision & recall, the qualitative results are interesting!
 
 Consider the table below of candidates and their average sentiment predictions from the model:  
 
-candidate           sentiment_prediction
-Bernie Sanders      0.730813
-Andrew Yang         0.725824
-Amy Klobuchar       0.699352
-Joe Biden           0.686747
-Cory Booker         0.680730
-Elizabeth Warren    0.648789
-Donald Trump        0.615361
+candidate            predictions
+Bernie Sanders       0.559565
+Amy Klobuchar        0.495837
+Elizabeth Warren     0.429066
+Joe Biden            0.183133
+Donald Trump        -0.024885
  
 The model is predicting that Bernie Sanders has the highest average sentiment prediction while Donald Trump has the lowest.
 This prediction of Senator Sanders is in line with current polls and Caucus results from Iowa & New Hampshire. 
 On the other hand, it's interesting that President Trump has the lowest sentiment, out of any Presidential Candidate.
-The N.Y. Times is considered one of the most politically left-leaning news organizations in the United States, 
-and while President Trump's average sentiment is technically positive (see: https://github.com/cjhutto/vaderSentiment#about-the-scoring), 
+Even though the N.Y. Times is considered one of the most politically left-leaning news organizations in the United States, 
 it's still interesting that compared to the rest of the candidates Trump's average sentiment is the lowest (especially given the context of 
 his impeachment trial that was going on during the time these articles were collected).  
 
 Next Steps:
  - Add rolling window averages for Time Series Plot
  - Add RNN & LSTM to model training pipeline --> Update 2/20: Add GLOVE embedding
- - Add custom label function --> Update 2/20: negative_labels() currently being worked on..
- - Update the model metrics to output probabilities for predicted classes and look at their tradeoffs.
-    Only accept a prediction if it meets a defined threshold, otherwise assign the prediction to a default class.
+ - Add hyper-parameter tuning function for stacked model
  - Add logging functionality
     
  More to come...

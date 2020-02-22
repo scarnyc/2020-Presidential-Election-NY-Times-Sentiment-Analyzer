@@ -15,7 +15,7 @@ This module contains customized utilities for engineering features for Sentiment
     - get_vocab_size (retreive a count of unique words in a vocabulary)
 
 created: 12/31/19
-last updated: 2/19/20
+last updated: 2/21/20
 **************************************************************************************************************
 """
 import pandas as pd
@@ -296,57 +296,48 @@ def sentiment_analyzer(df, text_feature):
     return df
 
 
-def negative_labels(df, text_feature, contains_term):
-    """"""
-    #
-    negative_indices = np.where(
-        df[df[text_feature].str.contains(
-            contains_term,
-            case=False
-        )]
-    )
-
-    print('Computed labels for Modeling')
-    print()
-    print(negative_indices)
-    print()
-
-    for i, elem in df[text_feature]:
-        if i in negative_indices:
-            print(elem)
-            print()
-
-    return negative_indices
-
-
-def sentiment_label(df, col_for_label, label_col):
+def sentiment_label(df, col_for_label, label_col, text_feature, contains_term):
     """
     This function generates the labels for sentiment analysis: ['positive','neutral','negative']
-    by utilizing a np.where function.
-    It returns a DataFrame containing the new label column
+    by utilizing a np.where function:
+    If the text_feature contains a user-selected term then the function will return 'negative',
+    otherwise it will follow the Vader sentiment scoring logic mentioned here:
+        https://github.com/cjhutto/vaderSentiment#about-the-scoring
+    This function returns a DataFrame containing the new label column.
 
     @param df: pandas DataFrame that contains Series to be used to generate labels
     @param col_for_label: pandas Series to be used to generate labels
     @param label_col: name of pandas Series that will hold newly generated labels
+    @param text_feature: name of pandas Series containing the text feature to search for user-selected term
+    @param contains_term: word that user will define to search for in text feature
     @return: pandas DataFrame with newly generated labels ^^^
     """
-    # if df[col_for_label] >= 0.05, return 'positive'
+    # if text_feature contains user-defined term, return 'negative'
     df[label_col] = np.where(
-        df[col_for_label] >= 0.05,
-        'positive',
+        df[text_feature].str.contains(
+            contains_term,
+            case=False
+        ),
+        'negative',
 
-        # otherwise if df[col_for_label] is greater than -0.05 & less than 0.05, return 'neutral'
+        # if df[col_for_label] >= 0.05, return 'positive'
         np.where(
-            (df[col_for_label] > -0.05) & (df[col_for_label] < 0.05),
-            'neutral',
+            df[col_for_label] >= 0.05,
+            'positive',
 
-            # otherwise if df[col_for_label] <= -0.05, return 'negative'
+            # otherwise if df[col_for_label] is greater than -0.05 & less than 0.05, return 'neutral'
             np.where(
-                df[col_for_label] <= -0.05,
-                'negative',
+                (df[col_for_label] > -0.05) & (df[col_for_label] < 0.05),
+                'neutral',
 
-                # else return np.nan
-                np.nan
+                # otherwise if df[col_for_label] <= -0.05, return 'negative'
+                np.where(
+                    df[col_for_label] <= -0.05,
+                    'negative',
+
+                    # else return np.nan
+                    np.nan
+                )
             )
         )
     )
@@ -445,8 +436,8 @@ def get_vocab_size(text_list):
     # # Dictionary of indexes as keys and words as values
     # index_to_word = {i: wd for i, wd in enumerate(sorted(unique_words))}
 
-    # # Dictionary of words as keys and indexes as values
-    # word_to_index = {wd: i for i, wd in enumerate(sorted(unique_words))}
+    # Dictionary of words as keys and indexes as values
+    word_to_index = {wd: i for i, wd in enumerate(sorted(unique_words))}
 
     # # print dictionaries
     # print(word_to_index)
@@ -455,4 +446,4 @@ def get_vocab_size(text_list):
     # print()
 
     # return length of unique words in vocabulary
-    return len(unique_words)
+    return len(unique_words), word_to_index

@@ -6,7 +6,7 @@ This module contains common utilities for importing & handling data in pandas Da
     - union_csv (unions similar csv files into a single DataFrame)
 
 created: 1/5/20
-last updated: 2/15/20
+last updated: 2/21/20
 ********************************************************************************************
 """
 import pandas as pd
@@ -33,15 +33,15 @@ def union_csv(csv_path: object, glob_pattern: object) -> object:
     # append all files with the glob pattern naming convention in the file path to a list: all_files
     all_files = glob(path.join(csv_path, glob_pattern))
 
-    # read in each .csv file with pd.read_csv inside the generator expression
-    # ignore index of all DataFrames in memory and set sort parameter to False
+    # read in each .csv file with pd.read_csv inside the for loop
     dfs = []
 
     for f in all_files:
         df = pd.read_csv(f)
-        df['candidate'] = f.replace('./data/', '').split('_')[0]
+        df['candidate'] = f.replace('data', '').replace('.', '').replace('//', '').split('_')[0]
         dfs.append(df)
 
+    # ignore index of all DataFrames in memory and set sort parameter to False
     combined_df = pd.concat(dfs, ignore_index=True, sort=False)
 
     # print DataFrame first 5 rows, metadata, shape & number of rows per candidate

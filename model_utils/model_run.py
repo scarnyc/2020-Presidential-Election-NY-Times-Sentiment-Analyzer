@@ -6,7 +6,7 @@ This module contains customized utilities for making Sentiment Analysis predicti
     - predict_sentiment (make sentiment predictions using stacked model pipeline
 
 created: 2/15/19
-last updated: 2/20/20
+last updated: 2/21/20
 *******************************************************************************************************************
 """
 import pickle
@@ -96,7 +96,7 @@ def predict_sentiment(
     print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
-    filtered_df = predictions_df[predictions_df['predictions'].str.contains(
+    filtered_df = predictions_df[predictions_df['candidate'].str.contains(
         '|'.join([word for word in candidate_list]),
         case=False
     )]
@@ -104,7 +104,7 @@ def predict_sentiment(
     # group average sentiment by candidate
     grouped_df = filtered_df.groupby('candidate')['predictions'].mean()\
         .reset_index()\
-        .sort_values(by='predictions')
+        .sort_values(by='predictions', ascending=False)
 
     # print candidate average sentiment
     print(grouped_df)
@@ -113,5 +113,3 @@ def predict_sentiment(
     # write final pandas DataFrame containing predictions to .csv file
     predictions_df.to_csv('NYT_president_sentiment_predictions_{date:%Y.%m.%d}.csv'.format(date=dt.datetime.now()),
                           index=False)
-
-    return predictions_df

@@ -3,8 +3,8 @@
 """
 ***************************************************
 N.Y. Times Articles Sentiment Analysis (.py script)
-Created on 12/31/19 by bscard
-Last updated: 2/20/20
+Created on 12/31/19 by William Scardino
+Last updated: 2/21/20
 ***************************************************
 """
 # Import custom packages
@@ -12,8 +12,7 @@ from core_utils.dataframe import union_csv
 from custom_utils.clean_dataframe import preprocess_df, filter_dataframe
 from model_utils.feature_eng import (date_feats, my_stopwords, get_vocab_size,
                                      char_count, sentiment_label, lemma_nopunc,
-                                     apply_func, drop_high_corr, sentiment_analyzer,
-                                     negative_labels)
+                                     apply_func, drop_high_corr, sentiment_analyzer)
 from graph_utils.graph import (corr_heatmap, plot_word_freq, two_dim_tf_viz,
                                time_series_line_viz)
 from model_utils.model_eval import (model_training_metrics, num_feature_importance,
@@ -58,6 +57,8 @@ def sentiment_analysis_pipe(directory):
     - time_series_line_viz (plots a line plot of Sentiment over time for a given pandas DataFrame for EDA)
     - model_training_metrics (print model evaluation metrics, iterating over a list of models that are passed into a list,
         allowing for the comparison of different models and their results to guide choice for stacking purposes)
+    - get_vocab_size (retreive a count of unique words in a vocabulary)
+    - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
     - model_random_hyper_tune (perform hyper-parameter tuning on any given model that is chosen from evaluation,
         by utilizing a Random Search)
     - text_feature_importance (print the top 25 features from the text model by their TfIdf weights
@@ -89,22 +90,11 @@ def sentiment_analysis_pipe(directory):
     # generate date_features for article_df
     article_df = date_feats(df=article_df, date_col='pub_date')
 
+    # filter out articles written prior to U.S. Presidential election campaigns (ie. 2019)
+    article_df = filter_dataframe(df=article_df, col_to_filter='year', value_to_filter=2019)
+
     # generate TextBlob sentiment and subjectivity scores for each row of 'text' in article_df: tb_sent_scores
     article_df = sentiment_analyzer(df=article_df, text_feature='text')
-
-    # compute the labels for modelling: article_df['sentiment_label']
-    article_df = sentiment_label(
-        df=article_df,
-        col_for_label='polarity',
-        label_col='sentiment_label'
-    )
-
-    # compute the labels for modelling based on text
-    article_df = negative_labels(
-        df=article_df,
-        text_feature='text',
-        contains_term='impeach'
-    )
 
     # count number of characters: article_df['char_count']
     article_df = char_count(
@@ -119,6 +109,15 @@ def sentiment_analysis_pipe(directory):
         pd_series='text',
         new_pd_series='text_feat',
         func=lemma_nopunc
+    )
+
+    # compute the labels for modelling: article_df['sentiment_label']
+    article_df = sentiment_label(
+        df=article_df,
+        col_for_label='polarity',
+        label_col='sentiment_label',
+        text_feature='text_feat',
+        contains_term='impeach'
     )
 
     # return column subsets of article_df for modeling: model_df
@@ -215,7 +214,7 @@ def sentiment_analysis_pipe(directory):
     #         ]
     # print('Instantiated list of text models!')
     # print()
-
+    #
     # # print out text model metrics
     # model_training_metrics(
     #     df=model_df,
@@ -223,35 +222,31 @@ def sentiment_analysis_pipe(directory):
     #     features='text_feat',
     #     label='sentiment_label'
     # )
-
+    #
     # # instantiate list of models: models
     # num_models = [
     #     Pipeline([
-    #          ('scaler', MinMaxScaler()),
-    #          ('clf',  OneVsRestClassifier(MultinomialNB()))
-    #              ]),
-    #     Pipeline([
-    #         ('scaler', MinMaxScaler()),
+    #         ('scaler', StandardScaler()),
     #         ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
     #     ]),
     #     Pipeline([
-    #         ('scaler', MinMaxScaler()),
+    #         ('scaler', StandardScaler()),
     #         ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
     #                                                            n_jobs=4, class_weight='balanced')))
     #     ]),
     #     Pipeline([
-    #         ('scaler', MinMaxScaler()),
+    #         ('scaler', StandardScaler()),
     #         ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
     #     ]),
     #     Pipeline([
-    #         ('scaler', MinMaxScaler()),
+    #         ('scaler', StandardScaler()),
     #         ('clf', OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
     #                                                        random_state=42, class_weight='balanced')))
     #     ])
     # ]
     # print('Instantiated list of models with numeric features!')
     # print()
-
+    #
     # # print out metrics for models with numeric features
     # model_training_metrics(
     #     df=model_df,
@@ -259,28 +254,15 @@ def sentiment_analysis_pipe(directory):
     #     features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
     #     label='sentiment_label'
     # )
-
-    # get the vocabulary size for the neural network: vocab_size
-    vocab_size = get_vocab_size(model_df['text_feat'].tolist())
-
-    # print out metrics for neural network text model
-    neural_net_train_metrics(
-        df=model_df,
-        text_feature='text_feat',
-        max_length=model_df['char_count'].max(),
-        label='sentiment_label',
-        vocabulary_size=vocab_size,
-        num_classes=2,
-        epochs=10
-    )
-
+    #
     # # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
     # text_pipe, text_cv_results_df = model_random_hyper_tune(
     #     df=model_df,
-    #     model=Pipeline([('vectorizer', TfidfVectorizer(stop_words=my_stopwords)),
-    #               ('dim_red', SelectKBest(chi2)),
-    #               ('clf', OneVsRestClassifier(XGBClassifier(random_state=42)))
-    #                ]),
+    #     model=Pipeline([('vectorizer', CountVectorizer(stop_words=my_stopwords)),
+    #                     ('scaler', StandardScaler(with_mean=False)),
+    #                     ('dim_red', SelectKBest(chi2)),
+    #                     ('clf', OneVsRestClassifier(XGBClassifier(random_state=42)))
+    #                     ]),
     #     param_grid={
     #         'vectorizer__ngram_range': [(1, 3), (2, 3)],
     #         'dim_red__k': [100, 200, 300],
@@ -308,7 +290,7 @@ def sentiment_analysis_pipe(directory):
     # # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
     # num_pipe, num_cv_results_df = model_random_hyper_tune(
     #     df=model_df,
-    #     model=Pipeline([('scaler', MinMaxScaler()),
+    #     model=Pipeline([('scaler', StandardScaler()),
     #                     ('clf', OneVsRestClassifier(XGBClassifier(booster='gbtree', random_state=42)))
     #                     ]),
     #     param_grid={
@@ -343,9 +325,9 @@ def sentiment_analysis_pipe(directory):
     #     stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
     #                                                          random_state=42, class_weight='balanced'))
     # )
-
+    #
     # # Make predictions using Stacked Model
-    # predictions_df = predict_sentiment(
+    # predict_sentiment(
     #     source_df=article_df,
     #     model_df=model_df,
     #     text_feature='text_feat',
@@ -354,8 +336,26 @@ def sentiment_analysis_pipe(directory):
     #     text_model_pkl="./models/text_pipe_xgb.pkl",
     #     num_model_pkl="./models/num_pipe_xgb.pkl",
     #     stack_model_pkl="./models/lr_stack.pkl",
-    #     candidate_list=['Trump', 'Warren', 'Harris', 'Biden', 'Yang', 'Steyer', 'Buttigieg', 'Bloomberg', 'Gabbard',
-    #                     'Booker', 'Klobuchar'])
+    #     candidate_list=['Sanders', 'Trump', 'Warren', 'Harris', 'Biden', 'Buttigieg', 'Bloomberg',
+    #                     'Klobuchar'])
+
+    # get the vocabulary size for the neural network: vocab_size
+    vocab_size, vocab_dict = get_vocab_size(model_df['text_feat'].tolist())
+
+    # print out metrics for neural network text model
+    neural_net_train_metrics(
+        df=model_df,
+        text_feature='text_feat',
+        max_length=model_df['char_count'].max(),
+        label='sentiment_label',
+        vocabulary_size=vocab_size,
+        num_classes=2,
+        epochs=100,
+        word2vec_dim=300,
+        vocabulary_dict=vocab_dict,
+        glove_file_name=r'.\glove\glove.6B.300d.txt'
+    )
+
 
 # run the script
 if __name__ == '__main__':

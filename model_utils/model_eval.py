@@ -12,13 +12,13 @@ This module contains customized utilities for training & evaluating Sentiment An
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
 created: 12/31/19
-last updated: 2/19/20
+last updated: 2/21/20
 ***************************************************************************************************************************
 """
 import numpy as np
 import pandas as pd
 from sklearn.metrics import (confusion_matrix, classification_report, accuracy_score,
-                             f1_score, precision_score, recall_score)
+                             f1_score)
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
@@ -26,6 +26,7 @@ from keras.utils.np_utils import to_categorical
 from keras.models import Sequential
 from keras.layers import Dense, Embedding
 from keras.layers.recurrent import LSTM
+from keras.initializers import Constant
 import pickle
 
 
@@ -120,14 +121,14 @@ def model_training_metrics(models, df, features, label):
 
             # see if model is overfitting
             print('Training Set Accuracy')
-            print(accuracy_score(X_train, y_train))
+            print(model.score(X_train, y_train))
             print()
             print('Test Set Accuracy')
-            print(accuracy_score(X_test, y_test))
+            print(accuracy_score(y_test, y_pred))
             print()
 
             # append accuracy score to list: acc
-            acc.append(accuracy_score(X_test, y_test))
+            acc.append(accuracy_score(y_test, y_pred))
 
             # append accuracy score to list: f1
             f1.append(f1_score(y_test, y_pred, average=None))
@@ -147,23 +148,43 @@ def model_training_metrics(models, df, features, label):
         print()
 
 
-def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_size, num_classes, epochs):
+def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_size, num_classes, epochs,
+                             word2vec_dim, vocabulary_dict, glove_file_name):
     """
     This function builds and compiles a Recurrent Neural Network with Embedding and LSTM layers for increasing accuracy
-    and combatting against the exploding gradient problem. It uses a softmax activation function for multi-class classification.
+    and combatting against the exploding gradient problem. It uses pre-trained GLOVE embeddings
+    and a softmax activation function for multi-class classification.
     The actual training process is similar to the model_training_metrics() function above.
 
-    @param df:
-    @param text_feature:
-    @param max_length:
-    @param label:
-    @param vocabulary_size:
-    @param num_classes:
-    @param epochs:
+    https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
     """
+    # initialize embeddings index
+    embeddings_index = {}
+
+    # read in GLOVE file
+    f = open(glove_file_name, encoding="utf8", errors='ignore')
+    # get all the glove vectors from the pre-trained model
+    for line in f:
+        values = line.split()
+        word = values[0]
+        coefs = np.asarray(values[1:], dtype='float32')
+        embeddings_index[word] = coefs
+    f.close()
+
+    print('Found %s word vectors.' % len(embeddings_index))
+
+    # create matrix to store the vectors
+    embedding_matrix = np.zeros((len(vocabulary_dict) + 1, word2vec_dim))
+    for word, i in vocabulary_dict.items():
+        embedding_vector = vocabulary_dict.get(word)
+        if embedding_vector is not None:
+            # words not found in embedding index will be all-zeros.
+            embedding_matrix[i] = embedding_vector
+
     # build the model
     model = Sequential()
-    model.add(Embedding(input_dim=vocabulary_size+1, output_dim=128)) # add GLOVE embedding
+    model.add(Embedding(input_dim=vocabulary_size + 1, output_dim=word2vec_dim,
+                        embeddings_initializer=Constant(embedding_matrix), input_length=max_length, trainable=False))
     model.add(LSTM(128, dropout=.2))
 
     # output layer has 'num_classes' units & uses 'softmax' activation
@@ -260,7 +281,7 @@ def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_f
         estimator=model,
         param_distributions=param_grid,
         scoring='accuracy',
-        n_jobs=6,
+        n_jobs=4,
         n_iter=n_iters,
         cv=n_folds,
         refit=True,
@@ -457,14 +478,14 @@ def stacked_model_metrics(
 
         # see if model is overfitting
         print('Training Set Accuracy')
-        print(stacked_model.accuracy_score(train2[['text_pred', 'num_pred']], train2[label]))
+        print(stacked_model.score(train2[['text_pred', 'num_pred']], train2[label]))
         print()
         print('Test Set Accuracy')
-        print(stacked_model.accuracy_score(X_test[['text_pred', 'num_pred']], y_test))
+        print(accuracy_score(y_test, X_test['stacking']))
         print()
 
         # append accuracy score to list: acc
-        acc.append(stacked_model.accuracy_score(X_test[['text_pred', 'num_pred']], y_test))
+        acc.append(accuracy_score(y_test, X_test['stacking']))
 
         # append accuracy score to list: f1
         f1.append(f1_score(y_test, X_test['stacking'], average=None))
