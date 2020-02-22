@@ -11,8 +11,8 @@ This module contains customized utilities for training & evaluating Sentiment An
     - num_feature_importance (Print a DataFrame with most important features for tree-based models with numeric features)
     - stacked_model_metrics (fits models to text & num data, plus adds stacked model ensemble, and gets evaluation metrics)
 
-created: 12/31/19
-last updated: 2/21/20
+Created on 12/31/19 by William Scardino
+Last updated: 2/21/20
 ***************************************************************************************************************************
 """
 import numpy as np
@@ -148,110 +148,6 @@ def model_training_metrics(models, df, features, label):
         print()
 
 
-def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_size, num_classes, epochs,
-                             word2vec_dim, vocabulary_dict, glove_file_name):
-    """
-    This function builds and compiles a Recurrent Neural Network with Embedding and LSTM layers for increasing accuracy
-    and combatting against the exploding gradient problem. It uses pre-trained GLOVE embeddings
-    and a softmax activation function for multi-class classification.
-    The actual training process is similar to the model_training_metrics() function above.
-
-    https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
-    """
-    # initialize embeddings index
-    embeddings_index = {}
-
-    # read in GLOVE file
-    f = open(glove_file_name, encoding="utf8", errors='ignore')
-    # get all the glove vectors from the pre-trained model
-    for line in f:
-        values = line.split()
-        word = values[0]
-        coefs = np.asarray(values[1:], dtype='float32')
-        embeddings_index[word] = coefs
-    f.close()
-
-    print('Found %s word vectors.' % len(embeddings_index))
-
-    # create matrix to store the vectors
-    embedding_matrix = np.zeros((len(vocabulary_dict) + 1, word2vec_dim))
-    for word, i in vocabulary_dict.items():
-        embedding_vector = vocabulary_dict.get(word)
-        if embedding_vector is not None:
-            # words not found in embedding index will be all-zeros.
-            embedding_matrix[i] = embedding_vector
-
-    # build the model
-    model = Sequential()
-    model.add(Embedding(input_dim=vocabulary_size + 1, output_dim=word2vec_dim,
-                        embeddings_initializer=Constant(embedding_matrix), input_length=max_length, trainable=False))
-    model.add(LSTM(128, dropout=.2))
-
-    # output layer has 'num_classes' units & uses 'softmax' activation
-    model.add(Dense(num_classes, activation='softmax'))
-
-    # compile the model
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-    # split DataFrame into 5-Folds
-    kfold_list = split_df(
-        df=df,
-        label_col=label
-    )
-    print('Split DataFrames into 5-Fold datasets!')
-    print()
-
-    # Start Text model training
-    print('Starting Model Training!')
-    print()
-
-    # print neural network model
-    print(model)
-    print()
-
-    # iterate over list of KFold DataFrames
-    for fold in kfold_list:
-        # define feature set: X
-        X = fold[text_feature]
-        # define label: y
-        y = fold[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
-
-        # Create and fit tokenizer
-        tokenizer = Tokenizer()
-        tokenizer.fit_on_texts(X)
-
-        # Prepare the data
-        prep_data = tokenizer.texts_to_sequences(X)
-        prep_data = pad_sequences(prep_data, maxlen=max_length)
-
-        # Prepare the labels
-        prep_labels = to_categorical(y)
-
-        # Print the shapes
-        print(prep_data.shape)
-        print()
-        print(prep_labels.shape)
-        print()
-
-        # split each fold into training & test set:
-        X_train, X_test, y_train, y_test = train_test_split(prep_data, prep_labels, test_size=.2, stratify=y,
-                                                            random_state=42)
-        print('Training set shape: {}'.format(X_train.shape))
-        print()
-        print('Test set shape: {}'.format(X_test.shape))
-        print()
-
-        # Fit the classifier
-        model.fit(X_train, y_train, batch_size=100, epochs=epochs)
-
-        # evaluate on text data
-        print("Loss: %0.04f\nAccuracy: %0.04f" % tuple(model.evaluate(X_test, y_test, verbose=0)))
-        print()
-
-    # PLACEHOLDER: save model & weights
-    # https: // machinelearningmastery.com / save - load - keras - deep - learning - models /
-
-
 def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_folds, model_file_path):
     """
     Performs hyper-parameter tuning for a model using Randomized Search.
@@ -270,7 +166,6 @@ def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_f
     @return: return a tuple of the best performing model and a pandas DataFrame with all of the parameters and training/
         holdout results
     """
-
     # define feature set: X
     X = df[features]
     # define label: y
@@ -322,34 +217,34 @@ def model_random_hyper_tune(df, features, label, model, param_grid, n_iters, n_f
 
 def text_feature_importance(df, text_feature, vectorizer, top_n=20):
     """
-    Print a pandas DataFrame with the Top N most important n_grams by the TfIdf Vectorizer weights,
+    Print a pandas DataFrame with the Top N most important n_grams by the Vectorizer counts,
     used as input features for the text model
     @param df: pandas DataFrame containing the text feature
     @param text_feature: pandas Series containing the text feature
-    @param vectorizer: TfIdf Vectorizer that was used for feature engineering for text model
+    @param vectorizer: Vectorizer that was used for feature engineering for text model
     @param top_n: Number of words to output
     """
     # fit vectorizer
-    tfidf_matrix = vectorizer.fit_transform(df[text_feature])
+    bow_matrix = vectorizer.fit_transform(df[text_feature])
 
     # get feature names
     features = vectorizer.get_feature_names()
 
     # Return the top n features that on average are most important amongst documents
-    rows = np.squeeze(tfidf_matrix.toarray())
+    rows = np.squeeze(bow_matrix.toarray())
 
     # compute mean tfidf weights across documents
-    tfidf_means = np.mean(rows, axis=0)
+    bow_avgs = np.mean(rows, axis=0)
 
     # Get top n tfidf values in row and return them with their corresponding feature names
-    topn_ids = np.argsort(tfidf_means)[::-1][:top_n]
+    topn_ids = np.argsort(bow_avgs)[::-1][:top_n]
 
     # return top features
-    top_feats = [(features[i], tfidf_means[i]) for i in topn_ids]
+    top_feats = [(features[i], bow_avgs[i]) for i in topn_ids]
 
     # create pandas DataFrame
     df = pd.DataFrame(top_feats)
-    df.columns = ['feature', 'tfidf']
+    df.columns = ['feature', 'freqs']
 
     # print pandas DataFrame
     print(df)
@@ -508,3 +403,107 @@ def stacked_model_metrics(
     # save stacked model for later
     with open("./models/lr_stack.pkl", 'wb') as model_file:
         pickle.dump(stacked_model, model_file)
+
+
+def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_size, num_classes, epochs, batch_size,
+                             word2vec_dim, vocabulary_dict, glove_file_name):
+    """
+    This function builds and compiles a Recurrent Neural Network with Embedding and LSTM layers for increasing accuracy
+    and combatting against the exploding gradient problem. It uses pre-trained GLOVE embeddings
+    and a softmax activation function for multi-class classification.
+    The actual training process is similar to the model_training_metrics() function above.
+
+    https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
+    """
+    # initialize embeddings index
+    embeddings_index = {}
+
+    # read in GLOVE file
+    f = open(glove_file_name, encoding="utf8", errors='ignore')
+    # get all the glove vectors from the pre-trained model
+    for line in f:
+        values = line.split()
+        word = values[0]
+        coefs = np.asarray(values[1:], dtype='float32')
+        embeddings_index[word] = coefs
+    f.close()
+
+    print('Found %s word vectors.' % len(embeddings_index))
+
+    # create matrix to store the vectors
+    embedding_matrix = np.zeros((len(vocabulary_dict) + 1, word2vec_dim))
+    for word, i in vocabulary_dict.items():
+        embedding_vector = vocabulary_dict.get(word)
+        if embedding_vector is not None:
+            # words not found in embedding index will be all-zeros.
+            embedding_matrix[i] = embedding_vector
+
+    # build the model
+    model = Sequential()
+    model.add(Embedding(input_dim=vocabulary_size + 1, output_dim=word2vec_dim,
+                        embeddings_initializer=Constant(embedding_matrix), input_length=max_length, trainable=False))
+    model.add(LSTM(128, dropout=.2))
+
+    # output layer has 'num_classes' units & uses 'softmax' activation
+    model.add(Dense(num_classes, activation='softmax'))
+
+    # compile the model
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    # split DataFrame into 5-Folds
+    kfold_list = split_df(
+        df=df,
+        label_col=label
+    )
+    print('Split DataFrames into 5-Fold datasets!')
+    print()
+
+    # Start Text model training
+    print('Starting Model Training!')
+    print()
+
+    # print neural network model
+    print(model)
+    print()
+
+    # iterate over list of KFold DataFrames
+    for fold in kfold_list:
+        # define feature set: X
+        X = fold[text_feature]
+        # define label: y
+        y = fold[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
+
+        # Create and fit tokenizer
+        tokenizer = Tokenizer()
+        tokenizer.fit_on_texts(X)
+
+        # Prepare the data
+        prep_data = tokenizer.texts_to_sequences(X)
+        prep_data = pad_sequences(prep_data, maxlen=max_length)
+
+        # Prepare the labels
+        prep_labels = to_categorical(y)
+
+        # Print the shapes
+        print(prep_data.shape)
+        print()
+        print(prep_labels.shape)
+        print()
+
+        # split each fold into training & test set:
+        X_train, X_test, y_train, y_test = train_test_split(prep_data, prep_labels, test_size=.2, stratify=y,
+                                                            random_state=42)
+        print('Training set shape: {}'.format(X_train.shape))
+        print()
+        print('Test set shape: {}'.format(X_test.shape))
+        print()
+
+        # Fit the classifier
+        model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs)
+
+        # evaluate on text data
+        print("Loss: %0.04f\nAccuracy: %0.04f" % tuple(model.evaluate(X_test, y_test, verbose=0)))
+        print()
+
+    # PLACEHOLDER: save model & weights
+    # https: // machinelearningmastery.com / save - load - keras - deep - learning - models /

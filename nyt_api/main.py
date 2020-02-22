@@ -5,8 +5,8 @@ nyt_api.main
 This module contains the get_articles() function for scraping data from the N.Y. Times Article Search API.
 For more info on the N.Y. Times Article Search API please go to https://developer.nytimes.com/docs/articlesearch-product/1/overview
 
-created: 12/31/19
-last updated: 1/18/20
+Created on 12/31/19 by William Scardino
+Last updated: 2/21/20
 ************************************************************************************************************************************
 """
 import numpy as np

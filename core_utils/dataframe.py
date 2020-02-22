@@ -5,8 +5,8 @@ core_utils.dataframe
 This module contains common utilities for importing & handling data in pandas DataFrames:
     - union_csv (unions similar csv files into a single DataFrame)
 
-created: 1/5/20
-last updated: 2/21/20
+Created on 12/31/19 by William Scardino
+Last updated: 2/21/20
 ********************************************************************************************
 """
 import pandas as pd

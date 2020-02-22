@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 """
-***************************************************
-N.Y. Times Articles Sentiment Analysis (.py script)
+**********************************************************************************************
+Sentiment Analysis on 2020 U.S. Presidential Candidates N.Y. Times Articles (.py script)
+
 Created on 12/31/19 by William Scardino
 Last updated: 2/21/20
-***************************************************
+**********************************************************************************************
 """
 # Import custom packages
 from core_utils.dataframe import union_csv
@@ -13,8 +14,8 @@ from custom_utils.clean_dataframe import preprocess_df, filter_dataframe
 from model_utils.feature_eng import (date_feats, my_stopwords, get_vocab_size,
                                      char_count, sentiment_label, lemma_nopunc,
                                      apply_func, drop_high_corr, sentiment_analyzer)
-from graph_utils.graph import (corr_heatmap, plot_word_freq, two_dim_tf_viz,
-                               time_series_line_viz)
+from viz_utils.viz import (corr_heatmap, plot_word_freq, two_dim_tf_viz,
+                           time_series_line_viz)
 from model_utils.model_eval import (model_training_metrics, num_feature_importance,
                                     text_feature_importance, neural_net_train_metrics,
                                     model_random_hyper_tune, stacked_model_metrics)
@@ -57,8 +58,6 @@ def sentiment_analysis_pipe(directory):
     - time_series_line_viz (plots a line plot of Sentiment over time for a given pandas DataFrame for EDA)
     - model_training_metrics (print model evaluation metrics, iterating over a list of models that are passed into a list,
         allowing for the comparison of different models and their results to guide choice for stacking purposes)
-    - get_vocab_size (retreive a count of unique words in a vocabulary)
-    - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
     - model_random_hyper_tune (perform hyper-parameter tuning on any given model that is chosen from evaluation,
         by utilizing a Random Search)
     - text_feature_importance (print the top 25 features from the text model by their TfIdf weights
@@ -67,6 +66,8 @@ def sentiment_analysis_pipe(directory):
         and adding a second-layer LogisticRegression stacked model that will use the predictions from the other two models as features,
         for the final predictions)
     - predict_sentiment (make predictions on N.Y. Times article data using stacked model)
+    - get_vocab_size (retreive a count of unique words in a vocabulary)
+    - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
 
     @param directory: directory containing .csv files scraped from the N.Y. Times Article Search API
     """
@@ -126,218 +127,218 @@ def sentiment_analysis_pipe(directory):
          'sentiment_label']
     ]
 
-    # # plot heatmap of feature correlations
-    # corr_heatmap(df=article_df,
-    #              features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity']
-    #              )
+    # plot heatmap of feature correlations
+    corr_heatmap(df=article_df,
+                 features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity']
+                 )
 
-    # # automatically remove highly correlated features
-    # model_df = drop_high_corr(df=model_df)
-    #
-    # # plot word frequencies
-    # plot_word_freq(
-    #     pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
-    #     plot_title='BOW FREQUENCY',
-    #     stopwords=my_stopwords,
-    #     n=30
-    # )
+    # automatically remove highly correlated features
+    model_df = drop_high_corr(df=model_df)
 
-    # # plot tfidf Scatter plot
-    # two_dim_tf_viz(
-    #     df=article_df,
-    #     pd_series='text',
-    #     stopwords=my_stopwords,
-    #     pd_color_series='sentiment_label',
-    #     max_features=1000,
-    #     plot_title='N.Y. Times Article Sentiment Clusters'
-    # )
+    # plot word frequencies
+    plot_word_freq(
+        pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
+        plot_title='BOW FREQUENCY',
+        stopwords=my_stopwords,
+        n=30
+    )
 
-    # # plot Time Series Line plot
-    # time_series_line_viz(
-    #     df=article_df[article_df['text'].str.contains('Trump', case=False)],
-    #     date_index='pub_date',
-    #     pd_series='polarity',
-    #     plot_title='N.Y. Times Articles Avg. Daily Sentiment'
-    # )
+    # plot tfidf Scatter plot
+    two_dim_tf_viz(
+        df=article_df,
+        pd_series='text',
+        stopwords=my_stopwords,
+        pd_color_series='sentiment_label',
+        max_features=1000,
+        plot_title='N.Y. Times Article Sentiment Clusters'
+    )
 
-    # # instantiate list of models: models
-    # text_models = [
-    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #               ('dim_red', SelectKBest(chi2, k=300)),
-    #               ('clf', OneVsRestClassifier(MultinomialNB()))
-    #               ]),
-    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #               ('scaler', StandardScaler(with_mean=False)),
-    #               ('dim_red', SelectKBest(chi2, k=300)),
-    #               ('clf', OneVsRestClassifier(MultinomialNB()))
-    #               ]),
-    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #               ('dim_red', SelectKBest(chi2, k=300)),
-    #               ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
-    #               ]),
-    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #               ('scaler', StandardScaler(with_mean=False)),
-    #               ('dim_red', SelectKBest(chi2, k=300)),
-    #               ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
-    #               ]),
-    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #               ('dim_red', SelectKBest(chi2, k=300)),
-    #               ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
-    #                                                                  n_jobs=4, class_weight='balanced')))
-    #               ]),
-    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #               ('scaler', StandardScaler(with_mean=False)),
-    #               ('dim_red', SelectKBest(chi2, k=300)),
-    #               ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
-    #                                                                  n_jobs=4, class_weight='balanced')))
-    #               ]),
-    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #              ('dim_red', SelectKBest(chi2, k=300)),
-    #              ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
-    #              ]),
-    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #               ('scaler', StandardScaler(with_mean=False)),
-    #               ('dim_red', SelectKBest(chi2, k=300)),
-    #               ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
-    #                ]),
-    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #               ('dim_red', SelectKBest(chi2, k=300)),
-    #               ('clf',OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
-    #                                                             random_state=42, class_weight='balanced')))
-    #                ]),
-    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-    #               ('scaler', StandardScaler(with_mean=False)),
-    #               ('dim_red', SelectKBest(chi2, k=300)),
-    #               ('clf', OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
-    #                                                              random_state=42, class_weight='balanced')))
-    #                ])
-    #         ]
-    # print('Instantiated list of text models!')
-    # print()
-    #
-    # # print out text model metrics
-    # model_training_metrics(
-    #     df=model_df,
-    #     models=text_models,
-    #     features='text_feat',
-    #     label='sentiment_label'
-    # )
-    #
-    # # instantiate list of models: models
-    # num_models = [
-    #     Pipeline([
-    #         ('scaler', StandardScaler()),
-    #         ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
-    #     ]),
-    #     Pipeline([
-    #         ('scaler', StandardScaler()),
-    #         ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
-    #                                                            n_jobs=4, class_weight='balanced')))
-    #     ]),
-    #     Pipeline([
-    #         ('scaler', StandardScaler()),
-    #         ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
-    #     ]),
-    #     Pipeline([
-    #         ('scaler', StandardScaler()),
-    #         ('clf', OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
-    #                                                        random_state=42, class_weight='balanced')))
-    #     ])
-    # ]
-    # print('Instantiated list of models with numeric features!')
-    # print()
-    #
-    # # print out metrics for models with numeric features
-    # model_training_metrics(
-    #     df=model_df,
-    #     models=num_models,
-    #     features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
-    #     label='sentiment_label'
-    # )
-    #
-    # # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
-    # text_pipe, text_cv_results_df = model_random_hyper_tune(
-    #     df=model_df,
-    #     model=Pipeline([('vectorizer', CountVectorizer(stop_words=my_stopwords)),
-    #                     ('scaler', StandardScaler(with_mean=False)),
-    #                     ('dim_red', SelectKBest(chi2)),
-    #                     ('clf', OneVsRestClassifier(XGBClassifier(random_state=42)))
-    #                     ]),
-    #     param_grid={
-    #         'vectorizer__ngram_range': [(1, 3), (2, 3)],
-    #         'dim_red__k': [100, 200, 300],
-    #         'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
-    #         'clf__estimator__colsample_bytree': [0.3, 0.7],
-    #         'clf__estimator__n_estimators': [100, 200, 300],
-    #         'clf__estimator__max_depth': [3, 6, 10, 20],
-    #         'clf__estimator__learning_rate': np.linspace(.1, 2, 150),
-    #         'clf__estimator__min_samples_leaf': list(range(20, 65))
-    #     },
-    #     features='text_feat',
-    #     label='sentiment_label',
-    #     n_iters=25,
-    #     n_folds=5,
-    #     model_file_path="./models/text_pipe_xgb.pkl"
-    # )
-    #
-    # # get feature importances from TFIDF scores: tfidf_df
-    # text_feature_importance(
-    #     df=model_df[model_df['sentiment_label'] == 'negative'],
-    #     text_feature='text_feat',
-    #     vectorizer=text_pipe[0]
-    # )
-    #
-    # # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
-    # num_pipe, num_cv_results_df = model_random_hyper_tune(
-    #     df=model_df,
-    #     model=Pipeline([('scaler', StandardScaler()),
-    #                     ('clf', OneVsRestClassifier(XGBClassifier(booster='gbtree', random_state=42)))
-    #                     ]),
-    #     param_grid={
-    #                 'clf__estimator__colsample_bytree': [0.3, 0.7],
-    #                 'clf__estimator__n_estimators': [100, 200, 300],
-    #                 'clf__estimator__max_depth': [3, 6, 10, 20],
-    #                 'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
-    #                 'clf__estimator__min_samples_leaf': list(range(20, 60))
-    #                 },
-    #     features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
-    #     label='sentiment_label',
-    #     n_iters=25,
-    #     n_folds=5,
-    #     model_file_path="./models/num_pipe_xgb.pkl"
-    # )
-    #
-    # # look at most important features for text model
-    # num_feature_importance(df=model_df,
-    #                        model=num_pipe[1],
-    #                        features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count',
-    #                                  'subjectivity']
-    #                        )
-    #
-    # # print out stacked model metrics
-    # stacked_model_metrics(
-    #     df=model_df,
-    #     label='sentiment_label',
-    #     text_model=text_pipe,
-    #     text_feature='text_feat',
-    #     num_model=num_pipe,
-    #     num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
-    #     stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
-    #                                                          random_state=42, class_weight='balanced'))
-    # )
-    #
-    # # Make predictions using Stacked Model
-    # predict_sentiment(
-    #     source_df=article_df,
-    #     model_df=model_df,
-    #     text_feature='text_feat',
-    #     num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
-    #     label='sentiment_label',
-    #     text_model_pkl="./models/text_pipe_xgb.pkl",
-    #     num_model_pkl="./models/num_pipe_xgb.pkl",
-    #     stack_model_pkl="./models/lr_stack.pkl",
-    #     candidate_list=['Sanders', 'Trump', 'Warren', 'Harris', 'Biden', 'Buttigieg', 'Bloomberg',
-    #                     'Klobuchar'])
+    # plot Time Series Line plot
+    time_series_line_viz(
+        df=article_df[article_df['text'].str.contains('Trump', case=False)],
+        date_index='pub_date',
+        pd_series='polarity',
+        plot_title='N.Y. Times Articles Avg. Daily Sentiment'
+    )
+
+    # instantiate list of models: models
+    text_models = [
+        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                  ('dim_red', SelectKBest(chi2, k=300)),
+                  ('clf', OneVsRestClassifier(MultinomialNB()))
+                  ]),
+        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                  ('scaler', StandardScaler(with_mean=False)),
+                  ('dim_red', SelectKBest(chi2, k=300)),
+                  ('clf', OneVsRestClassifier(MultinomialNB()))
+                  ]),
+        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                  ('dim_red', SelectKBest(chi2, k=300)),
+                  ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
+                  ]),
+        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                  ('scaler', StandardScaler(with_mean=False)),
+                  ('dim_red', SelectKBest(chi2, k=300)),
+                  ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
+                  ]),
+        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                  ('dim_red', SelectKBest(chi2, k=300)),
+                  ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
+                                                                     n_jobs=4, class_weight='balanced')))
+                  ]),
+        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                  ('scaler', StandardScaler(with_mean=False)),
+                  ('dim_red', SelectKBest(chi2, k=300)),
+                  ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
+                                                                     n_jobs=4, class_weight='balanced')))
+                  ]),
+        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                 ('dim_red', SelectKBest(chi2, k=300)),
+                 ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
+                 ]),
+        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                  ('scaler', StandardScaler(with_mean=False)),
+                  ('dim_red', SelectKBest(chi2, k=300)),
+                  ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
+                   ]),
+        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                  ('dim_red', SelectKBest(chi2, k=300)),
+                  ('clf',OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
+                                                                random_state=42, class_weight='balanced')))
+                   ]),
+        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+                  ('scaler', StandardScaler(with_mean=False)),
+                  ('dim_red', SelectKBest(chi2, k=300)),
+                  ('clf', OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
+                                                                 random_state=42, class_weight='balanced')))
+                   ])
+            ]
+    print('Instantiated list of text models!')
+    print()
+
+    # print out text model metrics
+    model_training_metrics(
+        df=model_df,
+        models=text_models,
+        features='text_feat',
+        label='sentiment_label'
+    )
+
+    # instantiate list of models: models
+    num_models = [
+        Pipeline([
+            ('scaler', StandardScaler()),
+            ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
+        ]),
+        Pipeline([
+            ('scaler', StandardScaler()),
+            ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
+                                                               n_jobs=4, class_weight='balanced')))
+        ]),
+        Pipeline([
+            ('scaler', StandardScaler()),
+            ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
+        ]),
+        Pipeline([
+            ('scaler', StandardScaler()),
+            ('clf', OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+                                                           random_state=42, class_weight='balanced')))
+        ])
+    ]
+    print('Instantiated list of models with numeric features!')
+    print()
+
+    # print out metrics for models with numeric features
+    model_training_metrics(
+        df=model_df,
+        models=num_models,
+        features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        label='sentiment_label'
+    )
+
+    # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
+    text_pipe, text_cv_results_df = model_random_hyper_tune(
+        df=model_df,
+        model=Pipeline([('vectorizer', CountVectorizer(stop_words=my_stopwords)),
+                        ('scaler', StandardScaler(with_mean=False)),
+                        ('dim_red', SelectKBest(chi2)),
+                        ('clf', OneVsRestClassifier(XGBClassifier(random_state=42)))
+                        ]),
+        param_grid={
+            'vectorizer__ngram_range': [(1, 3), (2, 3)],
+            'dim_red__k': [100, 200, 300],
+            'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
+            'clf__estimator__colsample_bytree': [0.3, 0.7],
+            'clf__estimator__n_estimators': [100, 200, 300],
+            'clf__estimator__max_depth': [3, 6, 10, 20],
+            'clf__estimator__learning_rate': np.linspace(.1, 2, 150),
+            'clf__estimator__min_samples_leaf': list(range(20, 65))
+        },
+        features='text_feat',
+        label='sentiment_label',
+        n_iters=25,
+        n_folds=5,
+        model_file_path="./models/text_pipe_xgb.pkl"
+    )
+
+    # get feature importances from TFIDF scores: tfidf_df
+    text_feature_importance(
+        df=model_df[model_df['sentiment_label'] == 'negative'],
+        text_feature='text_feat',
+        vectorizer=text_pipe[0]
+    )
+
+    # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
+    num_pipe, num_cv_results_df = model_random_hyper_tune(
+        df=model_df,
+        model=Pipeline([('scaler', StandardScaler()),
+                        ('clf', OneVsRestClassifier(XGBClassifier(booster='gbtree', random_state=42)))
+                        ]),
+        param_grid={
+                    'clf__estimator__colsample_bytree': [0.3, 0.7],
+                    'clf__estimator__n_estimators': [100, 200, 300],
+                    'clf__estimator__max_depth': [3, 6, 10, 20],
+                    'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
+                    'clf__estimator__min_samples_leaf': list(range(20, 60))
+                    },
+        features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        label='sentiment_label',
+        n_iters=25,
+        n_folds=5,
+        model_file_path="./models/num_pipe_xgb.pkl"
+    )
+
+    # look at most important features for text model
+    num_feature_importance(df=model_df,
+                           model=num_pipe[1],
+                           features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count',
+                                     'subjectivity']
+                           )
+
+    # print out stacked model metrics
+    stacked_model_metrics(
+        df=model_df,
+        label='sentiment_label',
+        text_model=text_pipe,
+        text_feature='text_feat',
+        num_model=num_pipe,
+        num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        stacked_model=OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+                                                             random_state=42, class_weight='balanced'))
+    )
+
+    # Make predictions using Stacked Model
+    predict_sentiment(
+        source_df=article_df,
+        model_df=model_df,
+        text_feature='text_feat',
+        num_features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity'],
+        label='sentiment_label',
+        text_model_pkl="./models/text_pipe_xgb.pkl",
+        num_model_pkl="./models/num_pipe_xgb.pkl",
+        stack_model_pkl="./models/lr_stack.pkl",
+        candidate_list=['Sanders', 'Trump', 'Warren', 'Harris', 'Biden', 'Buttigieg', 'Bloomberg',
+                        'Klobuchar'])
 
     # get the vocabulary size for the neural network: vocab_size
     vocab_size, vocab_dict = get_vocab_size(model_df['text_feat'].tolist())
@@ -351,9 +352,10 @@ def sentiment_analysis_pipe(directory):
         vocabulary_size=vocab_size,
         num_classes=2,
         epochs=100,
+        batch_size=64,
         word2vec_dim=300,
         vocabulary_dict=vocab_dict,
-        glove_file_name=r'.\glove\glove.6B.300d.txt'
+        glove_file_name=r'.\glove_6B\glove.6B.300d.txt'
     )
 
 

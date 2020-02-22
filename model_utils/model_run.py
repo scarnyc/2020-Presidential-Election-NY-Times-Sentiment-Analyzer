@@ -5,8 +5,8 @@ model_utils.model_run
 This module contains customized utilities for making Sentiment Analysis predictions:
     - predict_sentiment (make sentiment predictions using stacked model pipeline
 
-created: 2/15/19
-last updated: 2/21/20
+Created on 12/31/19 by William Scardino
+Last updated: 2/21/20
 *******************************************************************************************************************
 """
 import pickle
@@ -111,5 +111,5 @@ def predict_sentiment(
     print()
 
     # write final pandas DataFrame containing predictions to .csv file
-    predictions_df.to_csv('NYT_president_sentiment_predictions_{date:%Y.%m.%d}.csv'.format(date=dt.datetime.now()),
+    predictions_df.to_csv('ML_nyt_sentiment_predictions_{date:%Y.%m.%d}.csv'.format(date=dt.datetime.now()),
                           index=False)

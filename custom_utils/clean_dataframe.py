@@ -7,8 +7,8 @@ This module contains customized utilities for cleaning data in pandas DataFrames
       drops duplicates & returns column subset)
     - filter_dataframe (Filters pandas DataFrame according to contains expressions in a list)
 
-created: 12/31/19
-last updated: 2/19/20
+Created on 12/31/19 by William Scardino
+Last updated: 2/21/20
 ***************************************************************************************************
 """
 def preprocess_df(df, new_col, con_col1, con_col2, subset_list, filter_col_list):

@@ -14,8 +14,8 @@ This module contains customized utilities for engineering features for Sentiment
     - drop_high_corr (Drop highly correlated features from a DataFrame)
     - get_vocab_size (retreive a count of unique words in a vocabulary)
 
-created: 12/31/19
-last updated: 2/21/20
+Created on 12/31/19 by William Scardino
+Last updated: 2/21/20
 **************************************************************************************************************
 """
 import pandas as pd
