@@ -122,7 +122,7 @@ def ml_predict_sentiment(
                           index=False)
 
 
-def nn_predict_sentiment(model_df, source_df, text_feature, max_length, label, batch_size, epochs, candidate_list):
+def nn_predict_sentiment(model_df, source_df, text_feature, max_length, label, batch_size, epochs, candidate_list, model_file_name):
     # define feature set: X
     X = model_df[text_feature]
     # define label: y
@@ -146,7 +146,7 @@ def nn_predict_sentiment(model_df, source_df, text_feature, max_length, label, b
     print()
 
     # load model
-    model = load_model('model.h5')
+    model = load_model(model_file_name)
 
     # summarize model
     model.summary()

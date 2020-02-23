@@ -397,7 +397,7 @@ def sentiment_analysis_pipe(directory):
         word2vec_dim=300,
         vocabulary_dict=vocab_dict,
         glove_file_name=r'./glove_6B/glove.6B.300d.txt',
-        model_file_name=r"./models/model.h5"
+        model_file_name=r"models/nn_model.h5"
     )
 
     # make predictions with neural network
@@ -410,7 +410,8 @@ def sentiment_analysis_pipe(directory):
         batch_size=64,
         epochs=100,
         candidate_list=['Sanders', 'Trump', 'Warren', 'Harris', 'Biden', 'Buttigieg', 'Bloomberg',
-                        'Klobuchar']
+                        'Klobuchar'],
+        model_file_name=r"./models/rnn_model.h5"
     )
 
 
