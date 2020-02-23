@@ -4,7 +4,7 @@ model_utils.model_run
 
 This module contains customized utilities for making Sentiment Analysis predictions:
     - ml_predict_sentiment (make sentiment predictions using stacked model pipeline)
-    - nn_predict_sentiment (make sentiment predictions using recurrent neural network)
+    - rnn_predict_sentiment (make sentiment predictions using recurrent neural network)
 
 Created on 12/31/19 by William Scardino
 Last updated: 2/22/20
@@ -103,10 +103,20 @@ def ml_predict_sentiment(
     print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
-    filtered_df = predictions_df[predictions_df['candidate'].str.contains(
-        '|'.join([word for word in candidate_list]),
-        case=False
-    )]
+    # split candidate name to retrieve candidate's last name:
+    predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
+
+    # create a flag to filter results where articles contain candidate's last name
+    predictions_df['flag'] = np.where(
+        predictions_df[predictions_df['web_url'].str.contains(
+            predictions_df['candidate_last_name'],
+            case=False)],
+        1,
+        0
+    )
+
+    # filter results by the flag: filtered_df
+    filtered_df = predictions_df[predictions_df['flag'] == 1]
 
     # group average sentiment by candidate
     grouped_df = filtered_df.groupby('candidate')['predictions'].mean()\
@@ -122,7 +132,7 @@ def ml_predict_sentiment(
                           index=False)
 
 
-def nn_predict_sentiment(model_df, source_df, text_feature, max_length, label, batch_size, epochs, candidate_list, model_file_name):
+def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, epochs, candidate_list, model_file_name):
     # define feature set: X
     X = model_df[text_feature]
     # define label: y
@@ -152,7 +162,7 @@ def nn_predict_sentiment(model_df, source_df, text_feature, max_length, label, b
     model.summary()
 
     # Fit the network
-    model.fit(X, y, batch_size=batch_size, epochs=epochs)
+    model.fit(prep_data, prep_labels, epochs=epochs)
 
     # Use the model to predict on new data
     predicted = model.predict(X)
@@ -171,6 +181,7 @@ def nn_predict_sentiment(model_df, source_df, text_feature, max_length, label, b
     print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
+    # filter results where articles contain candidate's names: filtered_df
     filtered_df = predictions_df[predictions_df['candidate'].str.contains(
         '|'.join([word for word in candidate_list]),
         case=False

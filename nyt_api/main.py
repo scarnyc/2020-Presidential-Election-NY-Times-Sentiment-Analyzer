@@ -2,11 +2,11 @@
 ************************************************************************************************************************************
 nyt_api.main
 
-This module contains the get_articles() function for scraping data from the N.Y. Times Article Search API.
+This module contains the nyt_get_artcl_data() function for scraping data from the N.Y. Times Article Search API.
 For more info on the N.Y. Times Article Search API please go to https://developer.nytimes.com/docs/articlesearch-product/1/overview
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/21/20
+Last updated: 2/23/20
 ************************************************************************************************************************************
 """
 import numpy as np
@@ -17,27 +17,27 @@ from pandas.io.json import json_normalize
 import datetime as dt
 
 
-def get_data(key, output_path, members):
+def nyt_get_artcl_data(key, output_path, candidates):
     """
     This function accepts a N.Y. Times API key, the file directory where the csv files will go, and  list of members
     that an user wants to query the API for information; It outputs a csv file every call and the results are paginated
-    in a loop that will call the API up to 4000 times.
+    in a loop that will call the API up to 4000 times (570 calls for each candidate in a list of 7 candidates)
 
     @param key: user's API key
     @param output_path: file directory to write csv files with NYT API results
-    @param members: list of terms or subjects that will be used to query the API (list)
+    @param candidates: list of terms or subjects that will be used to query the API (list)
     """
-    # check if members variable is list type
-    assert isinstance(members, list), "You need to pass in a list to members!"
+    # check if candidates variable is list type
+    assert isinstance(candidates, list), "You need to pass in a list to candidates!"
 
     # iterate over members list: member
-    for member in members:
+    for candidate in candidates:
         # iterate api calls to paginate results: page
-        for page in np.arange(0, 4000):
+        for page in np.arange(0, 200, 1):
             # create base_url by joining the host url with member, predicates, page offset, and api key
             base_url = "".join(
                 ['https://api.nytimes.com/svc/search/v2/articlesearch.json?q=',
-                 member,
+                 candidate,
                  '&page=',
                  str(page),
                  '&sort=newest',
@@ -45,6 +45,8 @@ def get_data(key, output_path, members):
                  key]
             )
             print(base_url)
+            print()
+
             # try the get request, if the call succeeds, return a DataFrame normalizing the json data
             try:
                 r = requests.get(base_url)
@@ -54,18 +56,30 @@ def get_data(key, output_path, members):
                     sep='_',
                     max_level=1
                 )
-                # pause for 6 seconds between each call
-                time.sleep(6)
+
                 # output csv files and include the current date in the naming convention
-                df.to_csv(output_path + '/' + member + '_' + str(page) + str(0) + '_' + '{date:%Y.%m.%d}.csv' \
+                df.to_csv(output_path + '/' + candidate + '_' + str(page) + str(0) + '_' + '{date:%Y.%m.%d}.csv' \
                           .format(date=dt.datetime.now())
                           )
+
+                # pause for 6 seconds between each call
+                time.sleep(6)
+
             # if the call fails, raise the exception
             except Exception as e:
                 raise e
+
 
 # if __name__ == '__main__':
 #     nyt_df = get_data(key=your_key,
 #                       output_path=your_directory,
 #                       members=['Bernie Sanders']
 #                       )
+
+if __name__ == '__main__':
+    nyt_get_artcl_data(
+        key='ogATnoEYDEO64smhyKzgJ9H4Z4arnvxX',
+        output_path=r'C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\data',
+        candidates=['Elizabeth Warren', 'Bernie Sanders', 'Amy Klochubar',
+                 'Joe Biden', 'Pete Buttigieg', 'Michael Bloomberg']
+    )

@@ -20,7 +20,7 @@ from viz_utils.viz import (corr_heatmap, plot_word_freq, two_dim_tf_viz,
 from model_utils.model_eval import (model_training_metrics, num_feature_importance,
                                     text_feature_importance, neural_net_train_metrics,
                                     model_random_hyper_tune, stacked_model_metrics, stacked_random_hyper_tune)
-from model_utils.model_run import ml_predict_sentiment, nn_predict_sentiment
+from model_utils.model_run import ml_predict_sentiment, rnn_predict_sentiment
 
 # Import data science packages
 import numpy as np
@@ -378,7 +378,7 @@ def sentiment_analysis_pipe(directory):
         text_model_pkl="./models/text_pipe_xgb.pkl",
         num_model_pkl="./models/num_pipe_xgb.pkl",
         stack_model_pkl="./models/lr_stack.pkl",
-        candidate_list=['Sanders', 'Trump', 'Warren', 'Harris', 'Biden', 'Buttigieg', 'Bloomberg',
+        candidate_list=['Sanders', 'Trump', 'Warren', 'Biden', 'Buttigieg', 'Bloomberg',
                         'Klobuchar'])
 
     # get the vocabulary size for the neural network: vocab_size
@@ -397,19 +397,18 @@ def sentiment_analysis_pipe(directory):
         word2vec_dim=300,
         vocabulary_dict=vocab_dict,
         glove_file_name=r'./glove_6B/glove.6B.300d.txt',
-        model_file_name=r"models/nn_model.h5"
+        model_file_name=r"models/rnn_model.h5"
     )
 
     # make predictions with neural network
-    nn_predict_sentiment(
+    rnn_predict_sentiment(
         source_df=article_df,
         model_df=model_df,
         text_feature='text_feat',
         max_length=model_df['char_count'].max(),
         label='sentiment_label',
-        batch_size=64,
-        epochs=100,
-        candidate_list=['Sanders', 'Trump', 'Warren', 'Harris', 'Biden', 'Buttigieg', 'Bloomberg',
+        epochs=50,
+        candidate_list=['Sanders', 'Trump', 'Warren', 'Biden', 'Buttigieg', 'Bloomberg',
                         'Klobuchar'],
         model_file_name=r"./models/rnn_model.h5"
     )
