@@ -107,6 +107,8 @@ def ml_predict_sentiment(
     predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
 
     # create a flag to filter results where articles contain candidate's last name
+    # 2/23 note: add logic to filter out articles before 2019
+    # and add logic to filter out candidates who are no longer running for President
     predictions_df['flag'] = np.where(
         predictions_df[predictions_df['web_url'].str.contains(
             predictions_df['candidate_last_name'],
@@ -117,6 +119,8 @@ def ml_predict_sentiment(
 
     # filter results by the flag: filtered_df
     filtered_df = predictions_df[predictions_df['flag'] == 1]
+    print(filtered_df['candidate'].value_counts())
+    print()
 
     # group average sentiment by candidate
     grouped_df = filtered_df.groupby('candidate')['predictions'].mean()\
@@ -181,11 +185,22 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
-    # filter results where articles contain candidate's names: filtered_df
-    filtered_df = predictions_df[predictions_df['candidate'].str.contains(
-        '|'.join([word for word in candidate_list]),
-        case=False
-    )]
+    # split candidate name to retrieve candidate's last name:
+    predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
+
+    # create a flag to filter results where articles contain candidate's last name
+    predictions_df['flag'] = np.where(
+        predictions_df[predictions_df['web_url'].str.contains(
+            predictions_df['candidate_last_name'],
+            case=False)],
+        1,
+        0
+    )
+
+    # filter results by the flag: filtered_df
+    filtered_df = predictions_df[predictions_df['flag'] == 1]
+    print(filtered_df['candidate'].value_counts())
+    print()
 
     # group average sentiment by candidate
     grouped_df = filtered_df.groupby('candidate')['predictions'].mean() \

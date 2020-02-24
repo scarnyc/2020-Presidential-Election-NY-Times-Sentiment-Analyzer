@@ -94,7 +94,7 @@ def sentiment_analysis_pipe(directory):
     article_df = date_feats(df=article_df, date_col='pub_date')
 
     # filter out articles written prior to U.S. Presidential election campaigns (ie. 2019)
-    article_df = filter_dataframe(df=article_df, col_to_filter='year', value_to_filter=2019)
+    # article_df = filter_dataframe(df=article_df, col_to_filter='year', value_to_filter=2019)
 
     # generate TextBlob sentiment and subjectivity scores for each row of 'text' in article_df: tb_sent_scores
     article_df = sentiment_analyzer(df=article_df, text_feature='text')
