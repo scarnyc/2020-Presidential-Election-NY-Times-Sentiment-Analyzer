@@ -106,19 +106,23 @@ def ml_predict_sentiment(
     # split candidate name to retrieve candidate's last name:
     predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
 
-    # create a flag to filter results where articles contain candidate's last name
-    # 2/23 note: add logic to filter out articles before 2019
-    # and add logic to filter out candidates who are no longer running for President
+    # create a flag to filter results according to 2 rules
     predictions_df['flag'] = np.where(
-        predictions_df[predictions_df['web_url'].str.contains(
+        # rule 1: filter out articles that don't contain the candidate's last name
+        predictions_df['web_url'].str.contains(
             predictions_df['candidate_last_name'],
-            case=False)],
+            case=False),
         1,
-        0
+        # rule 2: filter out articles that contain candidate's who are no longer running for President
+        np.where(
+            predictions_df['candidate_last_name'].isin(candidate_list),
+            2,
+            0
+        )
     )
 
     # filter results by the flag: filtered_df
-    filtered_df = predictions_df[predictions_df['flag'] == 1]
+    filtered_df = predictions_df[predictions_df['flag'] > 0]
     print(filtered_df['candidate'].value_counts())
     print()
 
@@ -188,17 +192,23 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     # split candidate name to retrieve candidate's last name:
     predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
 
-    # create a flag to filter results where articles contain candidate's last name
+    # create a flag to filter results according to 2 rules
     predictions_df['flag'] = np.where(
-        predictions_df[predictions_df['web_url'].str.contains(
+        # rule 1: filter out articles that don't contain the candidate's last name
+        predictions_df['web_url'].str.contains(
             predictions_df['candidate_last_name'],
-            case=False)],
+            case=False),
         1,
-        0
+        # rule 2: filter out articles that contain candidate's who are no longer running for President
+        np.where(
+            predictions_df['candidate_last_name'].isin(candidate_list),
+            2,
+            0
+        )
     )
 
     # filter results by the flag: filtered_df
-    filtered_df = predictions_df[predictions_df['flag'] == 1]
+    filtered_df = predictions_df[predictions_df['flag'] > 0]
     print(filtered_df['candidate'].value_counts())
     print()
 

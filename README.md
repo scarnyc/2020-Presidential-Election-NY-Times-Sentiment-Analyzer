@@ -3,7 +3,7 @@ Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidate
 
 This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Candidates, 
 using the N.Y. Times Article Search API. Ths is a multi-class classification problem, predicting positive, neutral and negative sentiment.
-The model achieves a 57% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction,
+The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction,
 while Donald Trump has the lowest. Please refer to the "Findings & Results" section below for more info.
 
 At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
@@ -37,13 +37,13 @@ Quantitative:
 - For multi-class classification F1 Score was used to evaluate data with imbalanced classes   
 - XGBoost Classifier outperformed the other models for the text-based model with 45.7% F1 score using Bi-gram TfIdf weights as features.   
 - XGBoost Classifier also outperformed the other models using numeric features, touting 66% F1 Score.       
-- The stacked Logistic Regression model achieves 61% F1 Score, which is 11 percentage points better than a random guess. 
-    However, while the numeric features involved in the model stacking significantly improve F1 Score (by approximately 16 percentage points), 
+- The stacked Logistic Regression model achieves 60% F1 Score, which is 10 percentage points better than a random guess. 
+    However, while the numeric features involved in the model stacking significantly improve F1 Score (by approximately 15 percentage points), 
     F1 Score is ill-defined for negative predictions, with no prediction samples. 
     This finding is conclusive with the results for the XGBoost Classifier text model.
      
 Qualitative:
-While quantitative results suggest that the model has a 57% harmonic mean of precision & recall, the qualitative results are interesting!
+While quantitative results suggest that the model has a 60% harmonic mean of precision & recall, the qualitative results are interesting!
 
 Consider the table below of candidates and their average sentiment predictions from the model:  
 
@@ -62,9 +62,7 @@ it's still interesting that compared to the rest of the candidates Trump's avera
 (considering that the President's impeachment trial that was happening during the same time the articles were collected).  
 
 Next Steps:
- - Add rolling window averages for Time Series Plot
- - Add RNN & LSTM to model training pipeline --> Update 2/20: Add GLOVE embedding
- - Add hyper-parameter tuning function for stacked model
+ - edit prediction functions to filter out articles before 2019 and candidates who are no longer in the race
  - Add logging functionality
     
  More to come...

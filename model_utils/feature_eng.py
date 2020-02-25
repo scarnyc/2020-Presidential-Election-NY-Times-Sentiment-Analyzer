@@ -417,6 +417,9 @@ def drop_high_corr(df):
     print("The reduced dataframe has {} columns.".format(reduced_df.shape[1]))
     print()
 
+    print(reduced_df.columns)
+    print()
+
     return reduced_df
 
 
@@ -432,7 +435,7 @@ def get_dummy_cats(df, feat):
     df = df.join(dummy_df)
 
     # drop one column to avoid the dummy trap
-    df = df.drop('Cory Booker', axis=1)
+    df = df.drop('John Delaney', axis=1)
 
     return df
 
