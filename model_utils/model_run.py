@@ -7,7 +7,7 @@ This module contains customized utilities for making Sentiment Analysis predicti
     - rnn_predict_sentiment (make sentiment predictions using recurrent neural network)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/22/20
+Last updated: 2/24/20
 *******************************************************************************************************************
 """
 import numpy as np
@@ -110,7 +110,7 @@ def ml_predict_sentiment(
     predictions_df['flag'] = np.where(
         # rule 1: filter out articles that don't contain the candidate's last name
         predictions_df['web_url'].str.contains(
-            predictions_df['candidate_last_name'],
+            predictions_df['candidate_last_name'].values[0],
             case=False),
         1,
         # rule 2: filter out articles that contain candidate's who are no longer running for President
@@ -196,7 +196,7 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     predictions_df['flag'] = np.where(
         # rule 1: filter out articles that don't contain the candidate's last name
         predictions_df['web_url'].str.contains(
-            predictions_df['candidate_last_name'],
+            predictions_df['candidate_last_name'].values[0],
             case=False),
         1,
         # rule 2: filter out articles that contain candidate's who are no longer running for President
