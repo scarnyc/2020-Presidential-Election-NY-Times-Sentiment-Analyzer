@@ -133,7 +133,7 @@ def sentiment_analysis_pipe(directory):
          'Joe Biden']
     ]
 
-    # # plot heatmap of feature correlations
+    # # plot heatmap of feature correlations1
     # corr_heatmap(df=article_df,
     #              features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
     #                        'Cory Booker', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump',
@@ -366,39 +366,39 @@ def sentiment_analysis_pipe(directory):
     #     model_file_path="./models/lr_stack.pkl"
     # )
 
-    # Make predictions using Stacked Model
-    ml_predict_sentiment(
-        source_df=article_df,
-        model_df=model_df,
-        text_feature='text_feat',
-        num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
-                      'Cory Booker', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump',
-                      'Elizabeth Warren', 'Joe Biden'],
-        label='sentiment_label',
-        text_model_pkl="./models/text_pipe_xgb.pkl",
-        num_model_pkl="./models/num_pipe_xgb.pkl",
-        stack_model_pkl="./models/lr_stack.pkl",
-        candidate_list=['sanders', 'trump', 'warren', 'biden', 'buttigieg', 'bloomberg',
-                        'klobuchar'])
-
-    # get the vocabulary size for the neural network: vocab_size
-    vocab_size, vocab_dict = get_vocab_size(model_df['text_feat'].tolist())
-
-    # print out metrics for neural network text model
-    neural_net_train_metrics(
-        df=model_df,
-        text_feature='text_feat',
-        max_length=model_df['char_count'].max(),
-        label='sentiment_label',
-        vocabulary_size=vocab_size,
-        num_classes=2,
-        epochs=100,
-        batch_size=64,
-        word2vec_dim=300,
-        vocabulary_dict=vocab_dict,
-        glove_file_name=r'./glove_6B/glove.6B.300d.txt',
-        model_file_name=r"models/rnn_model.h5"
-    )
+    # # Make predictions using Stacked Model
+    # ml_predict_sentiment(
+    #     source_df=article_df,
+    #     model_df=model_df,
+    #     text_feature='text_feat',
+    #     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+    #                   'Cory Booker', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump',
+    #                   'Elizabeth Warren', 'Joe Biden'],
+    #     label='sentiment_label',
+    #     text_model_pkl="./models/text_pipe_xgb.pkl",
+    #     num_model_pkl="./models/num_pipe_xgb.pkl",
+    #     stack_model_pkl="./models/lr_stack.pkl",
+    #     candidate_list=['sanders', 'trump', 'warren', 'biden', 'buttigieg', 'bloomberg',
+    #                     'klobuchar'])
+    #
+    # # get the vocabulary size for the neural network: vocab_size
+    # vocab_size, vocab_dict = get_vocab_size(model_df['text_feat'].tolist())
+    #
+    # # print out metrics for neural network text model
+    # neural_net_train_metrics(
+    #     df=model_df,
+    #     text_feature='text_feat',
+    #     max_length=model_df['char_count'].max(),
+    #     label='sentiment_label',
+    #     vocabulary_size=vocab_size,
+    #     num_classes=2,
+    #     epochs=100,
+    #     batch_size=64,
+    #     word2vec_dim=300,
+    #     vocabulary_dict=vocab_dict,
+    #     glove_file_name=r'./glove_6B/glove.6B.300d.txt',
+    #     model_file_name=r"models/rnn_model.h5"
+    # )
 
     # make predictions with neural network
     rnn_predict_sentiment(

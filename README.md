@@ -47,12 +47,12 @@ While quantitative results suggest that the model has a 60% harmonic mean of pre
 
 Consider the table below of candidates and their average sentiment predictions from the model:  
 
-candidate            predictions
-Bernie Sanders       0.559565
-Amy Klobuchar        0.495837
-Elizabeth Warren     0.429066
-Joe Biden            0.183133
-Donald Trump        -0.024885
+          candidate  predictions
+1    Bernie Sanders     0.668120
+0     Amy Klobuchar     0.595745
+3  Elizabeth Warren     0.487395
+4         Joe Biden     0.147936
+2      Donald Trump     0.093394
  
 The model is predicting that Bernie Sanders has the highest average sentiment prediction while Donald Trump has the lowest.
 This prediction of Senator Sanders is in line with current polls and Caucus results from Iowa & New Hampshire. 

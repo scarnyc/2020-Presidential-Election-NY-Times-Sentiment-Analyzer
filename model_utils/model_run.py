@@ -143,6 +143,7 @@ def ml_predict_sentiment(
 def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, epochs, candidate_list, model_file_name):
     # define feature set: X
     X = model_df[text_feature]
+
     # define label: y
     y = model_df[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
 
@@ -173,7 +174,7 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     model.fit(prep_data, prep_labels, epochs=epochs)
 
     # Use the model to predict on new data
-    predicted = model.predict(X)
+    predicted = model.predict(prep_data)
 
     # Choose the class with higher probability
     y_pred = np.argmax(predicted, axis=1)

@@ -6072,6 +6072,20 @@ Predictions DataFrame columns: Index(['headline_main', 'web_url', 'text', 'word_
        'Donald Trump_FEAT', 'Elizabeth Warren_FEAT', 'Joe Biden_FEAT'],
       dtype='object')
 
+Donald Trump        4208
+Bernie Sanders      2293
+Amy Klobuchar       1081
+Joe Biden            872
+Elizabeth Warren     595
+Name: candidate, dtype: int64
+
+          candidate  predictions
+1    Bernie Sanders     0.668120
+0     Amy Klobuchar     0.595745
+3  Elizabeth Warren     0.487395
+4         Joe Biden     0.147936
+2      Donald Trump     0.093394
+
 WARNING:tensorflow:From C:\Users\billy\Anaconda3\envs\nyt_sentiment_analyzer\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
 Instructions for updating:
 Use tf.cast instead.
