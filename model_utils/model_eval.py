@@ -21,6 +21,7 @@ import pandas as pd
 from sklearn.metrics import (confusion_matrix, classification_report, accuracy_score,
                              f1_score)
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
+from sklearn.preprocessing import LabelEncoder
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils.np_utils import to_categorical
@@ -324,8 +325,10 @@ def stacked_model_metrics(
 
     # iterate over list of KFold DataFrames
     for fold in kfold_list:
+
         # define feature set: X
         X = fold.drop(label, axis=1)
+
         # define label: y
         y = fold[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
 
@@ -424,6 +427,7 @@ def stacked_random_hyper_tune(
     """
     # define feature set: X
     X = model_df.drop(label, axis=1)
+
     # define label: y
     y = model_df[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
 
@@ -567,8 +571,11 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
     for fold in kfold_list:
         # define feature set: X
         X = fold[text_feature]
+
         # define label: y
-        y = fold[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
+        y = fold[label].map({'positive': 0, 'neutral': 1, 'negative': 2})
+        print(set(y))
+        print()
 
         # Create and fit tokenizer
         tokenizer = Tokenizer()
@@ -579,7 +586,9 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
         prep_data = pad_sequences(prep_data, maxlen=max_length)
 
         # Prepare the labels
-        prep_labels = to_categorical(y)
+        prep_labels = to_categorical(y, num_classes=num_classes)
+        print(np.unique(prep_labels))
+        print()
 
         # Print the shapes
         print(prep_data.shape)
@@ -602,8 +611,6 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
         print("Loss: %0.04f\nAccuracy: %0.04f" % tuple(model.evaluate(X_test, y_test, verbose=0)))
         print()
 
-    # save model & weights
-    # https: // machinelearningmastery.com / save - load - keras - deep - learning - models /
     # save model and architecture to single file
     model.save(model_file_name)
     print("Saved model to disk")

@@ -47,6 +47,7 @@ def ml_predict_sentiment(
     """
     # define feature set: X
     X = model_df.drop(label, axis=1)
+
     # define label: y
     y = model_df[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
 
@@ -140,12 +141,15 @@ def ml_predict_sentiment(
                           index=False)
 
 
-def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, epochs, candidate_list, model_file_name):
+def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, num_classes, epochs, candidate_list,
+                          model_file_name):
     # define feature set: X
     X = model_df[text_feature]
 
     # define label: y
-    y = model_df[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
+    y = model_df[label].map({'positive': 0, 'neutral': 1, 'negative': 2})
+    print(set(y))
+    print()
 
     # Create and fit tokenizer
     tokenizer = Tokenizer()
@@ -156,7 +160,9 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     prep_data = pad_sequences(prep_data, maxlen=max_length)
 
     # Prepare the labels
-    prep_labels = to_categorical(y)
+    prep_labels = to_categorical(y, num_classes=num_classes)
+    print(np.unique(prep_labels))
+    print()
 
     # Print the shapes
     print(prep_data.shape)
@@ -174,13 +180,17 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     model.fit(prep_data, prep_labels, epochs=epochs)
 
     # Use the model to predict on new data
-    predicted = model.predict(prep_data)
+    y_pred = model.predict(prep_data)
+
+    # https://www.kaggle.com/ngyptr/multi-class-classification-with-lstm
+    labels = list(set(model_df[label]))
 
     # Choose the class with higher probability
-    y_pred = np.argmax(predicted, axis=1)
+    pred_labels = labels[np.argmax(y_pred)]
 
     # join predictions to input pandas DataFrame
-    predictions_df = source_df.join(pd.DataFrame(y_pred, columns='predictions')).join(model_df, lsuffix='_SOURCE', rsuffix='_FEAT')
+    predictions_df = source_df.join(pd.DataFrame(pred_labels, columns=['predictions'])).join(model_df, lsuffix='_SOURCE',
+                                                                                             rsuffix='_FEAT')
 
     # print shape of new pandas DataFrame
     print('Predictions DataFrame Shape: {}'.format(predictions_df.shape))
