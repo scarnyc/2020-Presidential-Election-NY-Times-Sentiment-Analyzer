@@ -8,7 +8,8 @@ Created on 12/31/19 by William Scardino
 Last updated: 3/1/20
 **********************************************************************************************
 """
-# Import custom packages
+# Import custom packages for data processing, feature engineering,
+# data visualization & sentiment predictions
 from core_utils.dataframe import union_csv
 from custom_utils.clean_dataframe import preprocess_df, filter_dataframe
 from model_utils.feature_eng import (date_feats, my_stopwords, get_vocab_size,
@@ -22,7 +23,7 @@ from model_utils.model_eval import (model_training_metrics, num_feature_importan
                                     model_random_hyper_tune, stacked_model_metrics, stacked_random_hyper_tune)
 from model_utils.model_run import ml_predict_sentiment, rnn_predict_sentiment
 
-# Import data science packages
+# Import data science packages for modeling
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
@@ -73,6 +74,8 @@ def sentiment_analysis_pipe(directory):
 
     @param directory: directory containing .csv files scraped from the N.Y. Times Article Search API
     """
+    # For pretty logging print a blank line at the top of the script
+    print()
 
     # read .csv files & union them into a single DataFrame: trump_df
     article_df = union_csv(

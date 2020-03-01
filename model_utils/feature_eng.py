@@ -11,11 +11,12 @@ This module contains customized utilities for engineering features for Sentiment
     - custom_label(change labels for negative sentiment if a user-selected column contains user-defined terms)
     - char_count (counts the number of characters in a text string)
     - apply_func (apply a function to a pandas series (row-wise) and return the resulting DataFrame)
-    - drop_high_corr (Drop highly correlated features from a DataFrame)
-    - get_vocab_size (retreive a count of unique words in a vocabulary)
+    - drop_high_corr (drop highly correlated features from a DataFrame)
+    - get_dummy_cats (convert candidate column into categorical variables for machine learning)
+    - get_vocab_size (retrieve a count of unique words in a vocabulary)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/21/20
+Last updated: 3/1/20
 **************************************************************************************************************
 """
 import pandas as pd
@@ -424,8 +425,23 @@ def drop_high_corr(df):
 
 
 def get_dummy_cats(df, feat):
+    """
+    Convert candidate column into categorical variables for machine learning.
+    Rename a couple of the columns & drop one the columns to avoid the dummy trap.
+
+    @param df: input pandas DataFrame containing the candidate column to convert to categories columns
+    @param feat: candidate column to convert to categories columns
+    @return: pandas DataFrame containing the new dummy variables
+    """
     # convert feature to dummy columns using pandas get_dummies()
     dummy_df = pd.get_dummies(df[feat])
+
+    # rename columns
+    dummy_df = dummy_df.rename(
+        mapper={'Bloomberg': 'Mike Bloomberg',
+                'Buttigieg': 'Pete Buttigieg'},
+        axis=1
+    )
 
     # print new columns
     print(dummy_df.columns)
@@ -435,9 +451,10 @@ def get_dummy_cats(df, feat):
     df = df.join(dummy_df)
 
     # drop one column to avoid the dummy trap
-    df = df.drop('John Delaney', axis=1)
+    df = df.drop('Cory Booker', axis=1)
 
     return df
+
 
 def get_vocab_size(text_list):
     """
