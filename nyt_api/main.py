@@ -6,7 +6,7 @@ This module contains the nyt_get_artcl_data() function for scraping data from th
 For more info on the N.Y. Times Article Search API please go to https://developer.nytimes.com/docs/articlesearch-product/1/overview
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/23/20
+Last updated: 3/1/20
 ************************************************************************************************************************************
 """
 import numpy as np
@@ -19,9 +19,11 @@ import datetime as dt
 
 def nyt_get_artcl_data(key, output_path, candidates):
     """
+    This function queries the N.Y. Times Article Search API for articles that contain the Presidential candidates in the article's body.
+    Users should input a list of Presidential candidates' names via the candidates parameter.
     This function accepts a N.Y. Times API key, the file directory where the csv files will go, and  list of members
     that an user wants to query the API for information; It outputs a csv file every call and the results are paginated
-    in a loop that will call the API up to 4000 times (570 calls for each candidate in a list of 7 candidates)
+    in a loop that will call the API up to 200 times for every Presidential candidate
 
     @param key: user's API key
     @param output_path: file directory to write csv files with NYT API results
@@ -33,16 +35,11 @@ def nyt_get_artcl_data(key, output_path, candidates):
     # iterate over members list: member
     for candidate in candidates:
         # iterate api calls to paginate results: page
-        for page in np.arange(23, 200, 1):
+        for page in np.arange(0, 200, 1):
             # create base_url by joining the host url with member, predicates, page offset, and api key
             base_url = "".join(
-                ['https://api.nytimes.com/svc/search/v2/articlesearch.json?q=',
-                 candidate,
-                 '&page=',
-                 str(page),
-                 '&sort=newest',
-                 '&api-key=',
-                 key]
+                ['https://api.nytimes.com/svc/search/v2/articlesearch.json?q=', candidate, '&page=', str(page),
+                 '&sort=newest', '&api-key=', key]
             )
             print(base_url)
             print()
@@ -58,7 +55,7 @@ def nyt_get_artcl_data(key, output_path, candidates):
                 )
 
                 # output csv files and include the current date in the naming convention
-                df.to_csv(output_path + '/' + candidate + '_' + str(page) + str(0) + '_' + '{date:%Y.%m.%d}.csv' \
+                df.to_csv(output_path + '/' + candidate + '_' + str(page) + str(0) + '_' + '{date:%Y.%m.%d}.csv'\
                           .format(date=dt.datetime.now())
                           )
 
@@ -75,3 +72,11 @@ def nyt_get_artcl_data(key, output_path, candidates):
 #                       output_path=your_directory,
 #                       members=['Bernie Sanders']
 #                       )
+
+if __name__ == '__main__':
+    nyt_get_artcl_data(
+        key='ogATnoEYDEO64smhyKzgJ9H4Z4arnvxX',
+        output_path=r'C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\data',
+        candidates=['Elizabeth Warren', 'Bernie Sanders', 'Amy Klobuchar',
+                    'Donald Trump', 'Joe Biden', 'Buttigieg', 'Bloomberg']
+    )

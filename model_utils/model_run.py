@@ -7,7 +7,7 @@ This module contains customized utilities for making Sentiment Analysis predicti
     - rnn_predict_sentiment (make sentiment predictions using recurrent neural network)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/24/20
+Last updated: 2/28/20
 *******************************************************************************************************************
 """
 import numpy as np
@@ -184,9 +184,13 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
 
     # https://www.kaggle.com/ngyptr/multi-class-classification-with-lstm
     labels = list(set(model_df[label]))
+    print(labels)
+    print()
 
     # Choose the class with higher probability
     pred_labels = labels[np.argmax(y_pred)]
+    print(pred_labels)
+    print()
 
     # join predictions to input pandas DataFrame
     predictions_df = source_df.join(pd.DataFrame(pred_labels, columns=['predictions'])).join(model_df, lsuffix='_SOURCE',

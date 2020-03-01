@@ -5,7 +5,7 @@
 Sentiment Analysis on 2020 U.S. Presidential Candidates N.Y. Times Articles (.py script)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/24/20
+Last updated: 2/28/20
 **********************************************************************************************
 """
 # Import custom packages
@@ -129,8 +129,8 @@ def sentiment_analysis_pipe(directory):
     # return column subsets of article_df for modeling: model_df
     model_df = article_df[
         ['text_feat', 'year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'subjectivity', 'char_count',
-         'sentiment_label', 'Cory Booker', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump', 'Elizabeth Warren',
-         'Joe Biden']
+         'sentiment_label', 'Cory Booker', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump',
+         'Elizabeth Warren', 'Joe Biden']
     ]
 
     # # plot heatmap of feature correlations1
@@ -343,43 +343,43 @@ def sentiment_analysis_pipe(directory):
     #     stacked_model=OneVsRestClassifier(LogisticRegression(C=100, solver='liblinear',
     #                                                          random_state=42, class_weight='balanced'))
     # )
-    #
-    # # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
-    # stacked_random_hyper_tune(
-    #     model_df=model_df,
-    #     stacked_model=OneVsRestClassifier(LogisticRegression(solver='liblinear', random_state=42,
-    #                                                          class_weight='balanced')),
-    #     param_grid={
-    #         'estimator__C': [.001, .001, .01, .1, 1, 10, 100, 1000],
-    #         'estimator__penalty': ['l1', 'l2', 'elasticnet', 'none']
-    #     },
-    #     text_feature='text_feat',
-    #     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
-    #                   'Cory Booker', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump',
-    #                   'Elizabeth Warren', 'Joe Biden'],
-    #     label='sentiment_label',
-    #     text_model_pkl="./models/text_pipe_xgb.pkl",
-    #     num_model_pkl="./models/num_pipe_xgb.pkl",
-    #     n_jobs=4,
-    #     n_iters=25,
-    #     n_folds=5,
-    #     model_file_path="./models/lr_stack.pkl"
-    # )
 
-    # # Make predictions using Stacked Model
-    # ml_predict_sentiment(
-    #     source_df=article_df,
-    #     model_df=model_df,
-    #     text_feature='text_feat',
-    #     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
-    #                   'Cory Booker', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump',
-    #                   'Elizabeth Warren', 'Joe Biden'],
-    #     label='sentiment_label',
-    #     text_model_pkl="./models/text_pipe_xgb.pkl",
-    #     num_model_pkl="./models/num_pipe_xgb.pkl",
-    #     stack_model_pkl="./models/lr_stack.pkl",
-    #     candidate_list=['sanders', 'trump', 'warren', 'biden', 'buttigieg', 'bloomberg',
-    #                     'klobuchar'])
+    # tune hyper parameters for model with numeric feature inputs: num_pipe, cv_results_df, model_params
+    stacked_random_hyper_tune(
+        model_df=model_df,
+        stacked_model=OneVsRestClassifier(LogisticRegression(solver='liblinear', random_state=42,
+                                                             class_weight='balanced')),
+        param_grid={
+            'estimator__C': [.001, .001, .01, .1, 1, 10, 100, 1000],
+            'estimator__penalty': ['l1', 'l2', 'elasticnet', 'none']
+        },
+        text_feature='text_feat',
+        num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+                      'Cory Booker', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump',
+                      'Elizabeth Warren', 'Joe Biden'],
+        label='sentiment_label',
+        text_model_pkl="./models/text_pipe_xgb.pkl",
+        num_model_pkl="./models/num_pipe_xgb.pkl",
+        n_jobs=4,
+        n_iters=25,
+        n_folds=5,
+        model_file_path="./models/lr_stack.pkl"
+    )
+
+    # Make predictions using Stacked Model
+    ml_predict_sentiment(
+        source_df=article_df,
+        model_df=model_df,
+        text_feature='text_feat',
+        num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+                      'Cory Booker', 'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Donald Trump',
+                      'Elizabeth Warren', 'Joe Biden'],
+        label='sentiment_label',
+        text_model_pkl="./models/text_pipe_xgb.pkl",
+        num_model_pkl="./models/num_pipe_xgb.pkl",
+        stack_model_pkl="./models/lr_stack.pkl",
+        candidate_list=['sanders', 'trump', 'warren', 'biden', 'buttigieg', 'bloomberg',
+                        'klobuchar'])
 
     # # get the vocabulary size for the neural network: vocab_size
     # vocab_size, vocab_dict = get_vocab_size(model_df['text_feat'].tolist())

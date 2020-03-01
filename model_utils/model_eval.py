@@ -13,7 +13,7 @@ This module contains customized utilities for training & evaluating Sentiment An
     - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/22/20
+Last updated: 2/28/20
 ***************************************************************************************************************************
 """
 import numpy as np
@@ -431,6 +431,22 @@ def stacked_random_hyper_tune(
     # define label: y
     y = model_df[label].map({'positive': 1, 'neutral': 0, 'negative': -1})
 
+    # split each fold into training & test set:
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=42)
+    print('Test set shape: {}'.format(X_test.shape))
+    print()
+
+    # Split train data into two parts
+    train1, train2 = train_test_split(X_train.join(pd.DataFrame(y_train)),
+                                      test_size=.5, random_state=42)
+
+    # delete X_train and y_train variables as they will not be used
+    del X_train, y_train
+    print('Training set 1 shape: {}'.format(train1.shape))
+    print()
+    print('Training set 2 shape: {}'.format(train2.shape))
+    print()
+
     # load Text Model
     with open(text_model_pkl, 'rb') as model_file:
         text_model = pickle.load(model_file)
@@ -439,11 +455,12 @@ def stacked_random_hyper_tune(
     print(text_model)
     print()
 
-    # fit model to text data
-    text_model.fit(X[text_feature], y)
+    # Fit the classifier
+    text_model.fit(train1[text_feature], train1[label])
 
-    # make model predictions on text data
-    X['text_pred'] = text_model.predict(X[text_feature])
+    # Predict test set labels
+    train2['text_pred'] = text_model.predict(train2[text_feature])
+    X_test['text_pred'] = text_model.predict(X_test[text_feature])
 
     # load Model with Numeric features
     with open(num_model_pkl, 'rb') as model_file:
@@ -453,11 +470,12 @@ def stacked_random_hyper_tune(
     print(num_model)
     print()
 
-    # fit model to numeric data
-    num_model.fit(X[num_features], y)
+    # Fit Numeric Model Pipeline
+    num_model.fit(train1[num_features], train1[label])
 
-    # make predictions using numeric features
-    X['num_pred'] = num_model.predict(X[num_features])
+    # Predict test set labels
+    train2['num_pred'] = num_model.predict(train2[num_features])
+    X_test['num_pred'] = num_model.predict(X_test[num_features])
 
     # Create a random search object
     random_model = RandomizedSearchCV(
@@ -472,8 +490,19 @@ def stacked_random_hyper_tune(
         verbose=1
     )
 
-    # Fit to the training data
-    random_model.fit(X[['text_pred', 'num_pred']], y)
+    # Train 2nd level model on the Part 2 data
+    random_model.fit(train2[['text_pred', 'num_pred']], train2[label])
+
+    # Make stacking predictions on the test data
+    X_test['stacking'] = random_model.predict(X_test[['text_pred', 'num_pred']])
+
+    # Compute and print the confusion matrix and classification report
+    print('Confusion matrix')
+    print(confusion_matrix(y_test, X_test['stacking']))
+    print()
+    print('Classification report')
+    print(classification_report(y_test, X_test['stacking']))
+    print()
 
     # Print the values used for both Parameters & Score
     print("Best random Parameters: ", random_model.best_params_)
