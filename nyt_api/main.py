@@ -77,6 +77,7 @@ if __name__ == '__main__':
     nyt_get_artcl_data(
         key='ogATnoEYDEO64smhyKzgJ9H4Z4arnvxX',
         output_path=r'C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\data',
-        candidates=['Elizabeth Warren', 'Bernie Sanders', 'Amy Klobuchar',
-                    'Donald Trump', 'Joe Biden', 'Buttigieg', 'Bloomberg']
+        candidates=[
+            # 'Bernie Sanders',
+            'Amy Klobuchar', 'Donald Trump', 'Joe Biden', 'Buttigieg', 'Bloomberg']
     )

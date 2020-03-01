@@ -7,7 +7,7 @@ This module contains customized utilities for making Sentiment Analysis predicti
     - rnn_predict_sentiment (make sentiment predictions using recurrent neural network)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/28/20
+Last updated: 3/1/20
 *******************************************************************************************************************
 """
 import numpy as np
@@ -33,6 +33,8 @@ def ml_predict_sentiment(
     """
     Load text model, numeric model and stacked model from pickle files and make predictions with Stacked model.
     Return a pandas DataFrame with predictions joined to the original source DataFrame.
+    Make predictions only on articles with candidate's names contained in the article's web address.
+    Print candidate's average sentiment score.
 
     @param source_df: Source pandas DataFrame from which features were derived from
     @param model_df: pandas DataFrame containing features & labels for modeling
@@ -43,7 +45,6 @@ def ml_predict_sentiment(
     @param candidate_list: list of candidates to filter for results
     @param num_model_pkl: path of Numeric Model pickle file
     @param stack_model_pkl: path of Stacked Model pickle file
-    @return: pandas DataFrame containing the original source data, model features, labels and predictions
     """
     # define feature set: X
     X = model_df.drop(label, axis=1)
@@ -143,6 +144,23 @@ def ml_predict_sentiment(
 
 def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, num_classes, epochs, candidate_list,
                           model_file_name):
+    """
+    Load RNN model from pickle file and make predictions with RNN model.
+    Return a pandas DataFrame with predictions joined to the original source DataFrame.
+    Make predictions only on articles with candidate's names contained in the article's web address.
+    Print candidate's average sentiment score.
+
+    @param source_df: Source pandas DataFrame from which features were derived from
+    @param model_df: pandas DataFrame containing features & labels for modeling
+    @param text_feature: text feature used for modeling
+    @param label: target variable used for validating predictions
+    @param max_length: maximum length of text feature
+    @param label: pandas Series containing target variable for modeling
+    @param num_classes: target variable's distinct number of classes
+    @param epochs: number of complete passes through the training dataset
+    @param candidate_list: list of candidates to filter for results
+    @param model_file_name: path of RNN Model pickle file
+    """
     # define feature set: X
     X = model_df[text_feature]
 

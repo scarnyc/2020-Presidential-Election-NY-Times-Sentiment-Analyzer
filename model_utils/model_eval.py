@@ -13,7 +13,7 @@ This module contains customized utilities for training & evaluating Sentiment An
     - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/28/20
+Last updated: 3/1/20
 ***************************************************************************************************************************
 """
 import numpy as np
@@ -539,6 +539,19 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
     The actual training process is similar to the model_training_metrics() function above.
 
     https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
+
+    @param df: input pandas DataFrame that contains features and target variables for modeling
+    @param text_feature: input pandas Series that will be used as a feature for modeling
+    @param max_length: maximum length of text feature
+    @param label: input pandas Series that will be used as a target variable for modeling
+    @param vocabulary_size: distinct count of words that will be used for GLOVE embedding
+    @param num_classes: distinct number of classes in target variable
+    @param epochs: number of complete passes through the training dataset
+    @param batch_size: number of samples processed before the model is updated
+    @param word2vec_dim: number of dimensions of GLOVE word embedding
+    @param vocabulary_dict: dictionary containing word embeddings for the vocabulary
+    @param glove_file_name: location of GLOVE file
+    @param model_file_name: location to serialize keras RNN model
     """
     # initialize embeddings index
     embeddings_index = {}
@@ -580,65 +593,73 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
     # compile the model
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-    # split DataFrame into 5-Folds
-    kfold_list = split_df(
-        df=df,
-        label_col=label
-    )
-    print('Split DataFrames into 5-Fold datasets!')
-    print()
-
-    # Start Text model training
-    print('Starting Model Training!')
-    print()
-
     # print neural network model
-    print(model)
+    print(model.summary())
     print()
 
-    # iterate over list of KFold DataFrames
-    for fold in kfold_list:
-        # define feature set: X
-        X = fold[text_feature]
+    # define feature set: X
+    X = df[text_feature]
 
-        # define label: y
-        y = fold[label].map({'positive': 0, 'neutral': 1, 'negative': 2})
-        print(set(y))
-        print()
+    # define label: y
+    y = df[label].map({'positive': 0, 'neutral': 1, 'negative': 2})
+    print(set(y))
+    print()
 
-        # Create and fit tokenizer
-        tokenizer = Tokenizer()
-        tokenizer.fit_on_texts(X)
+    # Create and fit tokenizer
+    tokenizer = Tokenizer()
+    tokenizer.fit_on_texts(X)
 
-        # Prepare the data
-        prep_data = tokenizer.texts_to_sequences(X)
-        prep_data = pad_sequences(prep_data, maxlen=max_length)
+    # Prepare the data
+    prep_data = tokenizer.texts_to_sequences(X)
+    prep_data = pad_sequences(prep_data, maxlen=max_length)
 
-        # Prepare the labels
-        prep_labels = to_categorical(y, num_classes=num_classes)
-        print(np.unique(prep_labels))
-        print()
+    # Prepare the labels
+    prep_labels = to_categorical(y, num_classes=num_classes)
+    print(np.unique(prep_labels))
+    print()
 
-        # Print the shapes
-        print(prep_data.shape)
-        print()
-        print(prep_labels.shape)
-        print()
+    # Print the shapes
+    print(prep_data.shape)
+    print()
+    print(prep_labels.shape)
+    print()
 
-        # split each fold into training & test set:
-        X_train, X_test, y_train, y_test = train_test_split(prep_data, prep_labels, test_size=.2, stratify=y,
-                                                            random_state=42)
-        print('Training set shape: {}'.format(X_train.shape))
-        print()
-        print('Test set shape: {}'.format(X_test.shape))
-        print()
+    # split each fold into training & test set:
+    X_train, X_test, y_train, y_test = train_test_split(prep_data, prep_labels, test_size=.2, stratify=y,
+                                                        random_state=42)
+    print('Training set shape: {}'.format(X_train.shape))
+    print()
+    print('Test set shape: {}'.format(X_test.shape))
+    print()
 
-        # Fit the classifier
-        model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs)
+    # Fit the classifier
+    model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs)
 
-        # evaluate on text data
-        print("Loss: %0.04f\nAccuracy: %0.04f" % tuple(model.evaluate(X_test, y_test, verbose=0)))
-        print()
+    # evaluate on text data
+    print("Loss: %0.04f\nAccuracy: %0.04f" % tuple(model.evaluate(X_test, y_test, verbose=0)))
+    print()
+
+    # Use the model to predict on new data
+    predicted = model.predict(X_test)
+
+    # Choose the class with higher probability
+    y_pred = np.argmax(predicted, axis=1)
+
+    # Compute and print the confusion matrix
+    print(confusion_matrix(y_test, y_pred))
+
+    # https://www.kaggle.com/ngyptr/multi-class-classification-with-lstm
+    labels = list(set(df[label]))
+    print(labels)
+    print()
+
+    # Create the performance report
+    print(classification_report(y_test, y_pred, target_names=labels))
+    print()
+
+    # Create the performance report
+    print(confusion_matrix(y_test, y_pred))
+    print()
 
     # save model and architecture to single file
     model.save(model_file_name)

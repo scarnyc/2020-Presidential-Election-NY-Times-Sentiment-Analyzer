@@ -5,7 +5,7 @@
 Sentiment Analysis on 2020 U.S. Presidential Candidates N.Y. Times Articles (.py script)
 
 Created on 12/31/19 by William Scardino
-Last updated: 2/28/20
+Last updated: 3/1/20
 **********************************************************************************************
 """
 # Import custom packages
