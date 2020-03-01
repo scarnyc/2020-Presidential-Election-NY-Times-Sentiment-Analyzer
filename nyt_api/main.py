@@ -35,7 +35,7 @@ def nyt_get_artcl_data(key, output_path, candidates):
     # iterate over members list: member
     for candidate in candidates:
         # iterate api calls to paginate results: page
-        for page in np.arange(0, 200, 1):
+        for page in np.arange(62, 200, 1):
             # create base_url by joining the host url with member, predicates, page offset, and api key
             base_url = "".join(
                 ['https://api.nytimes.com/svc/search/v2/articlesearch.json?q=', candidate, '&page=', str(page),
@@ -72,12 +72,3 @@ def nyt_get_artcl_data(key, output_path, candidates):
 #                       output_path=your_directory,
 #                       members=['Bernie Sanders']
 #                       )
-
-if __name__ == '__main__':
-    nyt_get_artcl_data(
-        key='ogATnoEYDEO64smhyKzgJ9H4Z4arnvxX',
-        output_path=r'C:\Users\billy\PycharmProjects\nyt_sentiment_analyzer\data',
-        candidates=[
-            # 'Bernie Sanders',
-            'Amy Klobuchar', 'Donald Trump', 'Joe Biden', 'Buttigieg', 'Bloomberg']
-    )

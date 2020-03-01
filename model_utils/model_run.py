@@ -33,7 +33,7 @@ def ml_predict_sentiment(
     """
     Load text model, numeric model and stacked model from pickle files and make predictions with Stacked model.
     Return a pandas DataFrame with predictions joined to the original source DataFrame.
-    Make predictions only on articles with candidate's names contained in the article's web address.
+    Keep relevant articles for candidates who are still in the race, and articles about the candidates.
     Print candidate's average sentiment score.
 
     @param source_df: Source pandas DataFrame from which features were derived from
@@ -105,22 +105,26 @@ def ml_predict_sentiment(
     print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
-    # split candidate name to retrieve candidate's last name:
+    # split candidate name to retrieve candidate's last name
     predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
+
+    # lowercase words in article text
+    predictions_df['text_lower'] = predictions_df['text'].str.lower()
 
     # create a flag to filter results according to 2 rules
     predictions_df['flag'] = np.where(
-        # rule 1: filter out articles that don't contain the candidate's last name
-        predictions_df['web_url'].str.contains(
+        # filter out articles that don't contain the candidate's last name in the article's url
+        # or in the article's text
+        # and filter out articles that contain candidates who dropped out of the race
+        (predictions_df['web_url'].str.contains(
             predictions_df['candidate_last_name'].values[0],
-            case=False),
+            case=False)
+        ) | (predictions_df['text_lower'].str.contains(
+            predictions_df['candidate_last_name'].values[0],
+            case=False)) & (predictions_df['candidate_last_name'].isin(candidate_list)
+                            ),
         1,
-        # rule 2: filter out articles that contain candidate's who are no longer running for President
-        np.where(
-            predictions_df['candidate_last_name'].isin(candidate_list),
-            2,
-            0
-        )
+        0
     )
 
     # filter results by the flag: filtered_df
@@ -129,8 +133,8 @@ def ml_predict_sentiment(
     print()
 
     # group average sentiment by candidate
-    grouped_df = filtered_df.groupby('candidate')['predictions'].mean()\
-        .reset_index()\
+    grouped_df = filtered_df.groupby('candidate')['predictions'].mean() \
+        .reset_index() \
         .sort_values(by='predictions', ascending=False)
 
     # print candidate average sentiment
@@ -147,7 +151,7 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     """
     Load RNN model from pickle file and make predictions with RNN model.
     Return a pandas DataFrame with predictions joined to the original source DataFrame.
-    Make predictions only on articles with candidate's names contained in the article's web address.
+    Keep relevant articles for candidates who are still in the race, and articles about the candidates.
     Print candidate's average sentiment score.
 
     @param source_df: Source pandas DataFrame from which features were derived from
@@ -211,7 +215,8 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     print()
 
     # join predictions to input pandas DataFrame
-    predictions_df = source_df.join(pd.DataFrame(pred_labels, columns=['predictions'])).join(model_df, lsuffix='_SOURCE',
+    predictions_df = source_df.join(pd.DataFrame(pred_labels, columns=['predictions'])).join(model_df,
+                                                                                             lsuffix='_SOURCE',
                                                                                              rsuffix='_FEAT')
 
     # print shape of new pandas DataFrame
@@ -222,22 +227,26 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
-    # split candidate name to retrieve candidate's last name:
+    # split candidate name to retrieve candidate's last name
     predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
+
+    # lowercase words in article text
+    predictions_df['text_lower'] = predictions_df['text'].str.lower()
 
     # create a flag to filter results according to 2 rules
     predictions_df['flag'] = np.where(
-        # rule 1: filter out articles that don't contain the candidate's last name
-        predictions_df['web_url'].str.contains(
+        # filter out articles that don't contain the candidate's last name in the article's url
+        # or in the article's text
+        # and filter out articles that contain candidates who dropped out of the race
+        (predictions_df['web_url'].str.contains(
             predictions_df['candidate_last_name'].values[0],
-            case=False),
+            case=False)
+        ) | (predictions_df['text_lower'].str.contains(
+            predictions_df['candidate_last_name'].values[0],
+            case=False)) & (predictions_df['candidate_last_name'].isin(candidate_list)
+                            ),
         1,
-        # rule 2: filter out articles that contain candidate's who are no longer running for President
-        np.where(
-            predictions_df['candidate_last_name'].isin(candidate_list),
-            2,
-            0
-        )
+        0
     )
 
     # filter results by the flag: filtered_df
