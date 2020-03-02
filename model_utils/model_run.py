@@ -109,9 +109,11 @@ def ml_predict_sentiment(
     predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
     print(predictions_df['candidate_last_name'].unique())
     print()
-    print(predictions_df[predictions_df['candidate_last_name'] == None])
+    print(predictions_df[~predictions_df['candidate_last_name'].isin(['klobuchar', 'yang', 'sanders', 'booker', 'trump',
+                                                                      'warren', 'biden'])])
     print()
-    print(predictions_df[predictions_df['candidate_last_name'] == None].shape)
+    print(predictions_df[predictions_df['candidate_last_name'].isin(['klobuchar', 'yang', 'sanders', 'booker', 'trump',
+                                                                     'warren', 'biden'])].shape)
     print()
 
     # lowercase words in article text

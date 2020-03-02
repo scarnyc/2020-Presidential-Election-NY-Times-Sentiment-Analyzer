@@ -654,20 +654,16 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
     print()
 
     # Compute and print the confusion matrix
-    print(confusion_matrix(y_test, y_pred))
+    print(confusion_matrix(np.argmax(y_test, axis=1), y_pred))
     print()
 
     # https://www.kaggle.com/ngyptr/multi-class-classification-with-lstm
-    labels = list(set(df[label]))
+    labels = ['positive', 'neutral', 'negative']
     print(labels)
     print()
 
     # Create the performance report
-    print(classification_report(y_test, y_pred, target_names=labels))
-    print()
-
-    # Create the performance report
-    print(confusion_matrix(y_test, y_pred))
+    print(classification_report(np.argmax(y_test, axis=1), y_pred, target_names=labels))
     print()
 
     # save model and architecture to single file
