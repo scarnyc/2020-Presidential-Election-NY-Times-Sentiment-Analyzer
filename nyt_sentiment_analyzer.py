@@ -39,13 +39,13 @@ from sklearn.ensemble import RandomForestClassifier
 
 def sentiment_analysis_pipe(directory):
     """
-    This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of 2020 U.S. Presidential Candidates,
-    using the N.Y. Times Article Search API.
+    This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of
+    2020 US Presidential Candidates, using the N.Y. Times Article Search API.
 
      Please note the following functions that are used in the Sentiment Analysis Model Pipeline:
 
-    - union_csv (reads .csv files containing Article abstract descriptions of N.Y. Times articles into a single pandas DataFrame.
-        Please note that the .csv files were created by calling the nyt_api.main module)
+    - union_csv (reads .csv files containing Article abstract descriptions of N.Y. Times articles
+        into a single pandas DataFrame. Please note that the .csv files were created by calling the nyt_api.main module)
     - preprocess_df (pre-processes aforementioned DataFrame by dropping null values and duplicates,
         and also concatenating columns for text feature engineering)
     - date_feats (generates year, month, day and hour date features from existing date feature)
@@ -134,238 +134,238 @@ def sentiment_analysis_pipe(directory):
          'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden']
     ]
 
-    # plot heatmap of feature correlations
-    corr_heatmap(df=article_df,
-                 features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
-                           'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
-                           'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden']
-                 )
-
-    # automatically remove highly correlated features
-    model_df = drop_high_corr(df=model_df)
-
-    # plot word frequencies
-    plot_word_freq(
-        pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
-        plot_title='BOW FREQUENCY',
-        stopwords=my_stopwords,
-        n=30
-    )
-
-    # plot tfidf Scatter plot
-    two_dim_tf_viz(
-        df=article_df,
-        pd_series='text',
-        stopwords=my_stopwords,
-        pd_color_series='sentiment_label',
-        max_features=1000,
-        plot_title='N.Y. Times Article Sentiment Clusters'
-    )
-
-    # plot Time Series Line plot
-    time_series_line_viz(
-        df=article_df[article_df['text'].str.contains('Trump', case=False)],
-        date_index='pub_date',
-        pd_series='polarity',
-        plot_title='N.Y. Times Articles Avg. Daily Sentiment'
-    )
-
-    # instantiate list of text models: text_models
-    text_models = [
-        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                  ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(MultinomialNB()))
-                  ]),
-        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                  ('scaler', StandardScaler(with_mean=False)),
-                  ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(MultinomialNB()))
-                  ]),
-        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                  ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
-                  ]),
-        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                  ('scaler', StandardScaler(with_mean=False)),
-                  ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
-                  ]),
-        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                  ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
-                                                                     n_jobs=4, class_weight='balanced')))
-                  ]),
-        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                  ('scaler', StandardScaler(with_mean=False)),
-                  ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
-                                                                     n_jobs=4, class_weight='balanced')))
-                  ]),
-        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                 ('dim_red', SelectKBest(chi2, k=300)),
-                 ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
-                 ]),
-        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                  ('scaler', StandardScaler(with_mean=False)),
-                  ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
-                   ]),
-        Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                  ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf',OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
-                                                                random_state=42, class_weight='balanced')))
-                   ]),
-        Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
-                  ('scaler', StandardScaler(with_mean=False)),
-                  ('dim_red', SelectKBest(chi2, k=300)),
-                  ('clf', OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
-                                                                 random_state=42, class_weight='balanced')))
-                   ])
-            ]
-    print('Instantiated list of text models!')
-    print()
-
-    # print out text model metrics
-    model_training_metrics(
-        df=model_df,
-        models=text_models,
-        features='text_feat',
-        label='sentiment_label'
-    )
-
-    # instantiate list of numeric models: num_models
-    num_models = [
-        Pipeline([
-            ('scaler', StandardScaler()),
-            ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
-        ]),
-        Pipeline([
-            ('scaler', StandardScaler()),
-            ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
-                                                               n_jobs=4, class_weight='balanced')))
-        ]),
-        Pipeline([
-            ('scaler', StandardScaler()),
-            ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
-        ]),
-        Pipeline([
-            ('scaler', StandardScaler()),
-            ('clf', OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
-                                                           random_state=42, class_weight='balanced')))
-        ])
-    ]
-    print('Instantiated list of models with numeric features!')
-    print()
-
-    # print out metrics for models with numeric features
-    model_training_metrics(
-        df=model_df,
-        models=num_models,
-        features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
-                  'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
-                  'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden'],
-        label='sentiment_label'
-    )
-
-    # tune hyper parameters for text model: text_pipe
-    text_pipe = model_random_hyper_tune(
-        df=model_df,
-        model=Pipeline([('vectorizer', CountVectorizer(stop_words=my_stopwords)),
-                        ('scaler', StandardScaler(with_mean=False)),
-                        ('dim_red', SelectKBest(chi2)),
-                        ('clf', OneVsRestClassifier(XGBClassifier(random_state=42)))
-                        ]),
-        param_grid={
-            'vectorizer__ngram_range': [(1, 3), (2, 3)],
-            'dim_red__k': [100, 200, 300],
-            'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
-            'clf__estimator__colsample_bytree': [0.3, 0.7],
-            'clf__estimator__n_estimators': [100, 200, 300],
-            'clf__estimator__max_depth': [3, 6, 10, 20],
-            'clf__estimator__learning_rate': np.linspace(.1, 2, 150),
-            'clf__estimator__min_samples_leaf': list(range(20, 65))
-        },
-        features='text_feat',
-        label='sentiment_label',
-        n_iters=25,
-        n_folds=5,
-        n_jobs=4,
-        model_file_path="./models/text_pipe_xgb.pkl"
-    )
-
-    # get feature importances from BOW frequencies for negative reviews
-    text_feature_importance(
-        df=model_df[model_df['sentiment_label'] == 'negative'],
-        text_feature='text_feat',
-        vectorizer=text_pipe[0]
-    )
-
-    # tune hyper parameters for model with numeric feature inputs: num_pipe
-    num_pipe = model_random_hyper_tune(
-        df=model_df,
-        model=Pipeline([('scaler', StandardScaler()),
-                        ('clf', OneVsRestClassifier(XGBClassifier(booster='gbtree', random_state=42)))
-                        ]),
-        param_grid={
-                    'clf__estimator__colsample_bytree': [0.3, 0.7],
-                    'clf__estimator__n_estimators': [100, 200, 300],
-                    'clf__estimator__max_depth': [3, 6, 10, 20],
-                    'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
-                    'clf__estimator__min_samples_leaf': list(range(20, 60))
-                    },
-        features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
-                  'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
-                  'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden'],
-        label='sentiment_label',
-        n_iters=25,
-        n_folds=5,
-        n_jobs=4,
-        model_file_path="./models/num_pipe_xgb.pkl"
-    )
-
-    # look at most important features for model with numeric features
-    num_feature_importance(df=model_df,
-                           model=num_pipe[1],
-                           features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
-                                     'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
-                                     'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden']
-                           )
-
-    # print out stacked model metrics
-    stacked_model_metrics(
-        df=model_df,
-        label='sentiment_label',
-        text_model=text_pipe,
-        text_feature='text_feat',
-        num_model=num_pipe,
-        num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
-                      'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
-                      'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden'],
-        stacked_model=OneVsRestClassifier(LogisticRegression(C=100, solver='liblinear',
-                                                             random_state=42, class_weight='balanced'))
-    )
-
-    # tune hyper parameters for stacked model
-    stacked_random_hyper_tune(
-        model_df=model_df,
-        stacked_model=OneVsRestClassifier(LogisticRegression(solver='liblinear', random_state=42,
-                                                             class_weight='balanced')),
-        param_grid={
-            'estimator__C': [.001, .001, .01, .1, 1, 10, 100, 1000],
-            'estimator__penalty': ['l1', 'l2', 'elasticnet', 'none']
-        },
-        text_feature='text_feat',
-        num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
-                      'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
-                      'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden'],
-        label='sentiment_label',
-        text_model_pkl="./models/text_pipe_xgb.pkl",
-        num_model_pkl="./models/num_pipe_xgb.pkl",
-        n_jobs=4,
-        n_iters=25,
-        n_folds=5,
-        model_file_path="./models/lr_stack.pkl"
-    )
+    # # plot heatmap of feature correlations
+    # corr_heatmap(df=article_df,
+    #              features=['year', 'month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+    #                        'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
+    #                        'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden']
+    #              )
+    #
+    # # automatically remove highly correlated features
+    # model_df = drop_high_corr(df=model_df)
+    #
+    # # plot word frequencies
+    # plot_word_freq(
+    #     pd_series=article_df[article_df['sentiment_label'] == 'positive']['text'],
+    #     plot_title='BOW FREQUENCY',
+    #     stopwords=my_stopwords,
+    #     n=30
+    # )
+    #
+    # # plot tfidf Scatter plot
+    # two_dim_tf_viz(
+    #     df=article_df,
+    #     pd_series='text',
+    #     stopwords=my_stopwords,
+    #     pd_color_series='sentiment_label',
+    #     max_features=1000,
+    #     plot_title='N.Y. Times Article Sentiment Clusters'
+    # )
+    #
+    # # plot Time Series Line plot
+    # time_series_line_viz(
+    #     df=article_df[article_df['text'].str.contains('Trump', case=False)],
+    #     date_index='pub_date',
+    #     pd_series='polarity',
+    #     plot_title='N.Y. Times Articles Avg. Daily Sentiment'
+    # )
+    #
+    # # instantiate list of text models: text_models
+    # text_models = [
+    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #               ('dim_red', SelectKBest(chi2, k=300)),
+    #               ('clf', OneVsRestClassifier(MultinomialNB()))
+    #               ]),
+    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #               ('scaler', StandardScaler(with_mean=False)),
+    #               ('dim_red', SelectKBest(chi2, k=300)),
+    #               ('clf', OneVsRestClassifier(MultinomialNB()))
+    #               ]),
+    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #               ('dim_red', SelectKBest(chi2, k=300)),
+    #               ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
+    #               ]),
+    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #               ('scaler', StandardScaler(with_mean=False)),
+    #               ('dim_red', SelectKBest(chi2, k=300)),
+    #               ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
+    #               ]),
+    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #               ('dim_red', SelectKBest(chi2, k=300)),
+    #               ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
+    #                                                                  n_jobs=4, class_weight='balanced')))
+    #               ]),
+    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #               ('scaler', StandardScaler(with_mean=False)),
+    #               ('dim_red', SelectKBest(chi2, k=300)),
+    #               ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
+    #                                                                  n_jobs=4, class_weight='balanced')))
+    #               ]),
+    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #              ('dim_red', SelectKBest(chi2, k=300)),
+    #              ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
+    #              ]),
+    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #               ('scaler', StandardScaler(with_mean=False)),
+    #               ('dim_red', SelectKBest(chi2, k=300)),
+    #               ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
+    #                ]),
+    #     Pipeline([('vectorizer', CountVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #               ('dim_red', SelectKBest(chi2, k=300)),
+    #               ('clf',OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
+    #                                                             random_state=42, class_weight='balanced')))
+    #                ]),
+    #     Pipeline([('vectorizer', TfidfVectorizer(ngram_range=(1, 2), stop_words=my_stopwords)),
+    #               ('scaler', StandardScaler(with_mean=False)),
+    #               ('dim_red', SelectKBest(chi2, k=300)),
+    #               ('clf', OneVsRestClassifier(LogisticRegression(max_iter=5000, solver='liblinear',
+    #                                                              random_state=42, class_weight='balanced')))
+    #                ])
+    #         ]
+    # print('Instantiated list of text models!')
+    # print()
+    #
+    # # print out text model metrics
+    # model_training_metrics(
+    #     df=model_df,
+    #     models=text_models,
+    #     features='text_feat',
+    #     label='sentiment_label'
+    # )
+    #
+    # # instantiate list of numeric models: num_models
+    # num_models = [
+    #     Pipeline([
+    #         ('scaler', StandardScaler()),
+    #         ('clf', OneVsRestClassifier(SVC(probability=True, random_state=42, class_weight='balanced')))
+    #     ]),
+    #     Pipeline([
+    #         ('scaler', StandardScaler()),
+    #         ('clf', OneVsRestClassifier(RandomForestClassifier(max_depth=3, n_estimators=100, random_state=42,
+    #                                                            n_jobs=4, class_weight='balanced')))
+    #     ]),
+    #     Pipeline([
+    #         ('scaler', StandardScaler()),
+    #         ('clf', OneVsRestClassifier(XGBClassifier(n_jobs=4, random_state=42)))
+    #     ]),
+    #     Pipeline([
+    #         ('scaler', StandardScaler()),
+    #         ('clf', OneVsRestClassifier(LogisticRegression(C=100, max_iter=5000, solver='liblinear',
+    #                                                        random_state=42, class_weight='balanced')))
+    #     ])
+    # ]
+    # print('Instantiated list of models with numeric features!')
+    # print()
+    #
+    # # print out metrics for models with numeric features
+    # model_training_metrics(
+    #     df=model_df,
+    #     models=num_models,
+    #     features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+    #               'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
+    #               'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden'],
+    #     label='sentiment_label'
+    # )
+    #
+    # # tune hyper parameters for text model: text_pipe
+    # text_pipe = model_random_hyper_tune(
+    #     df=model_df,
+    #     model=Pipeline([('vectorizer', CountVectorizer(stop_words=my_stopwords)),
+    #                     ('scaler', StandardScaler(with_mean=False)),
+    #                     ('dim_red', SelectKBest(chi2)),
+    #                     ('clf', OneVsRestClassifier(XGBClassifier(random_state=42)))
+    #                     ]),
+    #     param_grid={
+    #         'vectorizer__ngram_range': [(1, 3), (2, 3)],
+    #         'dim_red__k': [100, 200, 300],
+    #         'clf__estimator__booster': ['gbtree', 'gblinear', 'dart'],
+    #         'clf__estimator__colsample_bytree': [0.3, 0.7],
+    #         'clf__estimator__n_estimators': [100, 200, 300],
+    #         'clf__estimator__max_depth': [3, 6, 10, 20],
+    #         'clf__estimator__learning_rate': np.linspace(.1, 2, 150),
+    #         'clf__estimator__min_samples_leaf': list(range(20, 65))
+    #     },
+    #     features='text_feat',
+    #     label='sentiment_label',
+    #     n_iters=25,
+    #     n_folds=5,
+    #     n_jobs=4,
+    #     model_file_path="./models/text_pipe_xgb.pkl"
+    # )
+    #
+    # # get feature importances from BOW frequencies for negative reviews
+    # text_feature_importance(
+    #     df=model_df[model_df['sentiment_label'] == 'negative'],
+    #     text_feature='text_feat',
+    #     vectorizer=text_pipe[0]
+    # )
+    #
+    # # tune hyper parameters for model with numeric feature inputs: num_pipe
+    # num_pipe = model_random_hyper_tune(
+    #     df=model_df,
+    #     model=Pipeline([('scaler', StandardScaler()),
+    #                     ('clf', OneVsRestClassifier(XGBClassifier(booster='gbtree', random_state=42)))
+    #                     ]),
+    #     param_grid={
+    #                 'clf__estimator__colsample_bytree': [0.3, 0.7],
+    #                 'clf__estimator__n_estimators': [100, 200, 300],
+    #                 'clf__estimator__max_depth': [3, 6, 10, 20],
+    #                 'clf__estimator__learning_rate': np.linspace(.1, 2, num=50),
+    #                 'clf__estimator__min_samples_leaf': list(range(20, 60))
+    #                 },
+    #     features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+    #               'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
+    #               'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden'],
+    #     label='sentiment_label',
+    #     n_iters=25,
+    #     n_folds=5,
+    #     n_jobs=4,
+    #     model_file_path="./models/num_pipe_xgb.pkl"
+    # )
+    #
+    # # look at most important features for model with numeric features
+    # num_feature_importance(df=model_df,
+    #                        model=num_pipe[1],
+    #                        features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+    #                                  'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
+    #                                  'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden']
+    #                        )
+    #
+    # # print out stacked model metrics
+    # stacked_model_metrics(
+    #     df=model_df,
+    #     label='sentiment_label',
+    #     text_model=text_pipe,
+    #     text_feature='text_feat',
+    #     num_model=num_pipe,
+    #     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+    #                   'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
+    #                   'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden'],
+    #     stacked_model=OneVsRestClassifier(LogisticRegression(C=100, solver='liblinear',
+    #                                                          random_state=42, class_weight='balanced'))
+    # )
+    #
+    # # tune hyper parameters for stacked model
+    # stacked_random_hyper_tune(
+    #     model_df=model_df,
+    #     stacked_model=OneVsRestClassifier(LogisticRegression(solver='liblinear', random_state=42,
+    #                                                          class_weight='balanced')),
+    #     param_grid={
+    #         'estimator__C': [.001, .001, .01, .1, 1, 10, 100, 1000],
+    #         'estimator__penalty': ['l1', 'l2', 'elasticnet', 'none']
+    #     },
+    #     text_feature='text_feat',
+    #     num_features=['month', 'day', 'dayofweek', 'hour', 'word_count', 'char_count', 'subjectivity',
+    #                   'Amy Klobuchar', 'Andrew Yang', 'Bernie Sanders', 'Mike Bloomberg',
+    #                   'Pete Buttigieg', 'Donald Trump', 'Elizabeth Warren', 'Joe Biden'],
+    #     label='sentiment_label',
+    #     text_model_pkl="./models/text_pipe_xgb.pkl",
+    #     num_model_pkl="./models/num_pipe_xgb.pkl",
+    #     n_jobs=4,
+    #     n_iters=25,
+    #     n_folds=5,
+    #     model_file_path="./models/lr_stack.pkl"
+    # )
 
     # Make predictions using Stacked Model
     ml_predict_sentiment(

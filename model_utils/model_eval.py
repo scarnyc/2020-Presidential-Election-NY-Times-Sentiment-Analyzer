@@ -641,12 +641,17 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
 
     # Use the model to predict on new data
     predicted = model.predict(X_test)
+    print(predicted)
+    print()
 
     # Choose the class with higher probability
     y_pred = np.argmax(predicted, axis=1)
+    print(y_pred)
+    print()
 
     # Compute and print the confusion matrix
     print(confusion_matrix(y_test, y_pred))
+    print()
 
     # https://www.kaggle.com/ngyptr/multi-class-classification-with-lstm
     labels = list(set(df[label]))

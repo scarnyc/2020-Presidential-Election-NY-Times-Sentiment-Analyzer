@@ -62,8 +62,8 @@ it's still interesting that compared to the rest of the candidates Trump's avera
 (considering that the President's impeachment trial that was happening during the same time the articles were collected).  
 
 Next Steps:
- - edit filter_dataframe() function to filter out positive Trump articles
  - resolve Mike Bloomberg & Pete Butiggieg issue with input NYT API data pipeline
+ - investigate why Elizabeth Warren gets a perfect positive sentiment score of 1.0
  - Add logging functionality
     
  More to come...
