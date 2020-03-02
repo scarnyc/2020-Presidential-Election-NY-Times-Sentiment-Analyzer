@@ -107,6 +107,12 @@ def ml_predict_sentiment(
 
     # split candidate name to retrieve candidate's last name
     predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
+    print(predictions_df['candidate_last_name'].unique())
+    print()
+    print(predictions_df[predictions_df['candidate_last_name'] == None])
+    print()
+    print(predictions_df[predictions_df['candidate_last_name'] == None].shape)
+    print()
 
     # lowercase words in article text
     predictions_df['text_lower'] = predictions_df['text'].str.lower()
@@ -116,10 +122,7 @@ def ml_predict_sentiment(
         # filter out articles that don't contain the candidate's last name in the article's url
         # or in the article's text
         # and filter out articles that contain candidates who dropped out of the race
-        (predictions_df['web_url'].str.contains(
-            predictions_df['candidate_last_name'].values[0],
-            case=False)
-        ) | (predictions_df['text_lower'].str.contains(
+        (predictions_df['text_lower'].str.contains(
             predictions_df['candidate_last_name'].values[0],
             case=False)) & (predictions_df['candidate_last_name'].isin(candidate_list)
                             ),
@@ -229,6 +232,8 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
 
     # split candidate name to retrieve candidate's last name
     predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
+    print(predictions_df['candidate_last_name'].unique())
+    print()
 
     # lowercase words in article text
     predictions_df['text_lower'] = predictions_df['text'].str.lower()
@@ -238,10 +243,7 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
         # filter out articles that don't contain the candidate's last name in the article's url
         # or in the article's text
         # and filter out articles that contain candidates who dropped out of the race
-        (predictions_df['web_url'].str.contains(
-            predictions_df['candidate_last_name'].values[0],
-            case=False)
-        ) | (predictions_df['text_lower'].str.contains(
+        (predictions_df['text_lower'].str.contains(
             predictions_df['candidate_last_name'].values[0],
             case=False)) & (predictions_df['candidate_last_name'].isin(candidate_list)
                             ),

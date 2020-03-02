@@ -631,6 +631,8 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
     print()
     print('Test set shape: {}'.format(X_test.shape))
     print()
+    print('Test Labels: {}'.format(y_test))
+    print()
 
     # Fit the classifier
     model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs)
@@ -647,6 +649,8 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
     # Choose the class with higher probability
     y_pred = np.argmax(predicted, axis=1)
     print(y_pred)
+    print()
+    print(np.unique(y_pred))
     print()
 
     # Compute and print the confusion matrix
