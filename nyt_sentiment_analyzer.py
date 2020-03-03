@@ -378,9 +378,8 @@ def sentiment_analysis_pipe(directory):
         label='sentiment_label',
         text_model_pkl="./models/text_pipe_xgb.pkl",
         num_model_pkl="./models/num_pipe_xgb.pkl",
-        stack_model_pkl="./models/lr_stack.pkl",
-        candidate_list=['sanders', 'trump', 'warren', 'biden', 'buttigieg', 'bloomberg',
-                        'klobuchar'])
+        stack_model_pkl="./models/lr_stack.pkl"
+    )
 
     # get the vocabulary size for the neural network: vocab_size
     vocab_size, vocab_dict = get_vocab_size(model_df['text_feat'].tolist())
@@ -409,9 +408,7 @@ def sentiment_analysis_pipe(directory):
         max_length=model_df['char_count'].max(),
         label='sentiment_label',
         num_classes=3,
-        epochs=1,
-        candidate_list=['sanders', 'trump', 'warren', 'biden', 'buttigieg', 'bloomberg',
-                        'klobuchar'],
+        candidate_list=['sanders', 'trump', 'warren', 'biden', 'bloomberg'],
         model_file_name=r"./models/rnn_model.h5"
     )
 

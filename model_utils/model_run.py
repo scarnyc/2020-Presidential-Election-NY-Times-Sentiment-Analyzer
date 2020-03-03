@@ -26,7 +26,6 @@ def ml_predict_sentiment(
         text_feature,
         num_features,
         label,
-        candidate_list,
         text_model_pkl,
         num_model_pkl,
         stack_model_pkl):
@@ -42,7 +41,6 @@ def ml_predict_sentiment(
     @param num_features: numeric features used for modeling
     @param label: target variable used for validating predictions
     @param text_model_pkl: path of Text Model pickle file
-    @param candidate_list: list of candidates to filter for results
     @param num_model_pkl: path of Numeric Model pickle file
     @param stack_model_pkl: path of Stacked Model pickle file
     """
@@ -105,40 +103,36 @@ def ml_predict_sentiment(
     print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
-    # split candidate name to retrieve candidate's last name
-    predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
-    print(predictions_df['candidate_last_name'].unique())
-    print()
-    print(predictions_df[~predictions_df['candidate_last_name'].isin(['klobuchar', 'yang', 'sanders', 'booker', 'trump',
-                                                                      'warren', 'biden'])])
-    print()
-    print(predictions_df[predictions_df['candidate_last_name'].isin(['klobuchar', 'yang', 'sanders', 'booker', 'trump',
-                                                                     'warren', 'biden'])].shape)
-    print()
-
-    # lowercase words in article text
-    predictions_df['text_lower'] = predictions_df['text'].str.lower()
-
     # create a flag to filter results according to 2 rules
-    predictions_df['flag'] = np.where(
-        # filter out articles that don't contain the candidate's last name in the article's url
-        # or in the article's text
-        # and filter out articles that contain candidates who dropped out of the race
-        (predictions_df['text_lower'].str.contains(
-            predictions_df['candidate_last_name'].values[0],
-            case=False)) & (predictions_df['candidate_last_name'].isin(candidate_list)
-                            ),
-        1,
-        0
+    predictions_df['candidate2'] = np.where(
+        predictions_df['Mike Bloomberg_FEAT'] == 1,
+        'bloomberg',
+        np.where(
+            predictions_df['Bernie Sanders_FEAT'] == 1,
+            'sanders',
+            np.where(
+                predictions_df['Donald Trump_FEAT'] == 1,
+                'trump',
+                np.where(
+                    predictions_df['Elizabeth Warren_FEAT'] == 1,
+                    'warren',
+                    np.where(
+                        predictions_df['Joe Biden_FEAT'] == 1,
+                        'biden',
+                        0
+                    )
+                )
+            )
+        )
     )
 
     # filter results by the flag: filtered_df
     filtered_df = predictions_df[predictions_df['flag'] > 0]
-    print(filtered_df['candidate'].value_counts())
+    print(filtered_df['candidate2'].value_counts())
     print()
 
     # group average sentiment by candidate
-    grouped_df = filtered_df.groupby('candidate')['predictions'].mean() \
+    grouped_df = filtered_df.groupby('candidate2')['predictions'].mean() \
         .reset_index() \
         .sort_values(by='predictions', ascending=False)
 
@@ -151,7 +145,7 @@ def ml_predict_sentiment(
                           index=False)
 
 
-def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, num_classes, epochs, candidate_list,
+def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, num_classes, candidate_list,
                           model_file_name):
     """
     Load RNN model from pickle file and make predictions with RNN model.
@@ -166,7 +160,6 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     @param max_length: maximum length of text feature
     @param label: pandas Series containing target variable for modeling
     @param num_classes: target variable's distinct number of classes
-    @param epochs: number of complete passes through the training dataset
     @param candidate_list: list of candidates to filter for results
     @param model_file_name: path of RNN Model pickle file
     """
@@ -203,26 +196,16 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     # summarize model
     model.summary()
 
-    # Fit the network
-    model.fit(prep_data, prep_labels, epochs=epochs)
-
     # Use the model to predict on new data
-    y_pred = model.predict(prep_data)
-
-    # https://www.kaggle.com/ngyptr/multi-class-classification-with-lstm
-    labels = list(set(model_df[label]))
-    print(labels)
-    print()
+    predicted = model.predict(prep_data)
 
     # Choose the class with higher probability
-    pred_labels = labels[np.argmax(y_pred)]
-    print(pred_labels)
-    print()
+    y_pred = np.argmax(predicted, axis=1)
 
     # join predictions to input pandas DataFrame
-    predictions_df = source_df.join(pd.DataFrame(pred_labels, columns=['predictions'])).join(model_df,
-                                                                                             lsuffix='_SOURCE',
-                                                                                             rsuffix='_FEAT')
+    predictions_df = source_df.join(pd.DataFrame(y_pred, columns=['predictions'])).join(model_df,
+                                                                                        lsuffix='_SOURCE',
+                                                                                        rsuffix='_FEAT')
 
     # print shape of new pandas DataFrame
     print('Predictions DataFrame Shape: {}'.format(predictions_df.shape))
@@ -232,31 +215,14 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
-    # split candidate name to retrieve candidate's last name
-    predictions_df['candidate_last_name'] = predictions_df['candidate'].str.split(' ', expand=True)[1].str.lower()
-    print(predictions_df['candidate_last_name'].unique())
-    print()
-
     # lowercase words in article text
     predictions_df['text_lower'] = predictions_df['text'].str.lower()
 
-    # create a flag to filter results according to 2 rules
-    predictions_df['flag'] = np.where(
-        # filter out articles that don't contain the candidate's last name in the article's url
-        # or in the article's text
-        # and filter out articles that contain candidates who dropped out of the race
-        (predictions_df['text_lower'].str.contains(
-            predictions_df['candidate_last_name'].values[0],
-            case=False)) & (predictions_df['candidate_last_name'].isin(candidate_list)
-                            ),
-        1,
-        0
-    )
-
-    # filter results by the flag: filtered_df
-    filtered_df = predictions_df[predictions_df['flag'] > 0]
-    print(filtered_df['candidate'].value_counts())
-    print()
+    # filter out candidates who are no longer running
+    filtered_df = predictions_df[predictions_df['text_lower'].str.contains(
+        '|'.join([word for word in candidate_list]),
+        case=False
+    )]
 
     # group average sentiment by candidate
     grouped_df = filtered_df.groupby('candidate')['predictions'].mean() \

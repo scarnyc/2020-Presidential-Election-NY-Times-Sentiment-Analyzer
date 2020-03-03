@@ -650,14 +650,12 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
     y_pred = np.argmax(predicted, axis=1)
     print(y_pred)
     print()
-    print(np.unique(y_pred))
-    print()
 
     # Compute and print the confusion matrix
     print(confusion_matrix(np.argmax(y_test, axis=1), y_pred))
     print()
 
-    # https://www.kaggle.com/ngyptr/multi-class-classification-with-lstm
+    # compute and print labels
     labels = ['positive', 'neutral', 'negative']
     print(labels)
     print()
