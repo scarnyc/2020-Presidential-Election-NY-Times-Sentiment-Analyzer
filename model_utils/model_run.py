@@ -119,7 +119,7 @@ def ml_predict_sentiment(
                     np.where(
                         predictions_df['Joe Biden_FEAT'] == 1,
                         'biden',
-                        0
+                        'other'
                     )
                 )
             )
@@ -127,7 +127,7 @@ def ml_predict_sentiment(
     )
 
     # filter results by the flag: filtered_df
-    filtered_df = predictions_df[predictions_df['flag'] > 0]
+    filtered_df = predictions_df[predictions_df['candidate2'] != 'other']
     print(filtered_df['candidate2'].value_counts())
     print()
 
@@ -215,17 +215,36 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     print('Predictions DataFrame columns: {}'.format(predictions_df.columns))
     print()
 
-    # lowercase words in article text
-    predictions_df['text_lower'] = predictions_df['text'].str.lower()
+    # create a flag to filter results according to 2 rules
+    predictions_df['candidate2'] = np.where(
+        predictions_df['Mike Bloomberg_FEAT'] == 1,
+        'bloomberg',
+        np.where(
+            predictions_df['Bernie Sanders_FEAT'] == 1,
+            'sanders',
+            np.where(
+                predictions_df['Donald Trump_FEAT'] == 1,
+                'trump',
+                np.where(
+                    predictions_df['Elizabeth Warren_FEAT'] == 1,
+                    'warren',
+                    np.where(
+                        predictions_df['Joe Biden_FEAT'] == 1,
+                        'biden',
+                        'other'
+                    )
+                )
+            )
+        )
+    )
 
-    # filter out candidates who are no longer running
-    filtered_df = predictions_df[predictions_df['text_lower'].str.contains(
-        '|'.join([word for word in candidate_list]),
-        case=False
-    )]
+    # filter results by the flag: filtered_df
+    filtered_df = predictions_df[predictions_df['candidate2'] != 'other']
+    print(filtered_df['candidate2'].value_counts())
+    print()
 
     # group average sentiment by candidate
-    grouped_df = filtered_df.groupby('candidate')['predictions'].mean() \
+    grouped_df = filtered_df.groupby('candidate2')['predictions'].mean() \
         .reset_index() \
         .sort_values(by='predictions', ascending=False)
 
