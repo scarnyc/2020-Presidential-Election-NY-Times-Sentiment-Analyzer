@@ -7,7 +7,7 @@ This module contains customized utilities for making Sentiment Analysis predicti
     - rnn_predict_sentiment (make sentiment predictions using recurrent neural network)
 
 Created on 12/31/19 by William Scardino
-Last updated: 3/1/20
+Last updated: 3/2/20
 *******************************************************************************************************************
 """
 import numpy as np
@@ -145,7 +145,7 @@ def ml_predict_sentiment(
                           index=False)
 
 
-def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, num_classes, candidate_list,
+def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, num_classes,
                           model_file_name):
     """
     Load RNN model from pickle file and make predictions with RNN model.
@@ -160,7 +160,6 @@ def rnn_predict_sentiment(model_df, source_df, text_feature, max_length, label, 
     @param max_length: maximum length of text feature
     @param label: pandas Series containing target variable for modeling
     @param num_classes: target variable's distinct number of classes
-    @param candidate_list: list of candidates to filter for results
     @param model_file_name: path of RNN Model pickle file
     """
     # define feature set: X

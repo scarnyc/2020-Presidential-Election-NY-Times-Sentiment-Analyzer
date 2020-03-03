@@ -13,7 +13,7 @@ This module contains customized utilities for training & evaluating Sentiment An
     - neural_net_train_metrics (build, compile and train a recurrent neural network and get evaluation metrics)
 
 Created on 12/31/19 by William Scardino
-Last updated: 3/1/20
+Last updated: 3/2/20
 ***************************************************************************************************************************
 """
 import numpy as np

@@ -5,7 +5,7 @@
 Sentiment Analysis on 2020 U.S. Presidential Candidates N.Y. Times Articles (.py script)
 
 Created on 12/31/19 by William Scardino
-Last updated: 3/1/20
+Last updated: 3/2/20
 **********************************************************************************************
 """
 # Import custom packages for data processing, feature engineering,
@@ -392,7 +392,7 @@ def sentiment_analysis_pipe(directory):
         label='sentiment_label',
         vocabulary_size=vocab_size,
         num_classes=3,
-        epochs=1,
+        epochs=100,
         batch_size=64,
         word2vec_dim=300,
         vocabulary_dict=vocab_dict,
@@ -408,7 +408,6 @@ def sentiment_analysis_pipe(directory):
         max_length=model_df['char_count'].max(),
         label='sentiment_label',
         num_classes=3,
-        candidate_list=['sanders', 'trump', 'warren', 'biden', 'bloomberg'],
         model_file_name=r"./models/rnn_model.h5"
     )
 
