@@ -3,21 +3,18 @@ Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidate
 
 This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Candidates, 
 using the N.Y. Times Article Search API. Ths is a multi-class classification problem, predicting positive, neutral and negative sentiment.
-The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction,
-while Donald Trump has the lowest. Please refer to the "Findings & Results" section below for more info.
+
+The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction, while Donald Trump has the lowest. Please refer to the "Findings & Results" section below for more info.
 
 At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
-    1) Read in data from multiple N.Y.Times .csv files from a specified directory into a single DataFrame.
-        Files contain data about N.Y. Times Articles about U.S. Presidential Candidates scraped from the Article Search API 
-    2) Then it will pre-process the data, engineer additional features, as well as label the data using TextBlob sentiment analysis scores.
+    1) Read in data from multiple N.Y.Times .csv files from a specified directory into a single DataFrame. Files contain data about N.Y.        Times Articles about U.S. Presidential Candidates scraped from the Article Search API. 
+    2) Then it will pre-process the data, engineer additional features, as well as label the data using TextBlob sentiment analysis     scores.
     3) Next, the function will generate a series of graphs to assist with EDA in the Data Science workflow.
-    4) After that, it will train user-selected Sci-kit Learn Models and print out F1 and Accuracy score metrics, performing 5-Fold cross-validation.
-        This allows the user to compare models with numeric & text-based features and see how they perform, and see if the model is overfitting to the training data.
-    5) Then the function will both tune the hyper-parameters of both models (numeric & text-based features) and print the most important features for each model type, respectively.
+    4) After that, it will train user-selected Sci-kit Learn Models and print out F1 and Accuracy score metrics, performing 5-Fold cross-        validation. This allows the user to compare models with numeric & text-based features and see how they perform, and see if the model is overfitting to the training data.
+    5) Then the function will both tune the hyper-parameters of both models (numeric & text-based features) and print the most important        features for each model type, respectively.
     6) Next, the function will train and evaluate a stacked model pipeline: 
-        Using the aforementioned predictions from the text-based model and the numeric model as features, it will train a second-layered Logistic Regression model.
-    7) Finally, the pipeline will make predictions on the data and produce one last graph showing the average sentiment of the N.Y. Times Articles 
-        about a particular candidate over time.
+        Using the aforementioned predictions from the text-based model and the numeric model as features, it will train a second-layered         Logistic Regression model.
+    7) Finally, the pipeline will make predictions on the data and produce one last graph showing the average sentiment of the N.Y. Times        Articles about a particular candidate over time.
 
 Models Trained & Evaluated for both Text & Numeric Models:
 - Logistic Regression
@@ -47,23 +44,16 @@ While quantitative results suggest that the model has a 60% harmonic mean of pre
 
 Consider the table below of candidates and their average sentiment predictions from the model:  
 
-          candidate  predictions
-1    Bernie Sanders     0.668120
-0     Amy Klobuchar     0.595745
-3  Elizabeth Warren     0.487395
-4         Joe Biden     0.147936
-2      Donald Trump     0.093394
+candidate         predictions
+Bernie Sanders    0.559565 
+Amy Klobuchar     0.495837 
+Elizabeth Warren  0.429066 
+Joe Biden         0.183133 
+Donald Trump     -0.024885
  
 The model is predicting that Bernie Sanders has the highest average sentiment prediction while Donald Trump has the lowest.
 This prediction of Senator Sanders is in line with current polls and Caucus results from Iowa & New Hampshire. 
 On the other hand, it's interesting that President Trump has the lowest sentiment, out of any Presidential Candidate.
 Given that  the N.Y. Times is considered one of the most politically left-leaning news organizations in the United States, 
 it's still interesting that compared to the rest of the candidates Trump's average sentiment is the lowest 
-(considering that the President's impeachment trial that was happening during the same time the articles were collected).  
-
-Next Steps:
- - resolve Mike Bloomberg & Pete Butiggieg issue with input NYT API data pipeline
- - investigate why Elizabeth Warren gets a perfect positive sentiment score of 1.0
- - Add logging functionality
-    
- More to come...
+(considering that the President's impeachment trial that was happening during the same time the articles were collected).
