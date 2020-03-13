@@ -42,7 +42,7 @@ Quantitative:
 Qualitative:
 While quantitative results suggest that the model has a 60% harmonic mean of precision & recall, the qualitative results are interesting!
 
-Consider the table below of candidates and their average sentiment predictions from the model:  
+Consider the table below that shows the results for candidates and their average sentiment predictions from the model:  
 
 candidate         | predictions
 
