@@ -4,7 +4,7 @@ Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidate
 This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Candidates, 
 using the N.Y. Times Article Search API. Ths is a multi-class classification problem, predicting positive, neutral and negative sentiment.
 
-The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction, while Donald Trump has the lowest. Please refer to the "Findings & Results" section below for more info.
+The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction, while Donald Trump has the lowest. Please refer to the "Findings & Results" section below for more information on the findings.
 
 At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
     1) Read in data from multiple N.Y.Times .csv files from a specified directory into a single DataFrame. Files contain data about N.Y.        Times Articles about U.S. Presidential Candidates scraped from the Article Search API. 
