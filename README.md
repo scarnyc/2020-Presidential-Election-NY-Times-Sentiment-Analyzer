@@ -21,7 +21,7 @@ Models Trained & Evaluated for both Text & Numeric Models:
 - XGBoost Classifier
 - Random Forest Classifier
 - Linear SVM Classifier
-- Multi-nomial Naiive Bayes Classifier
+- Multinomial Naiive Bayes Classifier
 - Recurrent Neural Network (LSTM)
 
 Model Training Methodology:
