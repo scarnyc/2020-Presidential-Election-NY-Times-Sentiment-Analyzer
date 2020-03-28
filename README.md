@@ -22,6 +22,7 @@ Models Trained & Evaluated for both Text & Numeric Models:
 - Random Forest Classifier
 - Linear SVM Classifier
 - Multi-nomial Naiive Bayes Classifier
+- Recurrent Neural Network (LSTM)
 
 Model Training Methodology:
 - All text models that were trained were evaluated using Bi-Gram Bag of Words (BOW) Frequencies and TfIdf Scores as features for text-based models. 
