@@ -536,9 +536,6 @@ def neural_net_train_metrics(df, text_feature, max_length, label, vocabulary_siz
     This function builds and compiles a Recurrent Neural Network with Embedding and LSTM layers for increasing accuracy
     and combatting against the exploding gradient problem. It uses pre-trained GLOVE embeddings
     and a softmax activation function for multi-class classification.
-    The actual training process is similar to the model_training_metrics() function above.
-
-    https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
 
     @param df: input pandas DataFrame that contains features and target variables for modeling
     @param text_feature: input pandas Series that will be used as a feature for modeling
