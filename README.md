@@ -1,5 +1,4 @@
-# nyt_sentiment_analyzer .py package
-Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidates
+# Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidates
 
 This script performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Candidates, 
 using the N.Y. Times Article Search API. Ths is a multi-class classification problem, predicting positive, neutral and negative sentiment.
