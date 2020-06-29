@@ -27,7 +27,7 @@ Model Training Methodology:
 - All text models that were trained were evaluated using Bi-Gram Bag of Words (BOW) Frequencies and TfIdf Scores as features for text-based models. 
     Standardization was only performed on the TfIdf scores and dimensionality reduction using Chi-Square test was performed on both text-based feature types.
 - All numeric models that were trained were evaluated using Min-Max Scaling as features prior to model fitting. 
-    The numeric models used date features, article abstract character counts, article word counts, and TextBlob subjectivity. 
+    The numeric models used date features, article abstract character counts, article total word counts, and TextBlob subjectivity. 
 
 Findings & Results:
 Quantitative:
