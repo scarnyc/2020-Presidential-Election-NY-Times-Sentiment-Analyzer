@@ -38,6 +38,7 @@ Quantitative:
     However, while the numeric features involved in the model stacking significantly improve F1 Score (by approximately 15 percentage points), 
     F1 Score is ill-defined for negative predictions, with no prediction samples. 
     This finding is conclusive with the results for the XGBoost Classifier text model.
+- The LSTM had 68% F1 Score, however it only predicted 2/3 classes.  The LSTM Classifier needed more training data.
      
 Qualitative:
 While quantitative results suggest that the model has a 60% harmonic mean of precision & recall, the qualitative results are interesting!
