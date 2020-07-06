@@ -60,6 +60,4 @@ Donald Trump      | -0.024885
 The model is predicting that Bernie Sanders has the highest average sentiment prediction while Donald Trump has the lowest.
 This prediction of Senator Sanders is in line with current polls and Caucus results from Iowa & New Hampshire (which was the around the time this ML pipeline was last run). 
 On the other hand, it's interesting that President Trump has the lowest sentiment, out of any Presidential Candidate.
-Given that  the N.Y. Times is considered one of the most politically left-leaning news organizations in the United States, 
-it's still interesting that compared to the rest of the candidates Trump's average sentiment is the lowest 
-(considering that the President's impeachment trial that was happening during the same time the articles were collected).
+The N.Y. Times has a reputation for being a progressive news organization. It's still interesting that compared to the rest of the candidates Trump's average sentiment is the lowest (considering that the President's impeachment trial that was happening during the same time the articles were collected).
