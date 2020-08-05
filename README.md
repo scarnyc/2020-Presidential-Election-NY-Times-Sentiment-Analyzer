@@ -59,6 +59,6 @@ Consider the table below that shows the results for candidates and their average
 |Amy Klobuchar     |   0.50     |
 |Elizabeth Warren  |   0.43     |
 |Joe Biden         |   0.18     |
-|Donald Trump      |  -0.02     |
+|Donald Trump      | -0.02      |
  
 The model is predicting that Bernie Sanders has the highest average sentiment prediction while Donald Trump has the lowest.  This prediction of Senator Sanders is in line with current polls and Caucus results from Iowa & New Hampshire (which was the around the time the data from the N.Y. Times Article Search API data was last run).  It would be interesting to run the data throughout the election to current date and see if the results wind up with Joe Biden with the highest average sentiment score.  On the other hand, it's interesting that President Trump has the lowest sentiment, out of any Presidential Candidate.  The N.Y. Times has a reputation for being a progressive news organization. It's still interesting that compared to the rest of the candidates Trump's average sentiment is the lowest (considering that the President's impeachment trial that was happening during the same time the articles were collected).
