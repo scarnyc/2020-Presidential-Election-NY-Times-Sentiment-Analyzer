@@ -1,6 +1,6 @@
 # Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidates
 
-## Experiment Abstract: Application of Sentiment Analysis on Presidential Candidates using the N.Y. Times - 
+## Experiment Abstract: Application of Sentiment Analysis on Presidential Candidates using the N.Y. Times
 
 This Python Sentiment Analysis package helps answer the question what is the average sentiment score of U.S. Presidential Candidates, based on the content from what is being written about them in N.Y. Times articles.  I'm an avid reader of the N.Y.Times and one thought I had after reading numerous articles about presidential poll results, is what is the general sentiment of these candidates based on the content in articles that are being written about them?
 
@@ -38,7 +38,7 @@ At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_ana
     The numeric models used date features, article abstract character counts, article total word counts, and TextBlob subjectivity. 
 
 ## Findings & Results:
-### (Model Results)
+### Model Results
 - For multi-class classification F1 Score was used to evaluate data with imbalanced classes   
 - XGBoost Classifier outperformed the other models for the text-based model with 45.7% F1 score using Bi-gram TfIdf weights as features.   
 - XGBoost Classifier also outperformed the other models using numeric features, touting 66% F1 Score.       
@@ -48,7 +48,7 @@ At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_ana
     This finding is conclusive with the results for the XGBoost Classifier text model.
 - The LSTM had 68% F1 Score, however it only predicted 2/3 classes.  The LSTM Classifier needed more training data.
      
-### (Sentiment Score Prediction Interpretation)
+### Sentiment Score Prediction Interpretation
 While the model results suggest that the model has a 60% harmonic mean of precision & recall, the interpretation of the sentiment score predictions are quite interesting.
 
 Consider the table below that shows the results for candidates and their average sentiment predictions from the model:  
