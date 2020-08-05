@@ -1,6 +1,6 @@
 # Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidates
 
-Experiment Abstract: Application of Sentiment Analysis on Presidential Candidates using the N.Y. Times
+## Experiment Abstract: Application of Sentiment Analysis on Presidential Candidates using the N.Y. Times - 
 
 This Python Sentiment Analysis package helps answer the question what is the average sentiment score of U.S. Presidential Candidates, based on the content from what is being written about them in N.Y. Times articles.  I'm an avid reader of the N.Y.Times and one thought I had after reading numerous articles about presidential poll results, is what is the general sentiment of these candidates based on the content in articles that are being written about them?
 
@@ -11,7 +11,7 @@ using the N.Y. Times Article Search API, so it uses the article's abstract as th
 
 The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction, while Donald Trump has the lowest. This is in-line with the results from the Iowa and New Hampshire primaries, since the data from the N.Y. Times was run through February 2020.  Please refer to the "Findings & Results" section below for more information on the findings.
 
-What does the Sentiment Analysis Pipeline actually do?
+## What does the Sentiment Analysis Pipeline actually do?
 
 At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
     1) Read in data from multiple N.Y.Times .csv files from a specified directory into a single DataFrame. Files contain data about N.Y.        Times Articles about U.S. Presidential Candidates scraped from the Article Search API. 
@@ -23,7 +23,7 @@ At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_ana
         Using the aforementioned predictions from the text-based model and the numeric model as features, it will train a second-layered         Logistic Regression model.
     7) Finally, the pipeline will make predictions on the data and produce one last graph showing the average sentiment of the N.Y. Times        Articles about a particular candidate over time.
 
-Models Trained & Evaluated for both Text & Numeric Models:
+## Models Trained & Evaluated for both Text & Numeric Models:
 - Logistic Regression
 - XGBoost Classifier
 - Random Forest Classifier
@@ -31,15 +31,14 @@ Models Trained & Evaluated for both Text & Numeric Models:
 - Multinomial Naiive Bayes Classifier
 - Recurrent Neural Network (LSTM)
 
-Model Training Methodology:
+## Model Training Methodology:
 - All text models that were trained were evaluated using Bi-Gram Bag of Words (BOW) Frequencies and TfIdf Scores as features for text-based models. 
     Standardization was only performed on the TfIdf scores and dimensionality reduction using Chi-Square test was performed on both text-based feature types.
 - All numeric models that were trained were evaluated using Min-Max Scaling as features prior to model fitting. 
     The numeric models used date features, article abstract character counts, article total word counts, and TextBlob subjectivity. 
 
-Findings & Results:
-
-(Model Results)
+## Findings & Results:
+### (Model Results)
 - For multi-class classification F1 Score was used to evaluate data with imbalanced classes   
 - XGBoost Classifier outperformed the other models for the text-based model with 45.7% F1 score using Bi-gram TfIdf weights as features.   
 - XGBoost Classifier also outperformed the other models using numeric features, touting 66% F1 Score.       
@@ -49,7 +48,7 @@ Findings & Results:
     This finding is conclusive with the results for the XGBoost Classifier text model.
 - The LSTM had 68% F1 Score, however it only predicted 2/3 classes.  The LSTM Classifier needed more training data.
      
-(Sentiment Score Prediction Interpretation)
+### (Sentiment Score Prediction Interpretation)
 While the model results suggest that the model has a 60% harmonic mean of precision & recall, the interpretation of the sentiment score predictions are quite interesting.
 
 Consider the table below that shows the results for candidates and their average sentiment predictions from the model:  
@@ -66,7 +65,4 @@ Joe Biden         | 0.183133
 
 Donald Trump      | -0.024885
  
-The model is predicting that Bernie Sanders has the highest average sentiment prediction while Donald Trump has the lowest.
-This prediction of Senator Sanders is in line with current polls and Caucus results from Iowa & New Hampshire (which was the around the time the data from the N.Y. Times Article Search API data was last run). It would be interesting to run the data throughout the election to current date and see if the results wind up with Joe Biden with the highest average sentiment score. 
-On the other hand, it's interesting that President Trump has the lowest sentiment, out of any Presidential Candidate.
-The N.Y. Times has a reputation for being a progressive news organization. It's still interesting that compared to the rest of the candidates Trump's average sentiment is the lowest (considering that the President's impeachment trial that was happening during the same time the articles were collected).
+The model is predicting that Bernie Sanders has the highest average sentiment prediction while Donald Trump has the lowest.  This prediction of Senator Sanders is in line with current polls and Caucus results from Iowa & New Hampshire (which was the around the time the data from the N.Y. Times Article Search API data was last run).  It would be interesting to run the data throughout the election to current date and see if the results wind up with Joe Biden with the highest average sentiment score.  On the other hand, it's interesting that President Trump has the lowest sentiment, out of any Presidential Candidate.  The N.Y. Times has a reputation for being a progressive news organization. It's still interesting that compared to the rest of the candidates Trump's average sentiment is the lowest (considering that the President's impeachment trial that was happening during the same time the articles were collected).
