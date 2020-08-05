@@ -9,6 +9,7 @@ using the N.Y. Times Article Search API, so it uses the article's abstract as th
 
 The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction, while Donald Trump has the lowest. This is in-line with the results from the Iowa and New Hampshire primaries, since the data from the N.Y. Times was run through February 2020.  Please refer to the "Findings & Results" section below for more information on the findings.
 
+What does the Sentiment Analysis Pipeline actually do?
 At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
     1) Read in data from multiple N.Y.Times .csv files from a specified directory into a single DataFrame. Files contain data about N.Y.        Times Articles about U.S. Presidential Candidates scraped from the Article Search API. 
     2) Then it will pre-process the data, engineer additional features, as well as label the data using TextBlob sentiment analysis     scores.
