@@ -1,5 +1,7 @@
 # Sentiment Analysis of N.Y. Times Articles about 2020 U.S. Presidential Candidates
 
+Experiment Abstract: Application of Sentiment Analysis on Presidential Candidates using the N.Y. Times
+
 This Python Sentiment Analysis package helps answer the question what is the average sentiment score of U.S. Presidential Candidates, based on the content from what is being written about them in N.Y. Times articles.  I'm an avid reader of the N.Y.Times and one thought I had after reading numerous articles about presidential poll results, is what is the general sentiment of these candidates based on the content in articles that are being written about them?
 
 Now we know the N.Y. Times is politically left-leaning, so there is inherent bias going into this exercise.  However, the availability of data via their Article Search API, and the quality of their content and analysis of political elections still make the N.Y. Times a viable option as a data source for this experiment.
@@ -10,6 +12,7 @@ using the N.Y. Times Article Search API, so it uses the article's abstract as th
 The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction, while Donald Trump has the lowest. This is in-line with the results from the Iowa and New Hampshire primaries, since the data from the N.Y. Times was run through February 2020.  Please refer to the "Findings & Results" section below for more information on the findings.
 
 What does the Sentiment Analysis Pipeline actually do?
+
 At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_analyzer.py script will perform the following functions:
     1) Read in data from multiple N.Y.Times .csv files from a specified directory into a single DataFrame. Files contain data about N.Y.        Times Articles about U.S. Presidential Candidates scraped from the Article Search API. 
     2) Then it will pre-process the data, engineer additional features, as well as label the data using TextBlob sentiment analysis     scores.
