@@ -38,7 +38,8 @@ Model Training Methodology:
     The numeric models used date features, article abstract character counts, article total word counts, and TextBlob subjectivity. 
 
 Findings & Results:
-Quantitative:
+
+(Model Results)
 - For multi-class classification F1 Score was used to evaluate data with imbalanced classes   
 - XGBoost Classifier outperformed the other models for the text-based model with 45.7% F1 score using Bi-gram TfIdf weights as features.   
 - XGBoost Classifier also outperformed the other models using numeric features, touting 66% F1 Score.       
@@ -48,8 +49,8 @@ Quantitative:
     This finding is conclusive with the results for the XGBoost Classifier text model.
 - The LSTM had 68% F1 Score, however it only predicted 2/3 classes.  The LSTM Classifier needed more training data.
      
-Qualitative:
-While quantitative results suggest that the model has a 60% harmonic mean of precision & recall, the qualitative results are interesting!
+(Sentiment Score Prediction Interpretation)
+While the model results suggest that the model has a 60% harmonic mean of precision & recall, the interpretation of the sentiment score predictions are quite interesting.
 
 Consider the table below that shows the results for candidates and their average sentiment predictions from the model:  
 
