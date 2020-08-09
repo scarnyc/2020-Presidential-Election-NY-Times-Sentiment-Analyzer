@@ -9,6 +9,8 @@ Now we know the N.Y. Times is politically left-leaning, so there is inherent bia
 The package performs EDA on data & trains a stacked machine learning model to perform sentiment analysis of U.S. Presidential Candidates, 
 using the N.Y. Times Article Search API, so it uses 11,000 N.Y. Times article abstracts as the text to predict sentiment.  This is a multi-class classification problem, predicting positive, neutral and negative sentiment using Natural Language Processing techniques to pre-process the text and engineer features.
 
+## So What?
+
 The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction, while Donald Trump has the lowest. This is in-line with the results from the Iowa and New Hampshire primaries, since the data from the N.Y. Times was run through February 2020.  Please refer to the "Findings & Results" section below for more information on the findings.
 
 ## What does the Sentiment Analysis Pipeline actually do?
