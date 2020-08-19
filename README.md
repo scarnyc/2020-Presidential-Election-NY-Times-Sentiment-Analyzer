@@ -23,7 +23,7 @@ At a high level, the sentiment_analysis_pipe() function in the nyt_sentiment_ana
     5) Then the function will both tune the hyper-parameters of both models (numeric & text-based features) and print the most important        features for each model type, respectively.
     6) Next, the function will train and evaluate a stacked model pipeline: 
         Using the aforementioned predictions from the text-based model and the numeric model as features, it will train a second-layered         Logistic Regression model.
-    7) Finally, the pipeline will make predictions on the data and produce one last graph showing the average sentiment of the N.Y. Times        Articles about a particular candidate over time.
+    7) Finally, the pipeline will make predictions on the data and produces a final graph showing the average sentiment of the N.Y. Times        Articles about a particular candidate over time.
 
 ## Models Trained & Evaluated for both Text & Numeric Models:
 - Logistic Regression
