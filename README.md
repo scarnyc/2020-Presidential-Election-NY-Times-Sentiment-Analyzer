@@ -11,7 +11,7 @@ using the N.Y. Times Article Search API, so it uses 11,000 N.Y. Times article ab
 
 ## So What?
 
-The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction, while Donald Trump has the lowest. This is in-line with the results from the Iowa and New Hampshire primaries, since the data from the N.Y. Times was run through February 2020.  Please refer to the "Findings & Results" section below for more information on the findings.
+The model achieves a 60% harmonic mean of precision & recall (F1 score) and it is predicting that Bernie Sanders has the highest average sentiment prediction, while Donald Trump has the lowest. This is in-line with the results from the Iowa and New Hampshire primaries, since the data from the N.Y. Times was run through February 2020.  Please refer to the "Findings & Results" section below for more information on the relevance of the findings.
 
 ## What does the Sentiment Analysis Pipeline actually do?
 
@@ -66,4 +66,6 @@ Consider the table below that shows the results for candidates and their average
 The model is predicting that Bernie Sanders has the highest average sentiment prediction while Donald Trump has the lowest.  This prediction of Senator Sanders is in line with current polls and Caucus results from Iowa & New Hampshire (which was the around the time the data from the N.Y. Times Article Search API data was last run).  It would be interesting to run the data throughout the election to current date and see if the results wind up with Joe Biden with the highest average sentiment score.  On the other hand, it's interesting that President Trump has the lowest sentiment, out of any Presidential Candidate.  The N.Y. Times has a reputation for being a progressive news organization. It's still interesting that compared to the rest of the candidates Trump's average sentiment is the lowest, considering that the President's impeachment trial was happening during the same time these articles were collected.
 
 ## Next Steps
-- Train the model on a wider universe of N.Y. Times articles (through current) to predict election outcomes
+- Train the model on a wider universe of N.Y. Times articles (through current) to accurately predict the election outcome
+- Use negation rules to generate intelligent labels
+- Train the LSTM on a larger set of data
