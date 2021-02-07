@@ -2,7 +2,7 @@
 
 ## Experiment Abstract: Application of Sentiment Analysis on Presidential Candidates using the N.Y. Times
 
-This Python Sentiment Analysis package helps perform sentiment analysis of U.S. Presidential Candidates, based on content from N.Y. Times articles.  I'm an avid reader of the N.Y.Times and after reading numerous articles about presidential polling results, I wondered what is the general sentiment of these candidates based on the content in the articles that iswritten about them?
+This python-based Sentiment Analysis project helps perform sentiment analysis of U.S. Presidential Candidates, based on content from N.Y. Times articles.  I'm an avid reader of the N.Y.Times and after reading numerous articles about presidential polling results, I wondered what is the general sentiment of these candidates based on the content in the articles that iswritten about them?
 
 Now we know the N.Y. Times is politically left-leaning, so there is inherent bias going into this exercise.  However,  the availability of data via the N.Y.Times Article Search API, the journalistic quality of their writing as well as the the analysis of political elections still make the N.Y. Times a viable option as a data source for this experiment.
 
